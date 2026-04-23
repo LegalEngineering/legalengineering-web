@@ -3,98 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Engineering, s.r.o.</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Legal Engineering — právno-technické riešenia</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink: #0f1923;
+            --muted: #5a6a7a;
+            --accent: #1a56db;
+            --border: #e2e8f0;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: 1fr auto;
+        }
+
+        main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+        }
+
+        .card {
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .emblem {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 2rem;
+            background: var(--ink);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emblem svg {
+            width: 40px;
+            height: 40px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 2.6rem);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.25rem;
+        }
+
+        .tagline {
+            font-size: 1.05rem;
+            color: var(--muted);
+            line-height: 1.65;
+            margin-bottom: 2.5rem;
+        }
+
+        .divider {
+            width: 48px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .contact-block {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            text-align: left;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+        }
+
+        .contact-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .contact-row .icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            opacity: 0.45;
+        }
+
+        .contact-row a {
+            color: var(--ink);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .contact-row a:hover {
+            border-bottom-color: var(--accent);
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="logo-container">
-                <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="100" cy="100" r="95" fill="none" stroke="currentColor" stroke-width="8"/>
-                    <text x="100" y="135" font-family="Arial, sans-serif" font-size="120" font-weight="bold" text-anchor="middle" fill="currentColor">LE</text>
+
+<main>
+    <div class="card">
+
+        <div class="emblem">
+            <svg viewBox="0 0 24 24">
+                <!-- scales of justice -->
+                <line x1="12" y1="3" x2="12" y2="21"/>
+                <path d="M5 21h14"/>
+                <path d="M5 9l-2 6h4L5 9z"/>
+                <path d="M19 9l-2 6h4l-2-6z"/>
+                <line x1="5" y1="9" x2="19" y2="9"/>
+            </svg>
+        </div>
+
+        <p class="label">Pripravujeme sa pre vás</p>
+
+        <h1>Legal Engineering</h1>
+
+        <div class="divider"></div>
+
+        <p class="tagline">
+            Právno-technické riešenia pre moderné podnikanie.<br>
+            Web je momentálne v príprave — kontaktujte nás priamo.
+        </p>
+
+        <div class="contact-block">
+            <div class="contact-row">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
                 </svg>
-                <span class="company-name">Legal Engineering</span>
+                <a href="mailto:info@legalengineering.sk">info@legalengineering.sk</a>
             </div>
-            <ul class="nav-links">
-                <li><a href="#home">Domov</a></li>
-                <li><a href="#services">Služby</a></li>
-                <li><a href="#about">O nás</a></li>
-                <li><a href="#contact">Kontakt</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Legal Engineering, s.r.o.</h1>
-            <p class="tagline">Moderné právne riešenia pre digitálny vek</p>
-            <a href="#contact" class="cta-button">Kontaktujte nás</a>
-        </div>
-    </section>
-
-    <section id="services" class="services">
-        <div class="container">
-            <h2>Naše služby</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">⚖️</div>
-                    <h3>Právne poradenstvo</h3>
-                    <p>Komplexné právne poradenstvo pre firmy aj jednotlivcov v oblasti obchodného práva a corporate governance.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🔧</div>
-                    <h3>Legal Tech</h3>
-                    <p>Implementácia moderných technológií do právnej praxe. Automatizácia procesov a digitalizácia dokumentov.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">📋</div>
-                    <h3>Zmluvné právo</h3>
-                    <p>Príprava, analýza a revízia zmlúv. Zabezpečenie právnej istoty vašich obchodných vzťahov.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🛡️</div>
-                    <h3>Compliance</h3>
-                    <p>Zabezpečenie súladu s právnymi predpismi, GDPR a internými smernicami spoločnosti.</p>
-                </div>
+            <div class="contact-row">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+                <span>legalengineering.sk</span>
             </div>
         </div>
-    </section>
 
-    <section id="about" class="about">
-        <div class="container">
-            <h2>O spoločnosti</h2>
-            <div class="about-content">
-                <p>Legal Engineering, s.r.o. spája tradičné právne know-how s moderným technologickým prístupom. Našou víziou je poskytovať klientom efektívne, transparentné a inovatívne právne služby.</p>
-                <p>Sme tím odborníkov, ktorí rozumejú nielen právu, ale aj technológiám a procesom. Veríme, že budúcnosť právnych služieb spočíva v inteligentnom využívaní digitálnych nástrojov pri zachovaní najvyššej kvality a ľudského prístupu.</p>
-            </div>
-        </div>
-    </section>
+    </div>
+</main>
 
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2>Kontaktujte nás</h2>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <h3>Legal Engineering, s.r.o.</h3>
-                    <p>Slovenská republika</p>
-                </div>
-                <div class="contact-item">
-                    <h3>Email</h3>
-                    <p><a href="mailto:info@legalengineering.sk">info@legalengineering.sk</a></p>
-                </div>
-                <div class="contact-item">
-                    <h3>Web</h3>
-                    <p><a href="https://legalengineering.sk">legalengineering.sk</a></p>
-                </div>
-            </div>
-        </div>
-    </section>
+<footer>
+    &copy; 2026 Legal Engineering, s.r.o. &nbsp;·&nbsp; Slovenská republika
+</footer>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Legal Engineering, s.r.o. Všetky práva vyhradené.</p>
-        </div>
-    </footer>
 </body>
 </html>
