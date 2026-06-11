@@ -1,0 +1,20 @@
+{
+  "name": "Kalkulačka trov právneho zastúpenia",
+  "short_name": "Trovy",
+  "description": "Výpočet trov právneho zastúpenia podľa vyhlášky MS SR č. 655/2004 Z. z. (advokátska tarifa).",
+  "lang": "sk",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#faf7ef",
+  "theme_color": "#7c5326",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

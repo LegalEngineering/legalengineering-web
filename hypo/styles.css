@@ -1,0 +1,202 @@
+/* ===========================================================================
+   Hypotekárna kalkulačka — lokálny CSS
+   Náhrada za Tailwind CDN. 1:1 reprodukcia použitých utility tried z .jsx.
+   Toto je PREPIS, nie redizajn — žiadne nové štýly nad rámec pôvodného vzhľadu.
+   =========================================================================== */
+
+@import url('fonts/fonts.css');
+
+/* ————— Reset ————— */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: #0d1017;
+  font-family: 'Sora', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+button { font-family: inherit; cursor: pointer; }
+h1, h3 { margin: 0; }
+
+/* ————— Typografické rodiny ————— */
+* { font-family: 'Sora', sans-serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.serif { font-family: 'Fraunces', serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* ————— Layout ————— */
+.min-h-screen { min-height: 100vh; }
+.block { display: block; }
+.flex { display: flex; }
+.grid { display: grid; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1 1 0%; }
+.items-baseline { align-items: baseline; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.shrink-0 { flex-shrink: 0; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.pointer-events-none { pointer-events: none; }
+
+/* ————— Grid columns ————— */
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.\[grid-cols-1fr_auto\], .grid-cols-\[1fr_auto\] { grid-template-columns: 1fr auto; }
+.col-span-12 { grid-column: span 12 / span 12; }
+
+/* ————— Gaps ————— */
+.gap-1 { gap: 0.25rem; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.25rem; }
+.gap-6 { gap: 1.5rem; }
+
+/* ————— Space-y (vertikálne rozostupy detí) ————— */
+.space-y-1 > * + * { margin-top: 0.25rem; }
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+
+/* ————— Width / Height ————— */
+.w-full { width: 100%; }
+.w-3 { width: 0.75rem; }
+.h-3 { height: 0.75rem; }
+.max-w-\[1400px\] { max-width: 1400px; }
+.max-w-xl { max-width: 36rem; }
+.min-w-\[3\.5rem\] { min-width: 3.5rem; }
+
+/* ————— Padding ————— */
+.p-1 { padding: 0.25rem; }
+.p-5 { padding: 1.25rem; }
+.px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.py-0\.5 { padding-top: 0.125rem; padding-bottom: 0.125rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.py-1\.5 { padding-top: 0.375rem; padding-bottom: 0.375rem; }
+.py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+.pr-4 { padding-right: 1rem; }
+.pr-10 { padding-right: 2.5rem; }
+.pb-2 { padding-bottom: 0.5rem; }
+.pb-6 { padding-bottom: 1.5rem; }
+.pt-2 { padding-top: 0.5rem; }
+.pt-4 { padding-top: 1rem; }
+
+/* ————— Margin ————— */
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-1\.5 { margin-bottom: 0.375rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mt-0\.5 { margin-top: 0.125rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-8 { margin-top: 2rem; }
+
+/* ————— Borders ————— */
+.border { border: 1px solid transparent; }
+.border-t { border-top: 1px solid transparent; }
+.border-b { border-bottom: 1px solid transparent; }
+.border-r { border-right: 1px solid transparent; }
+.rounded-sm { border-radius: 0.125rem; }
+
+.border-\[\#2a2620\] { border-color: #2a2620; }
+.border-\[\#3a362c\] { border-color: #3a362c; }
+.border-\[\#d4873c\] { border-color: #d4873c; }
+.border-\[\#d4873c\]\/40 { border-color: rgba(212, 135, 60, 0.4); }
+
+/* ————— Background ————— */
+.bg-\[\#0d1017\] { background-color: #0d1017; }
+.bg-\[\#14120e\] { background-color: #14120e; }
+.bg-\[\#1a1a1e\] { background-color: #1a1a1e; }
+.bg-\[\#d4873c\] { background-color: #d4873c; }
+.bg-\[\#d4873c\]\/10 { background-color: rgba(212, 135, 60, 0.1); }
+.bg-gradient-amber {
+  background-image: linear-gradient(to bottom right, #1f1a12, #16130d);
+}
+
+/* ————— Text colors ————— */
+.text-\[\#f0ead6\] { color: #f0ead6; }
+.text-\[\#a39b87\] { color: #a39b87; }
+.text-\[\#70684f\] { color: #70684f; }
+.text-\[\#d4873c\] { color: #d4873c; }
+.text-\[\#8abf6f\] { color: #8abf6f; }
+.text-\[\#e8a84c\] { color: #e8a84c; }
+.text-\[\#d45a3c\] { color: #d45a3c; }
+.text-\[\#0d1017\] { color: #0d1017; }
+
+/* ————— Font sizes ————— */
+.text-\[10px\] { font-size: 10px; }
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+.text-5xl { font-size: 3rem; line-height: 1; }
+
+/* ————— Font weight / style ————— */
+.font-light { font-weight: 300; }
+.font-medium { font-weight: 500; }
+.italic { font-style: italic; }
+
+/* ————— Tracking / leading ————— */
+.uppercase { text-transform: uppercase; }
+.tracking-wider { letter-spacing: 0.05em; }
+.tracking-tight { letter-spacing: -0.025em; }
+.tracking-\[0\.15em\] { letter-spacing: 0.15em; }
+.tracking-\[0\.3em\] { letter-spacing: 0.3em; }
+.leading-relaxed { line-height: 1.625; }
+.text-right { text-align: right; }
+
+/* ————— Positioning ————— */
+.right-3 { right: 0.75rem; }
+
+/* ————— Transitions ————— */
+.transition-colors {
+  transition-property: color, background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ————— Hover / focus ————— */
+.hover\:text-\[\#a39b87\]:hover { color: #a39b87; }
+.hover\:text-\[\#f0ead6\]:hover { color: #f0ead6; }
+.focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
+.focus\:border-\[\#d4873c\]:focus { border-color: #d4873c; }
+
+/* ————— Form prvky ————— */
+.accent-\[\#d4873c\] { accent-color: #d4873c; }
+input[type=range] { height: 2px; }
+input[type=number]::-webkit-inner-spin-button { opacity: 1; }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; background: #d4873c;
+  border-radius: 50%; cursor: pointer;
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px; background: #d4873c;
+  border: none; border-radius: 50%; cursor: pointer;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* ————— Responsive: lg breakpoint (1024px) ————— */
+@media (min-width: 1024px) {
+  .lg\:col-span-4 { grid-column: span 4 / span 4; }
+  .lg\:col-span-8 { grid-column: span 8 / span 8; }
+}

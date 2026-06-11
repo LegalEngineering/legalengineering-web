@@ -1,192 +1,498 @@
-<!DOCTYPE html>
-<html lang="sk">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Engineering — právno-technické riešenia</title>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2F6B43" />
+  <title>Legal Engineering — Hard work worth your soft costs</title>
+  <meta name="description" content="Legal Engineering builds legal-technical products at the seam of law, code, and business. Hard work worth your soft costs." />
 
-        :root {
-            --ink: #0f1923;
-            --muted: #5a6a7a;
-            --accent: #1a56db;
-            --border: #e2e8f0;
-            --bg: #f8fafc;
-        }
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Legal Engineering" />
+  <meta property="og:description" content="Hard work worth your soft costs. Legal-technical products at the seam of law, code, and business." />
+  <meta property="og:url" content="https://legalengineering.sk/" />
+  <meta property="og:image" content="https://legalengineering.sk/og-image.jpg" />
+  <link rel="canonical" href="https://legalengineering.sk/" />
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--ink);
-            min-height: 100vh;
-            display: grid;
-            grid-template-rows: 1fr auto;
-        }
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='3' y='3' width='42' height='42' rx='11' fill='%232F6B43'/%3E%3Ctext x='24' y='32' font-family='Georgia,serif' font-size='22' font-weight='600' fill='%23F6F1E7' text-anchor='middle'%3ELE%3C/text%3E%3C/svg%3E" />
 
-        main {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem 1.5rem;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Fonts load non-render-blocking so the page (and reveal script) paints immediately -->
+  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap"></noscript>
+  <script>document.documentElement.classList.add('js');</script>
 
-        .card {
-            max-width: 560px;
-            width: 100%;
-            text-align: center;
-        }
+  <!--
+    ============================================================================
+    LEGAL ENGINEERING · showcase hub  (legalengineering.sk)
+    Clean editorial style (warm paper · forest green · brass). Single file.
 
-        .emblem {
-            width: 72px;
-            height: 72px;
-            margin: 0 auto 2rem;
-            background: var(--ink);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    SHOWCASE LINKS (bundled as sub-paths of legalengineering.sk for instant launch):
+      Vygumovanie     → vygumovanie/   (folder shipped in this deploy)
+      Mortgage calc   → hypo/
+      Legal cost calc → trovy/
+      BiznisBox       → biznisbox/
+      Box na pozemku  → https://www.boxnapozemku.sk   (own live domain — external)
+      ScreenWhile     → coming soon (own domain not live yet; swap the card back to a link when ready)
+    Thumbnails live in assets/thumbs/*.jpg — re-shoot a page and overwrite to refresh a preview.
+    Each <a class="work"> is one self-contained card: add / remove to change the catalogue.
+    ============================================================================
+  -->
 
-        .emblem svg {
-            width: 40px;
-            height: 40px;
-            fill: none;
-            stroke: #fff;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+  <style>
+    :root{
+      --paper:    #F6F1E7;
+      --paper-2:  #ECE3D2;
+      --surface:  #FBF8F1;
+      --ink:      #1E2A22;
+      --ink-soft: #5F6B63;
+      --green:    #2F6B43;
+      --green-deep:#1F3328;
+      --green-light:#4E8A5C;
+      --brass:    #9C6B34;
+      --brass-deep:#7C5326;
+      --gold:     #C28A2B;
+      --line:     #D8CBB0;
+      --line-soft:#E6DCC8;
 
-        .label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
+      --display:'Fraunces', 'Hoefler Text', Georgia, serif;
+      --body:'Source Sans 3', system-ui, -apple-system, sans-serif;
 
-        h1 {
-            font-size: clamp(1.8rem, 5vw, 2.6rem);
-            font-weight: 700;
-            line-height: 1.15;
-            letter-spacing: -0.02em;
-            margin-bottom: 1.25rem;
-        }
+      --maxw:1140px;
+      --radius:16px;
+      --shadow:0 1px 0 rgba(255,255,255,.6), 0 18px 40px -28px rgba(31,51,40,.5);
+      --shadow-hover:0 1px 0 rgba(255,255,255,.6), 0 30px 60px -30px rgba(31,51,40,.55);
+      --ease:cubic-bezier(.2,.7,.2,1);
+    }
 
-        .tagline {
-            font-size: 1.05rem;
-            color: var(--muted);
-            line-height: 1.65;
-            margin-bottom: 2.5rem;
-        }
+    *,*::before,*::after{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      background-color:var(--paper);
+      background-image:
+        radial-gradient(circle at 12% 4%, rgba(194,138,43,.09), transparent 40%),
+        radial-gradient(circle at 90% -2%, rgba(47,107,67,.10), transparent 44%);
+      background-attachment:fixed;
+      color:var(--ink);
+      font-family:var(--body);
+      font-size:17px;
+      line-height:1.7;
+      -webkit-font-smoothing:antialiased;
+      overflow-x:hidden;
+    }
+    img{ max-width:100%; display:block; }
+    a{ color:inherit; text-decoration:none; }
+    ::selection{ background:var(--green); color:var(--paper); }
 
-        .divider {
-            width: 48px;
-            height: 3px;
-            background: var(--accent);
-            border-radius: 2px;
-            margin: 0 auto 2.5rem;
-        }
+    h1,h2,h3{ font-family:var(--display); font-weight:600; line-height:1.1; letter-spacing:-.012em; margin:0; color:var(--ink); }
+    h1{ font-size:clamp(2.6rem, 6.2vw, 4.6rem); }
+    h2{ font-size:clamp(1.9rem, 4vw, 2.9rem); }
+    h3{ font-size:clamp(1.25rem, 2.3vw, 1.55rem); }
+    p{ margin:0 0 1rem; }
 
-        .contact-block {
-            display: inline-flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            text-align: left;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem 2rem;
-        }
+    .wrap{ width:min(var(--maxw), calc(100% - 44px)); margin:0 auto; }
+    .section{ padding:clamp(64px, 9vw, 116px) 0; }
 
-        .contact-row {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.95rem;
-        }
+    .eyebrow{
+      display:inline-block; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+      font-size:.72rem; color:var(--brass-deep); border:1.5px solid var(--brass);
+      border-radius:100px; padding:6px 15px; background:rgba(194,138,43,.07);
+    }
+    .lead{ font-size:1.18rem; color:var(--ink-soft); max-width:58ch; }
+    .accent{ color:var(--green); }
+    .accent-brass{ color:var(--brass); }
 
-        .contact-row .icon {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
-            opacity: 0.45;
-        }
+    /* Buttons — clean, restrained */
+    .btn{
+      display:inline-flex; align-items:center; gap:9px; justify-content:center;
+      font-family:var(--body); font-weight:600; font-size:1rem; line-height:1;
+      padding:15px 26px; border-radius:11px; cursor:pointer;
+      border:1.5px solid transparent; transition:transform .16s var(--ease), box-shadow .16s var(--ease), background .16s;
+    }
+    .btn .a{ transition:transform .25s var(--ease); }
+    .btn:hover .a{ transform:translateX(3px); }
+    .btn-primary{ background:var(--green); color:var(--paper); box-shadow:0 10px 24px -14px rgba(47,107,67,.9); }
+    .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 16px 30px -16px rgba(47,107,67,.95); }
+    .btn-ghost{ background:transparent; color:var(--green-deep); border-color:var(--line); }
+    .btn-ghost:hover{ transform:translateY(-2px); border-color:var(--green); background:rgba(47,107,67,.04); }
 
-        .contact-row a {
-            color: var(--ink);
-            text-decoration: none;
-            border-bottom: 1px solid transparent;
-            transition: border-color 0.2s;
-        }
+    /* Nav */
+    .nav{ position:sticky; top:0; z-index:60; background:rgba(246,241,231,.82);
+      border-bottom:1px solid transparent; transition:background .3s, border-color .3s, box-shadow .3s; }
+    .nav.scrolled{ background:rgba(246,241,231,.95); backdrop-filter:blur(10px);
+      border-bottom-color:var(--line); box-shadow:0 10px 30px -22px rgba(31,51,40,.6); }
+    .nav-inner{ display:flex; align-items:center; justify-content:space-between; gap:16px;
+      height:70px; width:min(var(--maxw), calc(100% - 44px)); margin:0 auto; }
+    .brand{ display:flex; align-items:center; gap:11px; font-family:var(--display); font-weight:600;
+      font-size:1.32rem; color:var(--green-deep); letter-spacing:-.01em; }
+    .brand .mark{ width:32px; height:32px; border-radius:9px; background:var(--green); color:var(--paper);
+      display:grid; place-items:center; font-size:.95rem; font-weight:600; flex:0 0 auto; }
+    .nav-links{ display:flex; align-items:center; gap:26px; }
+    .nav-links a{ font-size:.92rem; font-weight:600; letter-spacing:.02em; color:var(--green-deep); opacity:.85; transition:opacity .2s; }
+    .nav-links a:hover{ opacity:1; }
+    .nav-cta{ display:flex; align-items:center; gap:12px; }
+    .nav-cta .btn{ padding:11px 18px; font-size:.92rem; }
+    .hamburger{ display:none; width:44px; height:44px; border:1px solid var(--line); border-radius:11px;
+      background:var(--surface); align-items:center; justify-content:center; cursor:pointer; }
+    .hamburger span,.hamburger span::before,.hamburger span::after{ content:""; display:block; width:18px; height:2px;
+      background:var(--green-deep); border-radius:2px; position:relative; }
+    .hamburger span::before{ position:absolute; top:-6px; } .hamburger span::after{ position:absolute; top:6px; }
+    @media (max-width:880px){ .nav-links{ display:none; } .nav-cta .btn-primary{ display:none; } .hamburger{ display:inline-flex; } }
 
-        .contact-row a:hover {
-            border-bottom-color: var(--accent);
-            color: var(--accent);
-        }
+    /* Mobile drawer */
+    .drawer{ position:fixed; inset:0 0 0 auto; width:min(380px,100%); background:var(--paper);
+      border-left:1px solid var(--line); transform:translateX(100%); transition:transform .3s var(--ease);
+      z-index:90; padding:22px; display:flex; flex-direction:column; gap:6px; }
+    .drawer.open{ transform:none; }
+    .drawer-head{ display:flex; align-items:center; justify-content:space-between; padding-bottom:14px;
+      margin-bottom:6px; border-bottom:1px solid var(--line); }
+    .drawer a{ font-weight:600; color:var(--green-deep); padding:13px 6px; border-bottom:1px solid var(--line-soft); }
+    .drawer .btn{ margin-top:14px; }
+    .backdrop{ position:fixed; inset:0; background:rgba(31,51,40,.28); opacity:0; pointer-events:none; transition:opacity .3s; z-index:80; }
+    .backdrop.open{ opacity:1; pointer-events:auto; }
 
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.78rem;
-            color: var(--muted);
-            border-top: 1px solid var(--border);
-        }
-    </style>
+    /* Hero */
+    .hero{ padding-top:clamp(48px, 8vw, 88px); padding-bottom:clamp(40px, 6vw, 72px); }
+    .hero .eyebrow{ margin-bottom:24px; }
+    .hero h1{ max-width:16ch; }
+    .hero .lead{ margin-top:24px; font-size:1.28rem; }
+    .hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; margin-top:36px; }
+    .hero-chips{ display:flex; gap:10px 26px; flex-wrap:wrap; margin-top:40px; padding-top:26px;
+      border-top:1px solid var(--line); list-style:none; }
+    .hero-chips li{ display:flex; align-items:center; gap:10px; font-weight:600; color:var(--green-deep); font-size:.96rem; }
+    .hero-chips li::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--brass); }
+
+    /* Section heading */
+    .sec-head{ max-width:60ch; margin-bottom:clamp(34px,5vw,52px); }
+    .sec-kicker{ display:block; font-size:.74rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--brass); margin-bottom:14px; }
+    .sec-head h2{ margin-bottom:14px; }
+
+    /* Showcase grid */
+    .work-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:30px 28px; }
+    @media (max-width:920px){ .work-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:600px){ .work-grid{ grid-template-columns:1fr; gap:26px; } }
+
+    .work{ display:flex; flex-direction:column; }
+    .thumb-frame{ border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--surface);
+      box-shadow:var(--shadow); transition:transform .28s var(--ease), box-shadow .28s var(--ease), border-color .28s; }
+    .thumb-bar{ display:flex; align-items:center; gap:7px; height:32px; padding:0 13px;
+      background:var(--paper-2); border-bottom:1px solid var(--line); }
+    .thumb-bar i{ width:9px; height:9px; border-radius:50%; background:var(--line); display:block; }
+    .thumb-bar i:nth-child(1){ background:#d98b6e; } .thumb-bar i:nth-child(2){ background:#e3c06a; } .thumb-bar i:nth-child(3){ background:#86b48c; }
+    .thumb-bar .addr{ margin-left:8px; font-size:.72rem; color:var(--ink-soft); font-weight:500; letter-spacing:.01em;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .thumb-img{ aspect-ratio:16/10; overflow:hidden; background:var(--paper-2); }
+    .thumb-img img{ width:100%; height:100%; object-fit:cover; object-position:top center;
+      transition:transform .5s var(--ease); }
+    .work:hover .thumb-frame{ transform:translateY(-4px); box-shadow:var(--shadow-hover); border-color:var(--green-light); }
+    .work:hover .thumb-img img{ transform:scale(1.045); }
+
+    .work-meta{ padding:20px 4px 0; display:flex; flex-direction:column; flex:1; }
+    .work-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+    .work-name{ font-family:var(--display); font-size:1.5rem; font-weight:600; color:var(--green-deep); line-height:1.15; }
+    .work-tag{ flex:0 0 auto; font-size:.68rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+      color:var(--brass-deep); background:rgba(194,138,43,.1); border:1px solid rgba(156,107,52,.3);
+      border-radius:100px; padding:4px 10px; }
+    .work-desc{ margin:9px 0 0; font-size:1rem; color:var(--ink-soft); line-height:1.6; }
+    .work-open{ margin-top:16px; font-weight:700; font-size:.92rem; color:var(--green); display:inline-flex; align-items:center; gap:8px; }
+    .work-open .a{ transition:transform .25s var(--ease); }
+    .work:hover .work-open .a{ transform:translateX(4px); }
+    /* Coming-soon card (not yet a link) */
+    .work-soon{ cursor:default; }
+    .work-soon .thumb-img img{ filter:saturate(.82) opacity(.92); }
+    .work-soon:hover .thumb-frame{ transform:none; box-shadow:var(--shadow); border-color:var(--line); }
+    .work-soon:hover .thumb-img img{ transform:none; }
+    .work-tag.soon{ color:var(--ink-soft); background:rgba(95,107,99,.1); border-color:var(--line); }
+    .work-open-soon{ color:var(--ink-soft); }
+
+    /* Ethos band */
+    .ethos{ background:var(--paper-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .ethos-inner{ max-width:880px; }
+    .ethos .quote{ font-family:var(--display); font-weight:500; font-style:normal;
+      font-size:clamp(1.7rem, 3.4vw, 2.6rem); line-height:1.32; color:var(--green-deep); letter-spacing:-.01em; }
+    .ethos .quote em{ font-style:italic; color:var(--brass); }
+    .ethos .body{ margin-top:24px; font-size:1.15rem; color:var(--ink-soft); max-width:64ch; }
+
+    /* Contact band */
+    .contact{ background:var(--green-deep); color:var(--paper); }
+    .contact h2{ color:#fff; }
+    .contact .lead{ color:rgba(246,241,231,.82); }
+    .contact .inner{ max-width:720px; }
+    .contact-ctas{ display:flex; gap:14px; flex-wrap:wrap; margin-top:30px; }
+    .contact .btn-primary{ background:var(--gold); color:var(--green-deep); box-shadow:0 12px 26px -16px rgba(0,0,0,.6); }
+    .contact .btn-primary:hover{ filter:brightness(1.04); }
+    .contact .btn-ghost{ color:var(--paper); border-color:rgba(246,241,231,.45); }
+    .contact .btn-ghost:hover{ background:rgba(246,241,231,.08); border-color:rgba(246,241,231,.7); }
+
+    /* Footer */
+    footer{ background:var(--green-deep); color:var(--paper); padding:18px 0 30px; border-top:1px solid rgba(246,241,231,.12); }
+    .foot-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:28px; padding-top:34px; }
+    @media (max-width:760px){ .foot-grid{ grid-template-columns:1fr; gap:22px; } }
+    .foot-brand{ font-family:var(--display); font-size:1.4rem; font-weight:600; color:#fff; }
+    .foot-text{ margin-top:10px; font-size:.92rem; color:rgba(246,241,231,.78); }
+    .foot-text a{ color:rgba(246,241,231,.9); border-bottom:1px solid rgba(246,241,231,.3); }
+    .foot-col h4{ font-family:var(--body); font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+      color:rgba(246,241,231,.55); margin:0 0 14px; }
+    .foot-links{ display:grid; gap:9px; }
+    .foot-links a{ font-size:.94rem; color:rgba(246,241,231,.82); width:fit-content; transition:color .2s; }
+    .foot-links a:hover{ color:var(--gold); }
+    .foot-bottom{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      margin-top:34px; padding-top:16px; border-top:1px solid rgba(246,241,231,.14);
+      font-size:.84rem; color:rgba(246,241,231,.65); }
+
+    /* A11y + motion */
+    :focus-visible{ outline:2px solid var(--gold); outline-offset:3px; border-radius:4px; }
+    .skip{ position:absolute; left:-999px; top:8px; background:var(--green-deep); color:var(--paper); padding:10px 14px; border-radius:8px; z-index:200; }
+    .skip:focus{ left:12px; }
+    /* Content is visible by default; only the .js build hides-then-reveals (so JS-off still shows everything) */
+    .reveal{ transition:opacity .7s var(--ease), transform .7s var(--ease); }
+    .js .reveal{ opacity:0; transform:translateY(20px); }
+    .js .reveal.in{ opacity:1; transform:none; }
+    @media (prefers-reduced-motion: reduce){
+      html{ scroll-behavior:auto; }
+      *{ transition-duration:.001ms !important; animation-duration:.001ms !important; }
+      .js .reveal{ opacity:1; transform:none; }
+    }
+  </style>
 </head>
-<body>
 
-<main>
-    <div class="card">
+<body id="top">
+  <a class="skip" href="#work">Skip to showcase</a>
 
-        <div class="emblem">
-            <svg viewBox="0 0 24 24">
-                <!-- scales of justice -->
-                <line x1="12" y1="3" x2="12" y2="21"/>
-                <path d="M5 21h14"/>
-                <path d="M5 9l-2 6h4L5 9z"/>
-                <path d="M19 9l-2 6h4l-2-6z"/>
-                <line x1="5" y1="9" x2="19" y2="9"/>
-            </svg>
-        </div>
-
-        <p class="label">Pripravujeme pre vás nový web</p>
-
-        <h1>Legal Engineering</h1>
-
-        <div class="divider"></div>
-
-        <p class="tagline">
-            Právno-technické riešenia pre moderné podnikanie.<br>
-            Web je momentálne v príprave — kontaktujte nás priamo.
-        </p>
-
-        <div class="contact-block">
-            <div class="contact-row">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                    <polyline points="22,6 12,13 2,6"/>
-                </svg>
-                <a href="mailto:info@legalengineering.sk">kontakt@legalengineering.sk</a>
-            </div>
-            <div class="contact-row">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="2" y1="12" x2="22" y2="12"/>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                </svg>
-                <span>legalengineering.sk</span>
-            </div>
-        </div>
-
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Legal Engineering — home"><span class="mark">LE</span>Legal Engineering</a>
+      <nav class="nav-links" aria-label="Sections">
+        <a href="#work">Showcase</a>
+        <a href="#ethos">What we do</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn btn-primary" href="#contact">Get in touch <span class="a">→</span></a>
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-controls="drawer" aria-expanded="false"><span></span></button>
+      </div>
     </div>
-</main>
+  </header>
 
-<footer>
-    &copy; 2026 Legal Engineering, s.r.o. &nbsp;·&nbsp; Slovenská republika
-</footer>
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" aria-label="Menu" role="dialog" aria-modal="true">
+    <div class="drawer-head">
+      <span class="brand"><span class="mark">LE</span>Legal Engineering</span>
+      <button class="btn btn-ghost" id="closeDrawer" type="button" style="padding:9px 14px">Close</button>
+    </div>
+    <a href="#work">Showcase</a>
+    <a href="#ethos">What we do</a>
+    <a href="#contact">Contact</a>
+    <a class="btn btn-primary" href="#contact">Get in touch <span class="a">→</span></a>
+  </aside>
 
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap">
+        <span class="eyebrow reveal">Legal Engineering</span>
+        <h1 class="reveal" style="transition-delay:.05s">Hard work worth your <span class="accent">soft&nbsp;costs</span>.</h1>
+        <p class="lead reveal" style="transition-delay:.12s">
+          We build legal-technical products at the seam of law, code, and business —
+          the work that never shows up in the concrete, only in whether the thing stands.
+        </p>
+        <div class="hero-ctas reveal" style="transition-delay:.18s">
+          <a class="btn btn-primary" href="#work">See the work <span class="a">↓</span></a>
+          <a class="btn btn-ghost" href="#contact">Get in touch</a>
+        </div>
+        <ul class="hero-chips reveal" style="transition-delay:.24s">
+          <li>Law</li><li>Code</li><li>Business</li><li>Est. 2026</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SHOWCASE -->
+    <section class="section" id="work">
+      <div class="wrap">
+        <div class="sec-head reveal">
+          <span class="sec-kicker">01 — Showcase</span>
+          <h2>Selected work</h2>
+          <p class="lead">A working catalogue — tools we shipped, products we built, and experiments we couldn’t resist. Click any preview to step inside.</p>
+        </div>
+
+        <div class="work-grid">
+
+          <!-- Vygumovanie -->
+          <a class="work reveal" href="vygumovanie/" target="_blank" rel="noopener" aria-label="Open Vygumovanie">
+            <div class="thumb-frame">
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/vygumovanie</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/vygumovanie.jpg" width="760" height="475" loading="lazy" alt="Preview of the Vygumovanie interactive poem"></div>
+            </div>
+            <div class="work-meta">
+              <div class="work-head"><span class="work-name">Vygumovanie</span><span class="work-tag">Interactive</span></div>
+              <p class="work-desc">An interactive poem that erases one vowel per stanza — and the page’s light along with it. Pure scroll-driven craft.</p>
+              <span class="work-open">Open <span class="a">→</span></span>
+            </div>
+          </a>
+
+          <!-- Mortgage Calculator -->
+          <a class="work reveal" href="hypo/" target="_blank" rel="noopener" aria-label="Open Mortgage Calculator">
+            <div class="thumb-frame">
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/hypo</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/hypo.jpg" width="760" height="475" loading="lazy" alt="Preview of the Mortgage Calculator"></div>
+            </div>
+            <div class="work-meta">
+              <div class="work-head"><span class="work-name">Mortgage Calculator</span><span class="work-tag">Tool</span></div>
+              <p class="work-desc">Slovak mortgage limits, NBS stress tests and real repayments — clean, precise, installable as an app.</p>
+              <span class="work-open">Open <span class="a">→</span></span>
+            </div>
+          </a>
+
+          <!-- Legal Cost Calculator -->
+          <a class="work reveal" href="trovy/" target="_blank" rel="noopener" aria-label="Open Legal Cost Calculator">
+            <div class="thumb-frame">
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/trovy</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/trovy.jpg" width="760" height="475" loading="lazy" alt="Preview of the Legal Cost Calculator"></div>
+            </div>
+            <div class="work-meta">
+              <div class="work-head"><span class="work-name">Legal Cost Calculator</span><span class="work-tag">Tool</span></div>
+              <p class="work-desc">Statutory attorney’s fees and cash reimbursements under the Slovak tariff — to the cent, with the reasoning shown.</p>
+              <span class="work-open">Open <span class="a">→</span></span>
+            </div>
+          </a>
+
+          <!-- BiznisBox -->
+          <a class="work reveal" href="biznisbox/" target="_blank" rel="noopener" aria-label="Open BiznisBox">
+            <div class="thumb-frame">
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/biznisbox</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/biznisbox.jpg" width="760" height="475" loading="lazy" alt="Preview of BiznisBox"></div>
+            </div>
+            <div class="work-meta">
+              <div class="work-head"><span class="work-name">BiznisBox</span><span class="work-tag">Product</span></div>
+              <p class="work-desc">Start a company without the chaos — legal, technical and operational set-up packed into five ready-made boxes.</p>
+              <span class="work-open">Open <span class="a">→</span></span>
+            </div>
+          </a>
+
+          <!-- Box na pozemku -->
+          <a class="work reveal" href="https://www.boxnapozemku.sk" target="_blank" rel="noopener" aria-label="Open Box na pozemku">
+            <div class="thumb-frame">
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">boxnapozemku.sk</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/boxnapozemku.jpg" width="760" height="475" loading="lazy" alt="Preview of Box na pozemku"></div>
+            </div>
+            <div class="work-meta">
+              <div class="work-head"><span class="work-name">Box na pozemku</span><span class="work-tag">Product</span></div>
+              <p class="work-desc">Spare land? We check it, match it to a parcel-locker operator and handle the paperwork — you collect steady rent.</p>
+              <span class="work-open">Visit <span class="a">→</span></span>
+            </div>
+          </a>
+
+          <!-- ScreenWhile (own domain not live yet → coming soon; swap back to <a href> when ready) -->
+          <div class="work work-soon reveal" aria-label="ScreenWhile — coming soon">
+            <div class="thumb-frame">
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">screenwhile — coming soon</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/screenwhile.jpg" width="760" height="475" loading="lazy" alt="Preview of ScreenWhile"></div>
+            </div>
+            <div class="work-meta">
+              <div class="work-head"><span class="work-name">ScreenWhile</span><span class="work-tag soon">Soon</span></div>
+              <p class="work-desc">Games that live in your phone’s notification shade — so the video, podcast or stream underneath never stops.</p>
+              <span class="work-open work-open-soon">Coming soon</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ETHOS -->
+    <section class="section ethos" id="ethos">
+      <div class="wrap ethos-inner reveal">
+        <span class="sec-kicker">02 — What we do</span>
+        <p class="quote">
+          In any build, the hard costs are the concrete. The <em>soft costs</em> are the thinking —
+          the law, the structure, the engineering that decides whether any of it holds.
+        </p>
+        <p class="body">
+          Legal Engineering sits where most firms don’t: inside the build. We design the legal and technical
+          scaffolding for complex property, development and transactional work — then ship the tools and products
+          that make it run. We do the soft costs. We make them worth it.
+        </p>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section contact" id="contact">
+      <div class="wrap inner reveal">
+        <span class="sec-kicker" style="color:var(--gold)">03 — Contact</span>
+        <h2>Let’s build the part that has to stand.</h2>
+        <p class="lead">Fifteen minutes is enough to tell whether we can work together.</p>
+        <div class="contact-ctas">
+          <a class="btn btn-primary" href="mailto:kontakt@legalengineering.sk">Email kontakt@legalengineering.sk</a>
+          <a class="btn btn-ghost" href="#work">Browse the work</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="foot-brand">Legal Engineering</div>
+          <p class="foot-text">
+            Hard work worth your soft costs.<br>
+            <a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a> · legalengineering.sk
+          </p>
+        </div>
+        <div class="foot-col">
+          <h4>Showcase</h4>
+          <div class="foot-links">
+            <a href="vygumovanie/" target="_blank" rel="noopener">Vygumovanie</a>
+            <a href="hypo/" target="_blank" rel="noopener">Mortgage Calculator</a>
+            <a href="trovy/" target="_blank" rel="noopener">Legal Cost Calculator</a>
+            <a href="biznisbox/" target="_blank" rel="noopener">BiznisBox</a>
+            <a href="https://www.boxnapozemku.sk" target="_blank" rel="noopener">Box na pozemku</a>
+            <span style="color:rgba(246,240,232,.5)">ScreenWhile · soon</span>
+          </div>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Legal Engineering</span>
+        <span>Law · Code · Business</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 6);
+    window.addEventListener('scroll', onScroll, { passive:true }); onScroll();
+
+    const hamburger = document.getElementById('hamburger');
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+    const closeBtn = document.getElementById('closeDrawer');
+    const open = () => { drawer.classList.add('open'); backdrop.classList.add('open'); hamburger.setAttribute('aria-expanded','true'); };
+    const close = () => { drawer.classList.remove('open'); backdrop.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); };
+    hamburger.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+    document.querySelectorAll('.work-grid').forEach(grid => {
+      grid.querySelectorAll('.work').forEach((c,i) => { c.style.transitionDelay = (i % 3) * 80 + 'ms'; });
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold:.1, rootMargin:"0px 0px -8% 0px" });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    // Failsafe: never leave above-the-fold content hidden if the observer is slow to fire
+    const revealVisible = () => document.querySelectorAll('.reveal:not(.in)').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.95) el.classList.add('in');
+    });
+    window.addEventListener('load', revealVisible);
+    setTimeout(revealVisible, 1200);
+  </script>
 </body>
 </html>

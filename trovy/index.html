@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kalkulačka trov právneho zastúpenia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Písma sa načítavajú neblokujúco (media=print → all) — kalkulačka funguje aj keď
+       Google Fonts nie sú dostupné (padne na záložný serif/sans). -->
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+        href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&display=swap">
+  <link rel="stylesheet" href="./style.css">
+  <!-- PWA -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#7c5326">
+  <link rel="apple-touch-icon" href="./icon.svg">
+</head>
+<body>
+  <main id="app">
+    <p class="loading">Načítavam kalkulačku…</p>
+  </main>
+  <script>
+    // Kalkulačka beží cez ES moduly — file:// (dvojklik na súbor) ich blokuje.
+    // Tento klasický skript sa spustí aj cez file:// a zobrazí návod.
+    if (location.protocol === 'file:') {
+      document.getElementById('app').innerHTML =
+        '<div style="max-width:540px;margin:9vh auto;padding:2rem 2.2rem;background:#fff;' +
+        'border:1px solid #ddd5c4;border-radius:8px;line-height:1.6;font-family:system-ui,-apple-system,sans-serif;">' +
+        '<h1 style="font-size:1.35rem;color:#9c6b34;margin:0 0 1rem;">Otvor ma cez server</h1>' +
+        '<p style="margin:.6rem 0;">Kalkulačka nefunguje z dvojkliku na súbor — musí bežať cez lokálny server.</p>' +
+        '<p style="margin:.6rem 0;">V priečinku <code>trovy</code> dvojklikni <code>Spusti-kalkulacku.cmd</code> a kalkulačka sa otvorí sama. ' +
+        'Ak server už beží, otvor <a href="http://localhost:8765/index.html" style="color:#9c6b34;font-weight:600;">http://localhost:8765/index.html</a>.</p>' +
+        '</div>';
+    }
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
