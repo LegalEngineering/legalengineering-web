@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiznisBox — Legal Engineering</title>
+<meta name="description" content="BiznisBox je sada multi-purpose poukážok na štart podnikania. Päť edícií. Advokát, účtovník, web a doména v jednom balíku.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Primárne */
+    --color-cream:      #F5F0E8;
+    --color-forest:     #1C3A2E;
+    --color-gold:       #B8922A;
+    /* Sekundárne */
+    --color-stamp-red:  #C0392B;
+    --color-parchment:  #EDE8DC;
+    --color-ink:        #2C2C2C;
+    --color-mist:       #8A9E94;
+    /* Funkčné */
+    --color-border:     #C8BFA8;
+    --color-bg-card:    #FFFFFF;
+    /* Edition colors */
+    --ed-I:   #C9BFA8;
+    --ed-II:  #8A6A45;
+    --ed-III: #1C3A2E;
+    --ed-IV:  #1A1A1A;
+    --ed-V:   #6B1A1A;
+
+    --font-display:  'Cormorant Garamond', Georgia, serif;
+    --font-body:     'Jost', system-ui, sans-serif;
+    --font-mono:     'JetBrains Mono', monospace;
+
+    --container: 1200px;
+    --unit: 8px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --shadow-soft: 0 2px 8px rgba(28, 58, 46, 0.06);
+    --shadow-hover: 0 4px 16px rgba(28, 58, 46, 0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+    overflow-x: hidden;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; transition: var(--transition); }
+  a:hover { opacity: 0.92; }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.11;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    z-index: 0;
+  }
+
+  .container {
+    width: min(var(--container), calc(100% - 48px));
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .section {
+    padding: 96px 0;
+    position: relative;
+    z-index: 1;
+  }
+  @media (max-width: 768px) { .section { padding: 64px 0; } }
+
+  .section-head {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .sec-no {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-mist);
+    letter-spacing: 0.06em;
+  }
+  h1, h2, h3, h4 {
+    margin: 0;
+    font-family: var(--font-display);
+    color: var(--color-forest);
+    letter-spacing: -0.02em;
+  }
+  h1 { font-size: clamp(48px, 5vw, 76px); font-weight: 600; line-height: 1.08; }
+  h2 { font-size: clamp(36px, 4vw, 48px); font-weight: 600; line-height: 1.2; }
+  h3 { font-size: clamp(22px, 2.5vw, 32px); font-style: italic; font-weight: 400; }
+  h4 { font-size: 19px; font-weight: 500; }
+
+  .lead {
+    font-size: 19px;
+    font-weight: 300;
+    color: var(--color-mist);
+    max-width: 60ch;
+    margin: 16px auto 0;
+  }
+
+  .orn-sep {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 28px 0 0;
+    color: var(--color-border);
+  }
+  .orn-sep::before, .orn-sep::after {
+    content: "";
+    height: 1px;
+    width: 120px;
+    background: var(--color-border);
+  }
+  .orn-sep span {
+    color: var(--color-border);
+    font-family: var(--font-mono);
+    letter-spacing: 0.14em;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 22px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    transition: var(--transition);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--color-forest);
+    color: var(--color-cream);
+    border-color: var(--color-forest);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-soft); opacity: 1; }
+  .btn-outline {
+    background: transparent;
+    color: var(--color-forest);
+    border-color: var(--color-forest);
+  }
+  .btn-outline:hover { background: rgba(28,58,46,0.05); transform: translateY(-1px); opacity: 1; }
+
+  .link-gold { color: var(--color-gold); font-weight: 500; }
+  .link-gold:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  /* Sticky nav */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid rgba(200,191,168,0.65);
+    background: rgba(245, 240, 232, 0.85);
+    backdrop-filter: blur(8px);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    gap: 16px;
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--color-forest);
+  }
+  .logo .crumb {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-mist);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-left: 12px;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .nav-links a {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-forest);
+  }
+  .nav-links a:hover { text-decoration: underline; text-underline-offset: 6px; opacity: 1; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+  }
+
+  /* HERO */
+  .hero {
+    padding: 120px 0 80px;
+    position: relative;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 48px;
+    align-items: center;
+  }
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; }
+  }
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-mist);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    color: var(--color-gold);
+    font-style: italic;
+  }
+  .hero p.lead {
+    margin-left: 0;
+    font-size: 21px;
+    color: var(--color-ink);
+    max-width: 56ch;
+    margin-bottom: 28px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .hero-visual {
+    aspect-ratio: 4/3;
+    background: var(--color-parchment);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-mist);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.6;
+    box-shadow: var(--shadow-soft);
+    background-image:
+      radial-gradient(circle at 30% 30%, rgba(184,146,42,0.08), transparent 50%),
+      linear-gradient(135deg, rgba(28,58,46,0.04), rgba(28,58,46,0.02));
+  }
+  .hero-visual span { padding: 16px 24px; border: 1px dashed var(--color-border); }
+
+  /* HOW IT WORKS — 3 steps */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  @media (max-width: 900px) {
+    .steps { grid-template-columns: 1fr; }
+  }
+  .step {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    padding: 40px 32px;
+    border-radius: 2px;
+    position: relative;
+  }
+  .step-no {
+    position: absolute;
+    top: -16px;
+    left: 32px;
+    background: var(--color-cream);
+    padding: 0 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-gold);
+    letter-spacing: 0.16em;
+  }
+  .step h4 {
+    margin-bottom: 12px;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+  }
+
+  /* EDITIONS GRID */
+  .editions {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 1100px) { .editions { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px)  { .editions { grid-template-columns: 1fr; } }
+
+  .edition {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    padding: 28px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: var(--transition);
+  }
+  .edition:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--ed-color, var(--color-gold));
+  }
+  .edition--bestseller::after {
+    content: "BESTSELLER";
+    position: absolute;
+    top: 14px;
+    right: -1px;
+    background: var(--color-gold);
+    color: var(--color-cream);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    padding: 4px 10px;
+    border-radius: 2px 0 0 2px;
+  }
+  .edition .ed-stripe {
+    height: 6px;
+    width: 48px;
+    margin-bottom: 18px;
+    background: var(--ed-color);
+  }
+  .edition .ed-roman {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--color-mist);
+    margin-bottom: 4px;
+  }
+  .edition .ed-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--color-forest);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .edition .ed-tag {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--color-mist);
+    margin-bottom: 24px;
+    min-height: 2.4em;
+  }
+  .edition .ed-price {
+    font-family: var(--font-display);
+    font-size: 38px;
+    font-weight: 600;
+    color: var(--color-forest);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .edition .ed-price-note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-mist);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .edition .ed-render {
+    aspect-ratio: 4/5;
+    margin-bottom: 24px;
+    background: var(--color-parchment);
+    border: 1px dashed var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-mist);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.5;
+    padding: 16px;
+    position: relative;
+  }
+  .edition .ed-render::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid var(--ed-color);
+    opacity: 0.3;
+  }
+  .edition .ed-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    flex-grow: 1;
+  }
+  .edition .ed-list li {
+    font-size: 14px;
+    color: var(--color-ink);
+    line-height: 1.55;
+    padding: 8px 0;
+    border-top: 1px solid var(--color-parchment);
+  }
+  .edition .ed-list li:first-child { border-top: 0; }
+  .edition .ed-list li::before {
+    content: "—";
+    color: var(--color-gold);
+    margin-right: 8px;
+  }
+  .edition .ed-cta { width: 100%; }
+
+  .ed-I  { --ed-color: var(--ed-I); }
+  .ed-II { --ed-color: var(--ed-II); }
+  .ed-III{ --ed-color: var(--ed-III); }
+  .ed-IV { --ed-color: var(--ed-IV); }
+  .ed-V  { --ed-color: var(--ed-V); }
+
+  /* À LA CARTE */
+  .acarte {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 32px;
+  }
+  @media (max-width: 900px) { .acarte { grid-template-columns: 1fr; } }
+  .acarte-col {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    padding: 32px 28px;
+  }
+  .acarte-col h4 {
+    margin-bottom: 18px;
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-forest);
+    letter-spacing: -0.02em;
+  }
+  .acarte-col h4 .label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--color-gold);
+    margin-left: 8px;
+    vertical-align: 6px;
+    text-transform: uppercase;
+  }
+  .acarte-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .acarte-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-top: 1px solid var(--color-parchment);
+    font-size: 14px;
+    gap: 12px;
+  }
+  .acarte-list li:first-child { border-top: 0; }
+  .acarte-list .price {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-forest);
+    flex-shrink: 0;
+  }
+
+  /* USE CASES */
+  .uses {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  @media (max-width: 900px) { .uses { grid-template-columns: 1fr; } }
+  .use {
+    border-left: 2px solid var(--color-gold);
+    padding: 8px 0 8px 24px;
+  }
+  .use .use-mono {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+    margin-bottom: 8px;
+  }
+  .use h4 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-forest);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .use p {
+    margin: 0;
+    font-size: 15px;
+    color: var(--color-ink);
+    line-height: 1.65;
+  }
+  .use .use-pick {
+    margin-top: 14px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  /* FAQ */
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 64px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) { .faq-grid { grid-template-columns: 1fr; } }
+  .faq dt {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--color-forest);
+    margin-bottom: 8px;
+  }
+  .faq dd {
+    margin: 0;
+    font-size: 15px;
+    color: var(--color-ink);
+    line-height: 1.65;
+  }
+  .faq dt + dd { margin-bottom: 28px; }
+
+  /* CTA BAND */
+  .cta-band {
+    background: var(--color-forest);
+    color: var(--color-cream);
+    padding: 72px 0;
+    margin-top: 0;
+  }
+  .cta-band h2 {
+    color: var(--color-cream);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .cta-band .lead {
+    color: rgba(245, 240, 232, 0.8);
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .cta-band .ctas {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-band .btn-primary {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: var(--color-forest);
+  }
+  .cta-band .btn-outline {
+    color: var(--color-cream);
+    border-color: rgba(245, 240, 232, 0.4);
+  }
+  .cta-band .btn-outline:hover {
+    background: rgba(245, 240, 232, 0.1);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--color-cream);
+    border-top: 1px solid var(--color-border);
+    padding: 48px 0 32px;
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 700px) { .foot-grid { grid-template-columns: 1fr; } }
+  .foot-grid h5 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+    margin: 0 0 14px;
+    font-weight: 500;
+  }
+  .foot-grid ul { list-style: none; padding: 0; margin: 0; }
+  .foot-grid li { padding: 4px 0; font-size: 14px; }
+  .foot-bottom {
+    border-top: 1px solid var(--color-parchment);
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--color-mist);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+
+  /* Helpers */
+  .center { text-align: center; }
+  .small  { font-size: 14px; color: var(--color-mist); }
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="https://legalengineering.sk" class="logo">
+      Legal Engineering
+      <span class="crumb">/ BiznisBox</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#ako">Ako to funguje</a>
+      <a href="#edicie">Edície</a>
+      <a href="#alacarte">À la carte</a>
+      <a href="#prekoho">Pre koho</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#kontakt" class="btn btn-primary">Vybrať box →</a>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">Legal Engineering · Produkt</div>
+        <h1>Štart podnikania, <em>zabalený a pripravený</em>.</h1>
+        <p class="lead">
+          BiznisBox je sada poukážok, ktoré vám pripravia firmu, právny základ, doménu a web.
+          Otvoríte krabicu, predložíte poukážky u advokáta, účtovníka a webového partnera —
+          a podnikáte. Päť edícií od základného štartu po obchodne pripravený debut.
+        </p>
+        <div class="hero-cta">
+          <a href="#edicie" class="btn btn-primary">Pozrieť edície</a>
+          <a href="#ako" class="btn btn-outline">Ako to funguje</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <span>
+          [ Render ]<br>
+          BiznisBox Standard · Edition II<br>
+          cappuccino caramel leather<br>
+          open flat-lay s voucher kartami
+        </span>
+      </div>
+    </div>
+    <div class="orn-sep"><span>Scroll</span></div>
+  </div>
+</section>
+
+<!-- ===== AKO TO FUNGUJE ===== -->
+<section class="section" id="ako">
+  <div class="container">
+    <div class="section-head">
+      <span class="sec-no">01 ·</span>
+      <h2>Otvoríte krabicu, vyberiete poukážku, uplatníte u partnera.</h2>
+      <p class="lead">
+        BiznisBox je multi-purpose voucher (poukaz v zmysle § 9b ZoDPH). Predávame ho my, dodávajú nominovaní partneri.
+        Vy nemusíte hľadať advokáta, účtovníka ani webára — máte ich už zaplatených v krabici.
+      </p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="step-no">KROK 01</span>
+        <h4>Vyberiete edíciu</h4>
+        <p>
+          Päť edícií podľa toho, čo potrebujete: Minimal pre čistý štart, Standard pre firmu s webom, Pro s účtovníctvom, Premium s brandom a SEO,
+          Instant pre okamžitú ready-made s.r.o.
+        </p>
+      </div>
+      <div class="step">
+        <span class="step-no">KROK 02</span>
+        <h4>Zaplatíte, dostanete poukážky</h4>
+        <p>
+          Po platbe vám príde e-mail s PDF poukážkami. Každá nesie unikátny kód a smerovanie na konkrétneho partnera —
+          BW AK pre právne, Econique pre účtovníctvo, LE Media House pre web.
+        </p>
+      </div>
+      <div class="step">
+        <span class="step-no">KROK 03</span>
+        <h4>Uplatníte u partnera</h4>
+        <p>
+          Kontaktujete partnera s kódom poukážky. Partner overí, poskytne službu a vystaví vám faktúru.
+          Vy už nič neplatíte — celá hodnota je pokrytá poukážkou.
+        </p>
+      </div>
+    </div>
+
+    <p class="center small" style="margin-top: 40px;">
+      Platnosť poukážky je 24 mesiacov. Nečerpané poukážky vám vrátime do 6 mesiacov po expirácii.
+      <a href="#faq" class="link-gold">Viac v FAQ →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ===== 5 EDÍCIÍ ===== -->
+<section class="section" id="edicie" style="background: var(--color-parchment);">
+  <div class="container">
+    <div class="section-head">
+      <span class="sec-no">02 ·</span>
+      <h2>Päť edícií. Jedna metafora.</h2>
+      <p class="lead">
+        Každá edícia je samostatná krabica s vlastnou farbou, vlastnou rímskou číslicou a vlastným obsahom poukážok.
+        Standard je bestseller. Premium je prestížny debut. Instant pre tých, ktorí nečakajú.
+      </p>
+    </div>
+
+    <div class="editions">
+
+      <article class="edition ed-I">
+        <div class="ed-stripe"></div>
+        <div class="ed-roman">Edition I</div>
+        <div class="ed-name">Minimal</div>
+        <div class="ed-tag">Prvý krok, bez zbytočností.</div>
+        <div class="ed-render">[ Render ]<br>Edition I<br>oat cream leather</div>
+        <div class="ed-price">590 €</div>
+        <div class="ed-price-note">vrátane DPH</div>
+        <ul class="ed-list">
+          <li>Konzultácia s advokátom 30–45 min</li>
+          <li>Príprava zakladateľských dokumentov</li>
+          <li>Elektronické podanie + zápis do ORSR</li>
+          <li>Compliance checklist po zápise</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline ed-cta">Vybrať Minimal</a>
+      </article>
+
+      <article class="edition ed-II edition--bestseller">
+        <div class="ed-stripe"></div>
+        <div class="ed-roman">Edition II</div>
+        <div class="ed-name">Standard</div>
+        <div class="ed-tag">Chcete štartovať, nie len existovať.</div>
+        <div class="ed-render">[ Render ]<br>Edition II<br>cappuccino caramel leather</div>
+        <div class="ed-price">1 190 €</div>
+        <div class="ed-price-note">vrátane DPH</div>
+        <ul class="ed-list">
+          <li>Všetko z Minimal</li>
+          <li>2 h konzultácie s advokátom</li>
+          <li>Doména .sk / .eu na 1 rok + DNS</li>
+          <li>Starter web (1 strana, SSL, GA4)</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-primary ed-cta">Vybrať Standard</a>
+      </article>
+
+      <article class="edition ed-III">
+        <div class="ed-stripe"></div>
+        <div class="ed-roman">Edition III</div>
+        <div class="ed-name">Pro</div>
+        <div class="ed-tag">Freelanceri, konzultanti, agentúry.</div>
+        <div class="ed-render">[ Render ]<br>Edition III<br>forest green leather</div>
+        <div class="ed-price">2 790 €</div>
+        <div class="ed-price-note">vrátane DPH</div>
+        <ul class="ed-list">
+          <li>Všetko zo Standard</li>
+          <li>Účtovníctvo na 1 rok (do 30 dokladov / mes.)</li>
+          <li>Nastavenie fakturácie + QR úhrada</li>
+          <li>Šablóny: NDA, ZoD, VOP, GDPR</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline ed-cta">Vybrať Pro</a>
+      </article>
+
+      <article class="edition ed-IV">
+        <div class="ed-stripe"></div>
+        <div class="ed-roman">Edition IV</div>
+        <div class="ed-name">Premium</div>
+        <div class="ed-tag">Od prvého týždňa zbierať dopyty.</div>
+        <div class="ed-render">[ Render ]<br>Edition IV<br>obsidian black + gold</div>
+        <div class="ed-price">4 990 €</div>
+        <div class="ed-price-note">vrátane DPH</div>
+        <ul class="ed-list">
+          <li>Všetko z Pro</li>
+          <li>Rozšírený web (3–5 sekcií)</li>
+          <li>Základný SEO setup + Google Business</li>
+          <li>Lead funnel + mini brand kit</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline ed-cta">Vybrať Premium</a>
+      </article>
+
+      <article class="edition ed-V">
+        <div class="ed-stripe"></div>
+        <div class="ed-roman">Edition V</div>
+        <div class="ed-name">Instant</div>
+        <div class="ed-tag">Nechcete čakať ani deň.</div>
+        <div class="ed-render">[ Render ]<br>Edition V<br>bordeaux burgundy</div>
+        <div class="ed-price">1 690 €</div>
+        <div class="ed-price-note">vrátane DPH</div>
+        <ul class="ed-list">
+          <li>Ready-made s.r.o. „na sklade"</li>
+          <li>Prevod obchodného podielu</li>
+          <li>ORSR zmeny: názov, sídlo, konateľ</li>
+          <li>Doména + starter web</li>
+        </ul>
+        <a href="#kontakt" class="btn btn-outline ed-cta">Vybrať Instant</a>
+      </article>
+
+    </div>
+
+    <p class="center small" style="margin-top: 40px;">
+      Nie ste si istý ktorá edícia? <a href="#kontakt" class="link-gold">Napíšte nám 15-minútovú konzultáciu →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ===== À LA CARTE ===== -->
+<section class="section" id="alacarte">
+  <div class="container">
+    <div class="section-head">
+      <span class="sec-no">03 ·</span>
+      <h2>Nepotrebujete celú krabicu? Naskladajte si vlastnú.</h2>
+      <p class="lead">
+        Každá poukážka je dostupná aj samostatne. Kombinácie vítané, bundle zľava odpadá.
+      </p>
+    </div>
+
+    <div class="acarte">
+
+      <div class="acarte-col">
+        <h4>Právne <span class="label">u BW AK</span></h4>
+        <ul class="acarte-list">
+          <li>Konzultácia 30–45 min <span class="price">60 €</span></li>
+          <li>Konzultácia 1 hodina <span class="price">100 €</span></li>
+          <li>Konzultácia 2 hodiny <span class="price">180 €</span></li>
+          <li>Založenie s.r.o. (advokát) <span class="price">350 €</span></li>
+          <li>ORSR poplatok (pass-through) <span class="price">150 €</span></li>
+          <li>Šablóny NDA + ZoD + VOP <span class="price">250 €</span></li>
+          <li>GDPR balík (Zásady, DPA) <span class="price">200 €</span></li>
+          <li>Rozšírené VOP pre e-shop <span class="price">na dopyt</span></li>
+        </ul>
+      </div>
+
+      <div class="acarte-col">
+        <h4>Účtovnícke <span class="label">u Econique</span></h4>
+        <ul class="acarte-list">
+          <li>Účtovníctvo / mes. (do 30 dokladov) <span class="price">92 €</span></li>
+          <li>Účtovníctvo / 12 mes. (30 dokl./mes.) <span class="price">1 080 €</span></li>
+          <li>Účtovníctvo / mes. (do 100 dokladov) <span class="price">199 €</span></li>
+          <li>Mzdová agenda (do 5 zam. / mes.) <span class="price">55 €</span></li>
+          <li>Ročná uzávierka + DP PO <span class="price">450 €</span></li>
+          <li>Nastavenie fakturačnej šablóny <span class="price">95 €</span></li>
+        </ul>
+      </div>
+
+      <div class="acarte-col">
+        <h4>Web a IT <span class="label">u LE Media House</span></h4>
+        <ul class="acarte-list">
+          <li>Doména .sk / .eu (1 rok) <span class="price">18 €</span></li>
+          <li>Starter web (1 strana, SSL, GA4) <span class="price">420 €</span></li>
+          <li>Rozšírený web (3–5 strán) <span class="price">1 100 €</span></li>
+          <li>Firemný e-mail (SPF/DKIM/DMARC) <span class="price">95 €</span></li>
+          <li>Mini brand kit <span class="price">550 €</span></li>
+          <li>Základný SEO setup <span class="price">280 €</span></li>
+          <li>Lead funnel <span class="price">580 €</span></li>
+          <li>Správa webu (1 rok) <span class="price">220 €</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p class="center small" style="margin-top: 40px;">
+      Všetky ceny vrátane DPH (kde sa uplatňuje). Advokátske a Plan W vouchere bez DPH (BW AK a Plan W sú neplatitelia DPH).
+    </p>
+  </div>
+</section>
+
+<!-- ===== PRE KOHO ===== -->
+<section class="section" id="prekoho" style="background: var(--color-parchment);">
+  <div class="container">
+    <div class="section-head">
+      <span class="sec-no">04 ·</span>
+      <h2>Pre koho je BiznisBox.</h2>
+    </div>
+
+    <div class="uses">
+
+      <div class="use">
+        <div class="use-mono">Profil 01</div>
+        <h4>Freelancer alebo konzultant</h4>
+        <p>
+          Prechádzate zo zamestnania na svoje. Chcete jednoduchú s.r.o., základ na fakturáciu a profesionálnu webovku — bez toho,
+          aby ste museli oslovovať tri rôzne firmy a koordinovať ich.
+        </p>
+        <div class="use-pick">→ Standard alebo Pro</div>
+      </div>
+
+      <div class="use">
+        <div class="use-mono">Profil 02</div>
+        <h4>Expat alebo international entrepreneur</h4>
+        <p>
+          Bývate alebo pôsobíte medzinárodne, potrebujete slovenskú podnikateľskú entitu rýchlo a bez nadbytočnej administratívy.
+          Komunikácia v angličtine, podanie elektronicky.
+        </p>
+        <div class="use-pick">→ Instant alebo Premium</div>
+      </div>
+
+      <div class="use">
+        <div class="use-mono">Profil 03</div>
+        <h4>Malá agentúra alebo butik</h4>
+        <p>
+          Štartujete s tímom 2–5 ľudí, potrebujete plnú prevádzku od prvého dňa: web ktorý reprezentuje brand,
+          SEO základ, lead funnel a účtovníctvo na 12 mesiacov dopredu.
+        </p>
+        <div class="use-pick">→ Premium</div>
+      </div>
+
+    </div>
+
+    <p class="center small" style="margin-top: 40px;">
+      BiznisBox môže byť aj firemný darček alebo benefit — pre zamestnanca, ktorý odchádza podnikať, alebo pre víťaza startupovej súťaže.
+      <a href="#kontakt" class="link-gold">Spýtajte sa na firemné poukazy →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head">
+      <span class="sec-no">05 ·</span>
+      <h2>Často kladené otázky.</h2>
+    </div>
+
+    <dl class="faq-grid faq">
+
+      <div>
+        <dt>Ako sa platí — kartou, prevodom?</dt>
+        <dd>
+          Po objednávke vám pošleme zálohovú faktúru. Platíte prevodom alebo cez platobnú bránu na náš účet.
+          Po pripísaní úhrady dostanete do 3 pracovných dní e-mail s PDF poukážkami.
+        </dd>
+      </div>
+
+      <div>
+        <dt>Aká je platnosť poukážky?</dt>
+        <dd>
+          24 mesiacov od dátumu vystavenia. 60 dní pred koncom vám pripomenieme. Po expirácii máte ešte 6 mesiacov
+          na nárokovanú refundáciu nečerpaných poukážok.
+        </dd>
+      </div>
+
+      <div>
+        <dt>Môžem poukážku darovať alebo previesť?</dt>
+        <dd>
+          So súhlasom Legal Engineering áno — nový nositeľ sa preukáže identifikačnými údajmi.
+          Pre firemné darčeky vystavíme poukázky priamo na meno obdarovaného.
+        </dd>
+      </div>
+
+      <div>
+        <dt>Kto vystaví faktúru za reálnu službu?</dt>
+        <dd>
+          Pri advokátskych poukážkach BW AK fakturuje vám priamo (s poznámkou „uhradené poukážkou cez Legal Engineering").
+          Pri účtovníckych a webových poukážkach faktúru s DPH vystaví Legal Engineering pri uplatnení.
+        </dd>
+      </div>
+
+      <div>
+        <dt>Ako je to s DPH?</dt>
+        <dd>
+          BiznisBox je multi-purpose voucher (§ 9b ZoDPH) — DPH sa odvádza až pri uplatnení. Predaj poukážky je mimo predmet DPH.
+          Advokátske a niektoré účtovnícke poukážky sú bez DPH (BW AK a Plan W sú neplatitelia DPH).
+        </dd>
+      </div>
+
+      <div>
+        <dt>Čo ak partner nemá kapacitu?</dt>
+        <dd>
+          Pri účtovníctve máme záskokového partnera (Plan W) keď Econique nestíha. Pri advokátskej a webovej časti
+          vás presunieme v poradí — žiadna poukážka neostane neuplatniteľná.
+        </dd>
+      </div>
+
+      <div>
+        <dt>Môžem reklamovať kvalitu služby?</dt>
+        <dd>
+          Reklamácia kvality smeruje na partnera, ktorý službu poskytol. Reklamácia samotnej poukážky (chybné kódovanie,
+          nemožnosť uplatnenia) smeruje na nás — vyriešime do 30 dní.
+        </dd>
+      </div>
+
+      <div>
+        <dt>Môžem si zostaviť vlastnú krabicu?</dt>
+        <dd>
+          Áno, kúpou jednotlivých poukážok z à la carte sekcie. Bundle zľava sa neuplatní, ale dostanete presne to, čo potrebujete.
+          Pri dopyte nad 1 500 € individuálne dohodneme.
+        </dd>
+      </div>
+
+    </dl>
+  </div>
+</section>
+
+<!-- ===== CTA BAND ===== -->
+<section class="cta-band" id="kontakt">
+  <div class="container">
+    <h2>Otvorme krabicu spolu.</h2>
+    <p class="lead">
+      15-minútová konzultácia stačí na to, aby sme zistili, ktorá edícia vám sedí — a či vôbec BiznisBox.
+    </p>
+    <div class="ctas">
+      <a href="mailto:kontakt@legalengineering.sk?subject=BiznisBox%20—%20konzultácia" class="btn btn-primary">Napísať na kontakt@</a>
+      <a href="#" class="btn btn-outline">Calendly (placeholder)</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <h5>Legal Engineering</h5>
+        <p style="margin: 0; font-size: 14px; line-height: 1.65;">
+          Legal Engineering, s.r.o.<br>
+          kontakt@legalengineering.sk<br>
+          legalengineering.sk
+        </p>
+      </div>
+      <div>
+        <h5>Edície</h5>
+        <ul>
+          <li><a href="#edicie">BiznisBox Minimal</a></li>
+          <li><a href="#edicie">BiznisBox Standard</a></li>
+          <li><a href="#edicie">BiznisBox Pro</a></li>
+          <li><a href="#edicie">BiznisBox Premium</a></li>
+          <li><a href="#edicie">BiznisBox Instant</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Right side</h5>
+        <ul>
+          <li><a href="#">VOP poukážky</a></li>
+          <li><a href="#">GDPR a ochrana údajov</a></li>
+          <li><a href="#">Reklamačný poriadok</a></li>
+          <li><a href="https://welter.sk">welter.sk · BW AK</a></li>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Legal Engineering, s.r.o.</span>
+      <span>BiznisBox v0.1 · mockup pre review</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sticky nav scroll state
+  const nav = document.querySelector('.nav');
+  if (nav) {
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 8);
+    });
+  }
+</script>
+
+</body>
+</html>
