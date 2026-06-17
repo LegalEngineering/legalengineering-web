@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>Bitka pri Moháči 1526 — Strava roku 1526</title>
+    <meta name="description" content="Animovaná vizualizácia pohybu historických postáv okolo bitky pri Moháči (1526)." />
+    <script type="module" crossorigin src="./assets/index-CpdBW5wy.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-9-do1lV9.css">
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <!-- Intro / header -->
+    <header id="topbar">
+      <div class="title-block">
+        <h1 data-i18n="title">Bitka pri Moháči 1526</h1>
+        <p class="subtitle" data-i18n="subtitle">Strava roku 1526 — kadiaľ sa hýbali</p>
+      </div>
+      <div class="topbar-controls">
+        <button id="basemap-toggle" class="chip" title="Štýl mapy">🌑 <span data-i18n="basemapDark">Tmavá</span></button>
+        <div class="lang-switch">
+          <button data-lang="sk" class="active">SK</button>
+          <button data-lang="en">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Legend -->
+    <aside id="legend">
+      <h2 data-i18n="legendTitle">Strany</h2>
+      <ul id="legend-list"></ul>
+      <p class="hint" data-i18n="legendHint">Klikni na postavu na mape pre jej príbeh.</p>
+    </aside>
+
+    <!-- Story panel -->
+    <section id="story" class="hidden" aria-live="polite">
+      <button id="story-close" aria-label="Zavrieť">✕</button>
+      <div class="story-side-tag" id="story-side"></div>
+      <h2 id="story-name"></h2>
+      <p class="story-role" id="story-role"></p>
+      <p class="story-body" id="story-body"></p>
+      <div class="story-fate">
+        <span class="label" data-i18n="fateLabel">Osud</span>
+        <p id="story-fate"></p>
+      </div>
+      <details class="story-waypoints">
+        <summary data-i18n="waypointsLabel">Trasa (zastávky)</summary>
+        <ol id="story-waypoints-list"></ol>
+      </details>
+    </section>
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="hidden"></div>
+
+    <!-- Timeline controls -->
+    <footer id="timeline">
+      <button id="play" class="play-btn" aria-label="Prehrať">▶</button>
+      <div class="time-readout">
+        <span id="date-readout">1526</span>
+      </div>
+      <input id="scrubber" type="range" min="0" max="182" step="0.5" value="0" />
+      <div class="speed-control">
+        <label data-i18n="speedLabel">Rýchlosť</label>
+        <select id="speed">
+          <option value="0.15">0.5×</option>
+          <option value="0.3" selected>1×</option>
+          <option value="0.6">2×</option>
+          <option value="1.2">4×</option>
+        </select>
+      </div>
+    </footer>
+
+  </body>
+</html>
