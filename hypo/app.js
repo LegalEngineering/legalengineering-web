@@ -1,15 +1,14 @@
 /*
  * HYPOTEKÁRNA KALKULAČKA — Legal Engineering, s. r. o.
  * Vanilla JS prepis z React verzie (hypoteka_kalkulacka.jsx).
- * K 20. aprílu 2026.
  *
  * VÝPOČTOVÁ LOGIKA JE BYTE-IDENTICKÁ s React verziou — žiadne zmeny konštánt,
- * NBS pravidiel ani daňových pásiem. Životné minimum ostáva na starých hodnotách
- * (284,13 / 198,22 / 129,74 €) — aktualizácia je samostatný task.
+ * NBS pravidiel ani daňových pásiem. Životné minimum je nastavené na hodnoty
+ * platné od 1.7.2026 do 30.6.2027 (295,22 / 205,96 / 134,80 €).
  *
  * Zdroje:
- *  - Životné minimum od 1.7.2025 do 30.6.2026: 284,13 / 198,22 / 129,74 €
- *    (Opatrenie MPSVR SR č. 168/2025 Z. z.)
+ *  - Životné minimum od 1.7.2026 do 30.6.2027: 295,22 / 205,96 / 134,80 €
+ *    (nové ŽM platí od 1.7.2027, zverejnenie v máji 2027)
  *  - NBS opatrenie o hypotékach: DTI max 8× čistý ročný príjem (−0,25/rok nad 40 pri úvere do dôchodku),
  *    DSTI max 60 % disponibilného príjmu (70 % výnimka pre 5 % objemu),
  *    stres test +2 pp (resp. +1 pp pre fixáciu nad 10 rokov), úrok capped na 6 %,
@@ -25,10 +24,8 @@
 'use strict';
 
 // ————— KONŠTANTY ————————————————————————————————————————————————————
-const ZM_AKTUAL = { dosp1: 284.13, dosp2: 198.22, dieta: 129.74 };
-// Odhad od 1.7.2026: koeficient ŠÚ SR zatiaľ nepoznáme, inflácia nízkopríjmových
-// domácností za 2025/2026 sa črtá okolo 3–5 %. Berieme stred 4 %.
-const ZM_PROGNOZA = { dosp1: 295.50, dosp2: 206.15, dieta: 134.93 };
+// Životné minimum platné od 1.7.2026 do 30.6.2027 (nové ŽM platí od 1.7.2027, zverejnenie v máji 2027).
+const ZM = { dosp1: 295.22, dosp2: 205.96, dieta: 134.80 };
 
 const SOC = 0.094, ZDR = 0.05;
 const SOC_MAX_VZ_MES = 16764;
@@ -138,7 +135,6 @@ const DEFAULT_STATE = {
 
 // ————— APP STATE ————————————————————————————————————————————————————
 let mode = 'prijem';        // 'prijem' | 'ciel'
-let zmRezim = 'aktual';     // 'aktual' | 'prognoza'
 let state = { ...DEFAULT_STATE };
 let targetType = 'cena';    // 'cena' | 'uver'
 let targetSuma = 250000;
@@ -261,7 +257,7 @@ function Field(label, child, hint) {
   );
 }
 
-function NumInput({ value, onChange, step = 1, min = 0, max, suffix = '€' }) {
+function NumInput({ value, onChange, step = 1, min = 0, max, suffix = '€', dataKey }) {
   const input = el('input', {
     class: 'w-full bg-[#1a1a1e] border border-[#3a362c] text-[#f0ead6] px-3 py-2 pr-10 rounded-sm font-mono text-sm focus:outline-none focus:border-[#d4873c] transition-colors',
     type: 'number',
@@ -270,6 +266,8 @@ function NumInput({ value, onChange, step = 1, min = 0, max, suffix = '€' }) {
     step,
     min,
     max,
+    // Stabilný identifikátor poľa pre obnovu focusu po re-renderi (viď render()).
+    'data-fk': dataKey || null,
   });
   input.addEventListener('input', e => onChange(parseFloat(e.target.value) || 0));
   return el('div', 'relative flex items-center',
@@ -325,18 +323,9 @@ function rowBetween(leftEl, rightEl) {
   return el('div', 'flex justify-between text-xs', leftEl, rightEl);
 }
 
-// Toggle tlačidlo (ŽM prepínač)
-function toggleBtn(label, active, onClick) {
-  const base = 'px-3 py-1.5 text-[10px] uppercase tracking-wider rounded-sm transition-colors';
-  const cls = active
-    ? `${base} bg-[#d4873c] text-[#0d1017]`
-    : `${base} text-[#a39b87] hover:text-[#f0ead6]`;
-  return el('button', { class: cls, onclick: onClick }, label);
-}
-
 // ————— RENDER ————————————————————————————————————————————————————
 function render() {
-  const zm = zmRezim === 'aktual' ? ZM_AKTUAL : ZM_PROGNOZA;
+  const zm = ZM;
 
   // ——— Mzdy ———
   const vyp = (hruba, cista, detiDo15, deti15_18) => {
@@ -418,30 +407,47 @@ function render() {
 
   // ===================== STAVBA DOM =====================
   const root = document.getElementById('root');
+
+  // ——— Zachytenie focusu PRED zmazaním DOM ———
+  // Live prepočet (input event) volá render() po každej cifre, čo zmaže a znovu
+  // postaví celý DOM. Bez tohto by editovaný <input> zanikol → strata focusu a
+  // caretu → používateľa „vyhodí z poľa". Zachytíme aktívne number pole a po
+  // prestavbe naň vrátime focus + caret. Mapovanie podľa data-fk (stabilný kľúč
+  // poľa), s fallbackom na index medzi number inputmi.
+  let focusRestore = null;
+  const active = document.activeElement;
+  if (active && active.tagName === 'INPUT' && active.type === 'number' && root.contains(active)) {
+    const numbers = [...root.querySelectorAll('input[type=number]')];
+    let caret = null;
+    try { caret = active.selectionStart; } catch (e) { /* number input nemusí podporovať selectionStart */ }
+    focusRestore = {
+      fk: active.getAttribute('data-fk'),
+      index: numbers.indexOf(active),
+      caret,
+    };
+  }
+
   root.textContent = '';
 
   // ——— HEADER ———
-  const header = el('header', 'flex items-start justify-between mb-8 pb-6 border-b border-[#2a2620]',
+  const header = el('header', 'flex items-start justify-between mb-10 pb-6 border-b border-[#2a2620]',
     el('div', null,
-      el('div', 'flex items-baseline gap-3 mb-1',
-        el('span', 'text-[10px] uppercase tracking-[0.3em] text-[#d4873c]', 'Welter Legal · v2.0'),
-        el('span', 'text-[10px] text-[#70684f] mono', 'k 20. aprílu 2026'),
+      el('div', 'flex items-baseline gap-3 mb-2',
+        el('span', 'text-[10px] uppercase tracking-[0.3em] text-[#d4873c]', 'Legal Engineering'),
+        el('span', 'text-[10px] text-[#70684f] mono', 'parametre platné 1. 7. 2026 – 30. 6. 2027'),
       ),
       el('h1', 'serif text-5xl italic font-light tracking-tight text-[#f0ead6]', 'Hypotekárna kalkulačka'),
-      el('p', 'text-sm text-[#a39b87] mt-2 max-w-xl',
+      el('p', 'text-sm text-[#a39b87] mt-3 max-w-xl',
         'NBS DTI/DSTI · stres test · prepočet hrubá ↔ čistá · životné minimum',
-        el('span', 'text-[#70684f]', ' · údaje k 20. 4. 2026'),
       ),
     ),
     el('div', 'flex flex-col items-end gap-2',
-      el('div', 'flex gap-1 p-1 bg-[#14120e] border border-[#2a2620] rounded-sm',
-        toggleBtn('ŽM aktuálne', zmRezim === 'aktual', () => { zmRezim = 'aktual'; render(); }),
-        toggleBtn('ŽM od 1. 7. 2026', zmRezim === 'prognoza', () => { zmRezim = 'prognoza'; render(); }),
+      el('div', 'text-[10px] uppercase tracking-wider text-[#a39b87] text-right', 'Životné minimum'),
+      el('div', 'text-[10px] text-[#f0ead6] mono text-right',
+        `${zm.dosp1} / ${zm.dosp2} / ${zm.dieta} €`,
       ),
-      el('div', 'text-[10px] text-[#70684f] mono text-right',
-        zmRezim === 'aktual'
-          ? `${zm.dosp1} / ${zm.dosp2} / ${zm.dieta} €`
-          : `prognóza +4 % · ${zm.dosp1} / ${zm.dosp2} / ${zm.dieta} €`,
+      el('div', 'text-[10px] text-[#70684f] mono text-right max-w-[14rem]',
+        'platné 1. 7. 2026 – 30. 6. 2027 · nové ŽM platí od 1. 7. 2027 (zverejnenie v máji 2027)',
       ),
     ),
   );
@@ -486,10 +492,10 @@ function render() {
       ),
       el('div', `grid gap-3 ${state.ziadatelov === 2 ? 'grid-cols-2' : 'grid-cols-1'}`,
         Field('Vek žiadateľ 1',
-          NumInput({ value: state.vek1, onChange: v => up('vek1', v), min: 18, max: 70, suffix: 'r.' })),
+          NumInput({ value: state.vek1, onChange: v => up('vek1', v), min: 18, max: 70, suffix: 'r.', dataKey: 'vek1' })),
         state.ziadatelov === 2
           ? Field('Vek žiadateľ 2',
-              NumInput({ value: state.vek2, onChange: v => up('vek2', v), min: 18, max: 70, suffix: 'r.' }))
+              NumInput({ value: state.vek2, onChange: v => up('vek2', v), min: 18, max: 70, suffix: 'r.', dataKey: 'vek2' }))
           : null,
       ),
     ],
@@ -514,6 +520,7 @@ function render() {
               value: state.vstupnyMod === 'hruba' ? state.hruba1 : state.cista1,
               onChange: v => up(state.vstupnyMod === 'hruba' ? 'hruba1' : 'cista1', v),
               step: 50,
+              dataKey: state.vstupnyMod === 'hruba' ? 'hruba1' : 'cista1',
             }),
             el('div', 'text-[10px] text-[#70684f] mono mt-1',
               state.vstupnyMod === 'hruba'
@@ -528,6 +535,7 @@ function render() {
                   value: state.vstupnyMod === 'hruba' ? state.hruba2 : state.cista2,
                   onChange: v => up(state.vstupnyMod === 'hruba' ? 'hruba2' : 'cista2', v),
                   step: 50,
+                  dataKey: state.vstupnyMod === 'hruba' ? 'hruba2' : 'cista2',
                 }),
                 el('div', 'text-[10px] text-[#70684f] mono mt-1',
                   state.vstupnyMod === 'hruba'
@@ -537,7 +545,7 @@ function render() {
           : null,
       ),
       Field('Existujúce splátky úverov',
-        NumInput({ value: state.existSplatky, onChange: v => up('existSplatky', v), step: 10 })),
+        NumInput({ value: state.existSplatky, onChange: v => up('existSplatky', v), step: 10, dataKey: 'existSplatky' })),
     ],
   });
 
@@ -582,7 +590,7 @@ function render() {
         })),
       ),
       Field(targetType === 'cena' ? 'Cena nehnuteľnosti' : 'Výška úveru',
-        NumInput({ value: targetSuma, onChange: v => { targetSuma = v; render(); }, step: 5000 })),
+        NumInput({ value: targetSuma, onChange: v => { targetSuma = v; render(); }, step: 5000, dataKey: 'targetSuma' })),
     ],
   }) : null;
 
@@ -591,7 +599,7 @@ function render() {
     onclick: () => setState(DEFAULT_STATE),
   }, icon('RotateCcw', 'w-3 h-3'), 'Reset');
 
-  const leftPanel = el('div', 'col-span-12 lg:col-span-4 space-y-4',
+  const leftPanel = el('div', 'col-span-12 lg:col-span-4 space-y-5',
     ziadateliaCard, prijemCard, hypotekaCard, cielCard, resetBtn);
 
   // ——— PRAVÝ PANEL: VÝSTUPY ———
@@ -710,28 +718,48 @@ function render() {
       infoRow('DTI', '= max 8-násobok čistého ročného príjmu. Nad 40 r. a ak splatnosť presahuje 65. rok života, DTI sa znižuje o 0,25 za každý rok nad 40 (tzv. strieborná hypotéka · NBS od 1.1.2023).'),
       infoRow('DSTI', '= splátka ≤ 60 % (disponibilný príjem − životné minimum − existujúce splátky). Banky môžu dať výnimku 70 % pre max 5 % objemu nových úverov.'),
       infoRow('Stres test', '= aktuálny úrok + 2 pp (+1 pp pre fixáciu > 10 rokov), capped na 6 %. DSTI sa počíta z väčšej zo splátok (reálna vs. stresovaná) pri splatnosti minimálne 30 rokov.'),
-      infoRow('Životné minimum', `platné 1.7.2025 – 30.6.2026: ${ZM_AKTUAL.dosp1} / ${ZM_AKTUAL.dosp2} / ${ZM_AKTUAL.dieta} €. Koeficient ŠÚSR pre 1.7.2026 sa zverejňuje v máji – prognóza v tejto app je ${ZM_PROGNOZA.dosp1} / ${ZM_PROGNOZA.dosp2} / ${ZM_PROGNOZA.dieta} € (orientačne +4 %).`),
+      infoRow('Životné minimum', `platné 1.7.2026 – 30.6.2027: ${ZM.dosp1} / ${ZM.dosp2} / ${ZM.dieta} € (plnoletá FO / ďalšia spoločne posudzovaná plnoletá FO / nezaopatrené dieťa). Nové ŽM platí od 1. 7. 2027 (zverejnenie v máji 2027).`),
       infoRow('Mzdové odvody 2026', ': soc. 9,4 % · zdr. 5 % · daň progresívne 19 / 25 / 30 / 35 %. NČZD 497,23 €/mes kráti sa pri ročnom ZD nad 26 367,26 €.'),
     ),
   });
 
-  const rightPanel = el('div', 'col-span-12 lg:col-span-8 space-y-4',
+  const rightPanel = el('div', 'col-span-12 lg:col-span-8 space-y-5',
     ...(Array.isArray(rightContent) ? rightContent : [rightContent]),
     poznamkyCard,
   );
 
-  const grid = el('div', 'grid grid-cols-12 gap-5', leftPanel, rightPanel);
+  const grid = el('div', 'grid grid-cols-12 gap-6', leftPanel, rightPanel);
 
   // ——— FOOTER ———
-  const footer = el('footer', 'mt-8 pt-4 border-t border-[#2a2620] text-[10px] text-[#70684f] mono flex justify-between',
+  const footer = el('footer', 'mt-10 pt-4 border-t border-[#2a2620] text-[10px] text-[#70684f] mono flex justify-between',
     el('span', null, 'Výsledky sú orientačné · jednotlivé banky si môžu pravidlá upraviť prísnejšie'),
-    el('span', null, 'Welter Legal · advokat@welter.sk · v2.0 / 2026-04-20'),
+    el('span', null, 'Legal Engineering · v2.0 / 2026-04-20'),
   );
 
-  const inner = el('div', 'max-w-[1400px] mx-auto px-6 py-8',
+  const inner = el('div', 'max-w-[1240px] mx-auto px-6 py-8',
     header, modeSwitcher, grid, footer);
 
   root.appendChild(inner);
+
+  // ——— Obnova focusu PO prestavbe DOM ———
+  // Prednostne podľa stabilného kľúča (data-fk); ak pole v novom DOM neexistuje
+  // (napr. zmena módu/počtu žiadateľov zmenila skladbu polí), fallback na index.
+  if (focusRestore) {
+    const numbers = [...root.querySelectorAll('input[type=number]')];
+    let target = null;
+    if (focusRestore.fk) {
+      target = numbers.find(i => i.getAttribute('data-fk') === focusRestore.fk) || null;
+    }
+    if (!target && focusRestore.index >= 0 && focusRestore.index < numbers.length) {
+      target = numbers[focusRestore.index];
+    }
+    if (target) {
+      target.focus();
+      if (focusRestore.caret != null) {
+        try { target.setSelectionRange(focusRestore.caret, focusRestore.caret); } catch (e) { /* number input v niektorých prehliadačoch hádže na setSelectionRange */ }
+      }
+    }
+  }
 }
 
 // ————— MZDA BREAKDOWN ————————————————————————————————————————————————
@@ -819,7 +847,7 @@ function ReverseView(reverse, stresDec, zivMin) {
       mut('Požadovaný disponibilný príjem (splátka / 0,6)'),
       el('span', null, eur(reverse.potrSplatka / 0.6, 2)),
 
-      mut(`+ životné minimum (${state.ziadatelov === 1 ? '1' : '2'} dosp. + ${state.deti} detí, ${zmRezim === 'aktual' ? '2025/26' : 'od 1.7.2026'})`),
+      mut(`+ životné minimum (${state.ziadatelov === 1 ? '1' : '2'} dosp. + ${state.deti} detí, 2026/27)`),
       el('span', null, `+ ${eur(zivMin, 2)}`),
 
       mut('+ existujúce splátky'),
