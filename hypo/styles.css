@@ -1,17 +1,56 @@
 /* ===========================================================================
    Hypotekárna kalkulačka — lokálny CSS
-   Náhrada za Tailwind CDN. 1:1 reprodukcia použitých utility tried z .jsx.
-   Toto je PREPIS, nie redizajn — žiadne nové štýly nad rámec pôvodného vzhľadu.
+   LE "Legal Ledger" light redizajn — token-based.
+   Utility triedy (pôvodne tmavé hex) sú namapované na LE premenné z :root.
+   Display: Fraunces · čísla: JetBrains Mono · body: Sora.
    =========================================================================== */
 
 @import url('fonts/fonts.css');
+
+/* ————— LE "Legal Ledger" tokeny (zdroj pravdy — kalkulačka Trov) ————— */
+:root {
+  --ink: #1d2733;
+  --ink-2: #3c4858;
+  --ink-soft: #6a7484;     /* mierne ztmavené oproti #717b8a kvôli kontrastu na papieri */
+  --paper: #f4f0e7;
+  --paper-soft: #cdc8ba;
+  --surface: #fbf9f3;
+  --field: #ffffff;
+  --line: #ddd5c4;
+  --line-soft: #e8e2d3;
+  --brass: #9c6b34;
+  --brass-deep: #7c5326;
+  --brass-light: #d8a85f;
+  --brass-tint: #f0e7d4;
+  --warn-bg: #f6ecca;
+  --warn-fg: #6f5712;
+  --err-bg: #f1ddd5;
+  --err-fg: #98341f;
+  --ok: #4a6b3e;
+  --radius: 4px;
+
+  /* ledger tieň kariet à la Trovy */
+  --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.7), 0 6px 18px -16px rgba(29, 39, 51, 0.4);
+}
 
 /* ————— Reset ————— */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; }
 body {
-  background: #0d1017;
+  background: radial-gradient(135% 90% at 50% -10%, #f9f6ee 0%, #f1ece0 70%);
+  background-attachment: fixed;
+  color: var(--ink);
   font-family: 'Sora', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+/* document-edge brass stripe (à la Trovy) */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--brass-deep), var(--brass), var(--brass-deep));
+  z-index: 50;
 }
 button { font-family: inherit; cursor: pointer; }
 h1, h3 { margin: 0; }
@@ -65,12 +104,14 @@ h1, h3 { margin: 0; }
 .space-y-2 > * + * { margin-top: 0.5rem; }
 .space-y-3 > * + * { margin-top: 0.75rem; }
 .space-y-4 > * + * { margin-top: 1rem; }
+.space-y-5 > * + * { margin-top: 1.5rem; }
 
 /* ————— Width / Height ————— */
 .w-full { width: 100%; }
 .w-3 { width: 0.75rem; }
 .h-3 { height: 0.75rem; }
 .max-w-\[1400px\] { max-width: 1400px; }
+.max-w-\[1240px\] { max-width: 1240px; }
 .max-w-xl { max-width: 36rem; }
 .min-w-\[3\.5rem\] { min-width: 3.5rem; }
 
@@ -114,34 +155,50 @@ h1, h3 { margin: 0; }
 .border-r { border-right: 1px solid transparent; }
 .rounded-sm { border-radius: 0.125rem; }
 
-.border-\[\#2a2620\] { border-color: #2a2620; }
-.border-\[\#3a362c\] { border-color: #3a362c; }
-.border-\[\#d4873c\] { border-color: #d4873c; }
-.border-\[\#d4873c\]\/40 { border-color: rgba(212, 135, 60, 0.4); }
+/* tmavé linky → LE line / brass */
+.border-\[\#2a2620\] { border-color: var(--line); }
+.border-\[\#3a362c\] { border-color: var(--line-soft); }
+.border-\[\#d4873c\] { border-color: var(--brass); }
+.border-\[\#d4873c\]\/40 { border-color: rgba(156, 107, 52, 0.45); }
 
 /* ————— Background ————— */
-.bg-\[\#0d1017\] { background-color: #0d1017; }
-.bg-\[\#14120e\] { background-color: #14120e; }
-.bg-\[\#1a1a1e\] { background-color: #1a1a1e; }
-.bg-\[\#d4873c\] { background-color: #d4873c; }
-.bg-\[\#d4873c\]\/10 { background-color: rgba(212, 135, 60, 0.1); }
+/* podklad celej aplikácie → priehľadný (presvitá papierový body) */
+.bg-\[\#0d1017\] { background-color: transparent; }
+/* karty / panely → surface / field */
+.bg-\[\#14120e\] { background-color: var(--surface); }
+.bg-\[\#1a1a1e\] { background-color: var(--field); }
+/* mosadzný accent fill → brass */
+.bg-\[\#d4873c\] { background-color: var(--brass); }
+/* jemná accent výplň (10 %) → brass-tint */
+.bg-\[\#d4873c\]\/10 { background-color: var(--brass-tint); }
+/* gradient-amber karta → jemný papierový surface (žiadny tmavý gradient) */
 .bg-gradient-amber {
-  background-image: linear-gradient(to bottom right, #1f1a12, #16130d);
+  background-image: none;
+  background-color: var(--surface);
 }
 
 /* ————— Text colors ————— */
-.text-\[\#f0ead6\] { color: #f0ead6; }
-.text-\[\#a39b87\] { color: #a39b87; }
-.text-\[\#70684f\] { color: #70684f; }
-.text-\[\#d4873c\] { color: #d4873c; }
-.text-\[\#8abf6f\] { color: #8abf6f; }
-.text-\[\#e8a84c\] { color: #e8a84c; }
-.text-\[\#d45a3c\] { color: #d45a3c; }
-.text-\[\#0d1017\] { color: #0d1017; }
+/* hlavný text → ink */
+.text-\[\#f0ead6\] { color: var(--ink); }
+/* tlmený text → ink-soft */
+.text-\[\#a39b87\] { color: var(--ink-soft); }
+/* najtlmenejší text (kicker/meta) → ink-soft (zdvih kontrastu na papieri) */
+.text-\[\#70684f\] { color: var(--ink-soft); }
+/* accent / mosadz → brass */
+.text-\[\#d4873c\] { color: var(--brass); }
+/* sekundárna mosadz (warn tone) → brass-deep, čitateľnejšie na svetlej karte */
+.text-\[\#e8a84c\] { color: var(--brass-deep); }
+/* zelená (OK / kladné) → ok */
+.text-\[\#8abf6f\] { color: var(--ok); }
+/* červená (chyba / prekročenie) → err-fg */
+.text-\[\#d45a3c\] { color: var(--err-fg); }
+/* text-on-accent — pôvodne čierna na mosadznom tlačidle → biely text na mosadzi */
+.text-\[\#0d1017\] { color: var(--field); }
 
 /* ————— Font sizes ————— */
-.text-\[10px\] { font-size: 10px; }
-.text-xs { font-size: 0.75rem; line-height: 1rem; }
+/* mikro-text zdvihnutý 10px → 11.5px kvôli čitateľnosti na svetlom papieri */
+.text-\[10px\] { font-size: 11.5px; line-height: 1.35; }
+.text-xs { font-size: 0.78rem; line-height: 1.15rem; }
 .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
 .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
 .text-2xl { font-size: 1.5rem; line-height: 2rem; }
@@ -173,30 +230,108 @@ h1, h3 { margin: 0; }
 }
 
 /* ————— Hover / focus ————— */
-.hover\:text-\[\#a39b87\]:hover { color: #a39b87; }
-.hover\:text-\[\#f0ead6\]:hover { color: #f0ead6; }
+.hover\:text-\[\#a39b87\]:hover { color: var(--ink-soft); }
+.hover\:text-\[\#f0ead6\]:hover { color: var(--ink); }
 .focus\:outline-none:focus { outline: 2px solid transparent; outline-offset: 2px; }
-.focus\:border-\[\#d4873c\]:focus { border-color: #d4873c; }
+.focus\:border-\[\#d4873c\]:focus {
+  border-color: var(--brass);
+  box-shadow: 0 0 0 3px var(--brass-tint);
+}
 
 /* ————— Form prvky ————— */
-.accent-\[\#d4873c\] { accent-color: #d4873c; }
-input[type=range] { height: 2px; }
+.accent-\[\#d4873c\] { accent-color: var(--brass); }
+/* range track viditeľnejší na papieri (pôvodne 2px tmavý) */
+input[type=range] {
+  height: 4px;
+  accent-color: var(--brass);
+  background: var(--line);
+  border-radius: 2px;
+}
 input[type=number]::-webkit-inner-spin-button { opacity: 1; }
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none;
-  width: 14px; height: 14px; background: #d4873c;
+  width: 14px; height: 14px; background: var(--brass);
   border-radius: 50%; cursor: pointer;
 }
 input[type=range]::-moz-range-thumb {
-  width: 14px; height: 14px; background: #d4873c;
+  width: 14px; height: 14px; background: var(--brass);
   border: none; border-radius: 50%; cursor: pointer;
 }
 input[type=number] {
   -moz-appearance: textfield;
+}
+input::placeholder { color: #b3ad9f; }
+
+/* ===========================================================================
+   ŠTRUKTÚRNE VRSTVY — hierarchia kariet, masthead accent, mobil
+   (toto je redizajn nad rámec pôvodnej tmavej verzie — papier odhalil slabiny)
+   =========================================================================== */
+
+/* ————— Karty: jasne vystúpiť z papiera (à la Trovy .block) —————
+   Cieľ utility kombinácie z app.js: .border .rounded-sm .bg-[#14120e]|.bg-gradient-amber|.bg-[#1a1a1e]
+   Pridávame ledger tieň + jemne väčší padding, aby panely nesplývali s papierom. */
+.border.rounded-sm.bg-\[\#14120e\],
+.border.rounded-sm.bg-gradient-amber {
+  box-shadow: var(--card-shadow);
+  border-color: var(--line);
+}
+/* accent (cieľová/hero) karta — jemne výraznejší mosadzný okraj + tieň */
+.border-\[\#d4873c\]\/40.bg-gradient-amber {
+  box-shadow: var(--card-shadow);
+}
+/* o niečo väčší vnútorný priestor kariet (p-5 → ~1.4rem) */
+.border.rounded-sm.p-5 { padding: 1.4rem 1.5rem; }
+
+/* ————— Masthead accent (brass underline ako Trovy .masthead::after) ————— */
+header.mb-8 { position: relative; }
+header.mb-8::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 56px;
+  height: 3px;
+  background: var(--brass);
+}
+
+/* H1 v mastheade — Fraunces, optical sizing */
+.serif.text-5xl {
+  font-optical-sizing: auto;
+  letter-spacing: -0.012em;
 }
 
 /* ————— Responsive: lg breakpoint (1024px) ————— */
 @media (min-width: 1024px) {
   .lg\:col-span-4 { grid-column: span 4 / span 4; }
   .lg\:col-span-8 { grid-column: span 8 / span 8; }
+}
+
+/* ————— Mobil: prepínače (mode switcher, ŽM) na plnú šírku, centrované ————— */
+@media (max-width: 640px) {
+  /* mode switcher "Mám príjem / Mám cieľ" — necentrovať k pravému okraju */
+  .flex.items-center.justify-end.mb-6 { justify-content: stretch; }
+  .flex.items-center.justify-end.mb-6 > .flex {
+    flex: 1;
+    justify-content: center;
+  }
+  .flex.items-center.justify-end.mb-6 > .flex > button { flex: 1; justify-content: center; }
+
+  /* header (masthead) skladá ŽM prepínač pod nadpis, na celú šírku */
+  header.flex.items-start.justify-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  header .flex.flex-col.items-end {
+    align-items: stretch;
+    width: 100%;
+  }
+  header .flex.flex-col.items-end > .flex { justify-content: center; }
+  header .flex.flex-col.items-end > .flex > button { flex: 1; justify-content: center; }
+  header .flex.flex-col.items-end > .text-right { text-align: left; }
+
+  /* footer čitateľne pod seba */
+  footer.flex.justify-between {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
 }
