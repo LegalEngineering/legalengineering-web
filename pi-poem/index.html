@@ -1,0 +1,1061 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pi poem — a poem that draws a circle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Spectral:ital,wght@0,300;0,400;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  /* Light rises with the digits: night → dusk → dawn → paper
+     (the mirror image of the morning poem, which faded to dark) */
+  body[data-stage="0"]{ --bg:#161410; --ink:#ddd5c4; --acc:#d59450; }
+  body[data-stage="1"]{ --bg:#3a3329; --ink:#ebe3d2; --acc:#dd9a55; }
+  body[data-stage="2"]{ --bg:#cdbb9b; --ink:#2a2013; --acc:#8d3f10; }
+  body[data-stage="3"]{ --bg:#f1e8d7; --ink:#261f15; --acc:#9c4a16; }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  /* No global smooth-scroll: the JS already eases the visuals, and stacking
+     native smooth on top made the page trail the finger. The tracker buttons
+     still glide via scrollTo({behavior:'smooth'}). */
+  body{
+    background-color:var(--bg);
+    color:var(--ink);
+    font-family:'Spectral', Georgia, serif;
+    transition: background-color 1.1s ease, color 1.1s ease;
+    /* clip, not hidden: hidden makes <body> a scroll container and can sap
+       momentum/inertia on mobile; clip hides the overflow without that cost */
+    overflow-x:clip;
+  }
+  ::selection{ background:var(--acc); color:var(--bg); }
+
+  /* ── digit ribbon ───────────────────────────── */
+  .tracker{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:center; align-items:baseline;
+    gap:clamp(.16rem, 1.1vw, .5rem);
+    padding:.85rem .4rem 1.05rem;
+    background:linear-gradient(to bottom, var(--bg) 35%, transparent);
+    transition: background 1.1s ease;
+  }
+  .tracker .pi-eq{
+    font:italic 500 clamp(.85rem,3vw,1rem)/1 'Cormorant Garamond', serif;
+    opacity:.6; margin-right:.15rem;
+    transition:color 1.1s ease;
+  }
+  .tracker .dec{
+    font:400 clamp(.8rem,2.9vw,.95rem)/1 'Spectral', serif;
+    opacity:.45; transition:color 1.1s ease;
+  }
+  .tracker button{
+    appearance:none; border:0; background:none; cursor:pointer;
+    font:400 clamp(.8rem,2.9vw,.95rem)/1 'Spectral', serif;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink); opacity:.26;
+    position:relative; padding:.2em .08em;
+    transition: color 1.1s ease, opacity .6s ease;
+  }
+  .tracker button::after{
+    content:''; position:absolute; left:8%; right:8%; bottom:0; height:1.5px;
+    background:var(--acc);
+    transform:scaleX(0); transform-origin:left center;
+    transition: transform .45s ease, background-color 1.1s ease;
+  }
+  .tracker button.born{ opacity:.94; }
+  .tracker button.born::after{ transform:scaleX(1); }
+  .tracker button:focus-visible{ outline:2px solid var(--acc); outline-offset:3px; border-radius:2px; }
+
+  /* ── the one circle, always on stage ────────── */
+  #stage{
+    position:fixed; inset:0; z-index:1;
+    width:100%; height:100%;
+    pointer-events:none;
+  }
+
+  /* ── captions ───────────────────────────────── */
+  .caps{ position:fixed; inset:0; z-index:10; pointer-events:none; }
+  .cap-block{
+    position:absolute; left:50%; transform:translate(-50%, 18px);
+    top:calc(40svh + var(--ringR, 220px) + 1.6rem);
+    width:min(92vw, 40rem);
+    text-align:center;
+    opacity:0;
+    transition: opacity .8s ease, transform .8s ease;
+  }
+  .cap-block.on{ opacity:1; transform:translate(-50%, 0); }
+  .cap-block .line{
+    font:italic 400 clamp(1.04rem, 4.3vw, 1.42rem)/1.66 'Spectral', serif;
+    margin:.26em 0;
+  }
+  .hw{ opacity:.42; transition: opacity .7s ease, color .7s ease; white-space:pre; }
+  .hw.lit{ opacity:1; color:var(--acc); }
+  .w{ opacity:.3; transition: opacity .7s ease, color .7s ease; white-space:pre; }
+  .w.lit{ opacity:1; color:var(--acc); }
+
+  /* hero is the one full-screen caption */
+  .cap-block.hero{
+    top:0; height:100svh; width:min(94vw, 44rem);
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    transform:translate(-50%, 0);
+  }
+  .hero .overline{
+    font:300 .72rem/1 'Spectral', serif;
+    letter-spacing:.32em; text-transform:uppercase; opacity:.6;
+  }
+  .hero .glyph{
+    font:italic 600 clamp(5.4rem, 30vw, 11.5rem)/1 'Cormorant Garamond', Georgia, serif;
+    color:var(--acc); margin:.04em 0 0;
+    transition:color 1.1s ease;
+  }
+  .hero .ttl{
+    font:500 clamp(1rem,4vw,1.25rem)/1 'Spectral', serif;
+    letter-spacing:.5em; text-transform:uppercase;
+    margin:.45rem 0 1.1rem; padding-left:.5em; opacity:.85;
+  }
+  .hero .sub{
+    font:italic 300 clamp(1rem, 3.9vw, 1.2rem)/1.6 'Spectral', serif;
+    opacity:.78; max-width:34ch;
+  }
+  .hero .hint{
+    font:300 .72rem/1 'Spectral', serif;
+    letter-spacing:.32em; text-transform:uppercase;
+    margin-top:3rem; opacity:.55;
+  }
+  .hero .hint b{ display:block; font-weight:400; margin-top:.7rem; animation:bob 1.7s ease-in-out infinite; }
+  @keyframes bob{ 50%{ transform:translateY(7px); } }
+
+  /* ── scroll spacer + colophon ───────────────── */
+  #timeline{ position:relative; z-index:0; }
+  .colophon{
+    position:relative; z-index:20;
+    background:var(--bg);
+    transition: background-color 1.1s ease;
+    padding:16vh 1.5rem 14vh;
+    display:flex; flex-direction:column; align-items:center;
+    box-shadow:0 -40px 60px -30px rgba(0,0,0,.18);
+  }
+  .colophon .inner{ max-width:33rem; }
+  .colophon h2{
+    font:300 .75rem/1 'Spectral', serif; letter-spacing:.4em; text-transform:uppercase;
+    opacity:.55; text-align:center; margin-bottom:2.4rem;
+  }
+  .colophon p{
+    font:300 clamp(.95rem, 3.7vw, 1.05rem)/1.85 'Spectral', serif;
+    opacity:.88; margin:1.05em 0; text-align:left;
+  }
+  .colophon em{ font-style:italic; color:var(--acc); transition:color 1.1s ease; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .cap-block{ transition:none; }
+    .hero .hint b{ animation:none; }
+    .hw, .w{ transition:none; }
+  }
+</style>
+</head>
+<body data-stage="0">
+
+<nav class="tracker" aria-label="Digits of π">
+  <span class="pi-eq">π =</span>
+  <button data-i="0">3</button><span class="dec">.</span><button data-i="1">1</button><button data-i="2">4</button><button data-i="3">1</button><button data-i="4">5</button><button data-i="5">9</button><button data-i="6">2</button><button data-i="7">6</button><button data-i="8">5</button><button data-i="9">3</button><button data-i="10">5</button><button data-i="11">8</button><button data-i="12">9</button><button data-i="13">7</button><button data-i="14">9</button><button data-i="15">3</button><button data-i="16">2</button><button data-i="17">3</button>
+</nav>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+
+<div class="caps" aria-live="off">
+
+  <div class="cap-block hero" data-s0="0" data-s1="1">
+    <p class="overline">an interactive poem</p>
+    <p class="glyph" aria-hidden="true">π</p>
+    <h1 class="ttl">Pi poem</h1>
+    <p class="sub">Written on Pi Day — 3/14/15. The words speak the first eighteen digits of π; a compass lays them onto a circle, and the circle paints every picture in the poem.</p>
+    <p class="hint">scroll<b>↓</b></p>
+  </div>
+
+  <div class="cap-block" data-s0="1" data-s1="2">
+    <p class="line"><span class="w" data-g="0">Three</span></p>
+    <p class="line"><span class="w" data-g="1">One</span><span class="w" data-g="2"> Four</span></p>
+    <p class="line"><span class="w" data-g="3">One</span><span class="w" data-g="4"> Five</span><span class="w" data-g="5"> Nine</span></p>
+  </div>
+
+  <div class="cap-block" data-s0="2" data-s1="3">
+    <p class="line">She</p>
+    <p class="line">devours</p>
+    <p class="line">those numbers´ line.</p>
+  </div>
+
+  <div class="cap-block" data-s0="3" data-s1="5">
+    <p class="line">Why is that? - the question stands;</p>
+    <p class="line">maybe ´cause it never ends,</p>
+    <p class="line">like kids stories.</p>
+    <p class="line">No end - no worries,</p>
+    <p class="line">about what will come when all is done;</p>
+    <p class="line"><span class="w" data-g="6">Two</span><span class="w" data-g="7"> Six</span><span class="w" data-g="8"> Five</span><span class="w" data-g="9"> Three</span><span class="w" data-g="10"> Five</span><span class="w" data-g="11"> Eight</span><span class="w" data-g="12"> Nine</span>.</p>
+  </div>
+
+  <div class="cap-block" data-s0="5" data-s1="6">
+    <p class="line">It isn´t the end - so is it the start?</p>
+    <p class="line">Is it the thing u take apart</p>
+  </div>
+
+  <div class="cap-block" data-s0="6" data-s1="7">
+    <p class="line">when u want to get the number?</p>
+    <p class="line">Like love of trees through love of lumber?</p>
+  </div>
+
+  <div class="cap-block" data-s0="7" data-s1="8">
+    <p class="line">Is it a circle, an oval, or wheels,</p>
+    <p class="line">that power her strong number feels?</p>
+  </div>
+
+  <div class="cap-block" data-s0="8" data-s1="11">
+    <p class="line"><span class="hw" data-sc="8">A disk,</span><span class="hw" data-sc="9"> a vortex,</span><span class="hw" data-sc="10"> a nice round tire,</span></p>
+    <p class="line"><span class="hw" data-sc="10">that makes this girl a numberphile?</span></p>
+  </div>
+
+  <div class="cap-block" data-s0="11" data-s1="12">
+    <p class="line">The thing that brings this girl to think</p>
+    <p class="line">might be just a bling - a ring;</p>
+  </div>
+
+  <div class="cap-block" data-s0="12" data-s1="13">
+    <p class="line">but the urge can´t be to be a wife</p>
+    <p class="line">no rhyme for that - nowhere soon another Five</p>
+  </div>
+
+  <div class="cap-block" data-s0="13" data-s1="14">
+    <p class="line">The urge is to go to places</p>
+    <p class="line">she doesn´t care if decimal</p>
+  </div>
+
+  <div class="cap-block" data-s0="14" data-s1="15">
+    <p class="line">all is well while her face is</p>
+    <p class="line">full of big, but mainly round smile.</p>
+  </div>
+
+  <div class="cap-block" data-s0="15" data-s1="16">
+    <p class="line">And her spirit free.</p>
+    <p class="line"><span class="w" data-g="13">Seven</span><span class="w" data-g="14"> Nine</span><span class="w" data-g="15"> Free!</span></p>
+    <p class="line"><span class="w" data-g="16">Two</span><span class="w" data-g="17"> Free!</span></p>
+  </div>
+
+</div>
+
+<div id="timeline"></div>
+
+<section class="colophon">
+  <div class="inner">
+    <h2>Colophon</h2>
+    <p><em>Pi poem</em> was written on the Pi Day of the century — <em>3/14/15</em>, the date that spells the first five digits. The girl in the poem doesn´t read numbers: she <em>devours</em> them.</p>
+    <p>Its words — <em>Three, One Four, One Five Nine…</em> — hide the first eighteen digits: <em>3.14159 26535 89793 23</em>. A compass lays them onto the circumference, the very curve that π measures. And the poem keeps painting that one circle. When it asks what you <em>take apart</em> to get the number, the page splits the circle into its diameter — <em>c = π · d</em>. Then come the tree rings of <em>lumber</em>, a steering <em>wheel</em>, a brake <em>disk</em>, a <em>vortex</em> of exhaust, a round <em>tire</em>, and a <em>ring</em> with a diamond that fades the moment marriage is mistaken for the urge.</p>
+    <p>When the circle unrolls into a straight line under her running feet, that line is the oldest illustration of π there is: a circumference is exactly <em>π diameters</em> long. Then it rolls back up — into a big, but mainly round smile.</p>
+    <p>The ending is a pun: <em>Free</em> sounds like <em>Three</em>. <em>Seven Nine Free! Two Free!</em> — her spirit slips loose and the poem closes on a 3, the digit it opened with. The circle, though, never closes. π carries on: <em>8 4 6 2 6 4 3 3 8 3…</em></p>
+    <p>And <em>nowhere soon another Five</em> is literally true: after the five in <em>26535</em> — the tenth digit — the next five appears only at the 31st decimal place. π would not offer a rhyme for <em>wife</em> for another 21 digits.</p>
+  </div>
+</section>
+
+<script>
+(function(){
+  'use strict';
+  const RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+  const lerp = (a,b,t) => a + (b-a)*t;
+  const sm = t => { t = clamp(t,0,1); return t*t*(3-2*t); };
+  const easeOut = t => 1 - Math.pow(1 - clamp(t,0,1), 3);
+  const hex = h => { h = h.trim();
+    return [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)]; };
+  const mix = (a,b,t) => [0,1,2].map(i => Math.round(lerp(a[i], b[i], t)));
+  const rgba = (c,a) => 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';
+
+  const DIGITS = '314159265358979323';
+  const N = DIGITS.length;
+  const ESC = '84626433';                 /* π carries on past the poem */
+  const TAU = Math.PI * 2;
+  const GAP = 16 * Math.PI / 180;         /* the circle never closes */
+  const SLICE = (TAU - GAP) / N;
+  const A0 = -Math.PI/2 + GAP/2;          /* gap centred at the top */
+  const slotA = i => A0 + (i + 0.5) * SLICE;
+
+  /* ── the scroll timeline ── */
+  const SCN = [
+    {id:'hero',   len:0.9},
+    {id:'digA',   len:1.6},
+    {id:'she',    len:0.7},
+    {id:'why',    len:0.9},
+    {id:'digB',   len:1.7},
+    {id:'start',  len:0.9},
+    {id:'lumber', len:1.0},
+    {id:'wheel',  len:1.0},
+    {id:'disk',   len:0.9},
+    {id:'vortex', len:0.9},
+    {id:'tire',   len:0.9},
+    {id:'ring',   len:1.1},
+    {id:'wife',   len:1.0},
+    {id:'unwrap', len:2.6},
+    {id:'wrap',   len:1.5},
+    {id:'free',   len:2.4}
+  ];
+  const IDX = {}; SCN.forEach((s,i) => IDX[s.id] = i);
+  const CUM = [0]; SCN.forEach(s => CUM.push(CUM[CUM.length-1] + s.len));
+  const TOTAL = CUM[CUM.length-1];
+
+  const cv = document.getElementById('stage');
+  const ctx = cv.getContext('2d');
+  const timeline = document.getElementById('timeline');
+  const blocks = Array.from(document.querySelectorAll('.cap-block'));
+  const trackerBtns = Array.from(document.querySelectorAll('.tracker button'));
+  const hws = Array.from(document.querySelectorAll('.hw'));
+  const ws = Array.from(document.querySelectorAll('.w'));
+
+  let vw=0, vh=0, UNIT=0, G={};
+  let baseW = 0, baseVH = 0;
+
+  function layout(){
+    vw = window.innerWidth; vh = window.innerHeight;
+    /* only a width change (rotation) resets the timeline scale —
+       the collapsing mobile URL bar must not make the page jump */
+    if (vw !== baseW || !baseVH){ baseW = vw; baseVH = vh; }
+    const sh = baseVH;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(vw * dpr);
+    cv.height = Math.round(vh * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const r = Math.min(vw*0.30, sh*0.26, 240);
+    G = {
+      cx: vw/2, cy: sh*0.40, r,
+      dr: r*1.18, fs: Math.max(14, r*0.16),
+      gy: sh*0.46, sh
+    };
+    document.documentElement.style.setProperty('--ringR', (G.dr + G.fs) + 'px');
+    UNIT = sh * 1.5;
+    timeline.style.height = Math.round(TOTAL * UNIT + sh * 0.25) + 'px';
+  }
+
+  /* progress in scene units */
+  function getF(){
+    return clamp(window.scrollY / UNIT, 0, TOTAL - 0.0001);
+  }
+  function localT(f, id){
+    const i = IDX[id];
+    if (f <= CUM[i]) return 0;
+    if (f >= CUM[i+1]) return 1;
+    return (f - CUM[i]) / SCN[i].len;
+  }
+
+  /* ── how alive is each digit ── */
+  function aliveAll(f){
+    const a = new Array(N).fill(0);
+    const tA = localT(f,'digA'), tB = localT(f,'digB'), tF = localT(f,'free');
+    for (let i=0;i<6;i++)  a[i]    = clamp(tA*6 - i, 0, 1);
+    for (let i=0;i<7;i++)  a[6+i]  = clamp(tB*7 - i, 0, 1);
+    const q = clamp((tF - 0.22) / 0.56, 0, 1);
+    for (let i=0;i<5;i++)  a[13+i] = clamp(q*5 - i, 0, 1);
+    return a;
+  }
+
+  /* ── deterministic noise ── */
+  const frac = x => x - Math.floor(x);
+  const rnd = s => frac(Math.sin(s*127.1 + 311.7) * 43758.5453);
+
+  /* ─────────────── scene art (under the chain) ─────────────── */
+
+  function drawGhost(col, alpha, dashShift){
+    ctx.save();
+    ctx.strokeStyle = rgba(col.ink, alpha);
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([2,7]);
+    ctx.lineDashOffset = dashShift || 0;
+    ctx.beginPath();
+    ctx.arc(G.cx, G.cy, G.r, A0, A0 + TAU - GAP);
+    ctx.stroke();
+    ctx.restore();
+  }
+  function drawDots(col, alpha){
+    ctx.font = "300 " + (G.fs*0.72) + "px 'Spectral', serif";
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle = rgba(col.ink, alpha);
+    ctx.fillText('…', G.cx, G.cy - G.r);
+  }
+
+  function artStart(col, lt){
+    const a = sm((lt-0.1)/0.3) * (1 - sm((lt-0.75)/0.25));
+    if (a <= 0.01) return;
+    const {cx,cy,r,fs} = G;
+    ctx.strokeStyle = rgba(col.ink, 0.5*a);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(cx-r, cy); ctx.lineTo(cx+r, cy); ctx.stroke();
+    ctx.fillStyle = rgba(col.acc, 0.9*a);
+    [[cx-r,cy],[cx+r,cy]].forEach(p => { ctx.beginPath(); ctx.arc(p[0],p[1],3,0,TAU); ctx.fill(); });
+    ctx.font = "italic 500 " + (fs*0.85) + "px 'Cormorant Garamond', serif";
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle = rgba(col.ink, 0.7*a);
+    ctx.fillText('d', cx + r*0.18, cy - fs*0.6);
+    ctx.font = "italic 500 " + (fs*0.8) + "px 'Cormorant Garamond', serif";
+    ctx.fillStyle = rgba(col.acc, 0.8*a);
+    ctx.fillText('c = π · d', cx, cy + r + fs*1.05);
+  }
+
+  function artLumber(col, lt, A){
+    const {cx,cy,r} = G;
+    /* bark */
+    const barkA = A * sm(lt*3);
+    ctx.strokeStyle = rgba(mix(col.ink, col.acc, 0.45), 0.9*barkA);
+    ctx.lineWidth = r*0.075;
+    wobbleRing(cx, cy, r*0.99, 9, r*0.018, 0);
+    ctx.stroke();
+    ctx.fillStyle = rgba(mix(col.bg, col.acc, 0.10), 0.55*barkA);
+    ctx.fill();
+    /* growth rings, born from the pith outward */
+    const nR = 7;
+    for (let j=0; j<nR; j++){
+      const ra = clamp(lt*1.05*nR - j, 0, 1) * A;
+      if (ra <= 0.01) continue;
+      const rr = r * (0.14 + 0.78 * (j+1)/nR);
+      ctx.strokeStyle = rgba(col.ink, 0.5*ra);
+      ctx.lineWidth = 1.3 + (j%3===0 ? 0.8 : 0);
+      wobbleRing(cx, cy, rr, 5 + j, r*0.022, j*13.7);
+      ctx.stroke();
+    }
+    ctx.fillStyle = rgba(col.acc, 0.9*A);
+    ctx.beginPath(); ctx.arc(cx, cy, r*0.035, 0, TAU); ctx.fill();
+  }
+  function wobbleRing(cx, cy, rr, waves, amp, seed){
+    ctx.beginPath();
+    for (let k=0; k<=72; k++){
+      const a = k/72 * TAU;
+      const w = Math.sin(a*waves + seed) * amp + Math.sin(a*(waves*2.3) + seed*1.7) * amp*0.4;
+      const x = cx + Math.cos(a)*(rr+w), y = cy + Math.sin(a)*(rr+w);
+      k ? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+    }
+    ctx.closePath();
+  }
+
+  function artWheel(col, lt, A){
+    const {cx,cy,r} = G;
+    const rot = RM ? 0 : (lt - 0.5) * 0.25;
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(rot);
+    /* rim */
+    ctx.strokeStyle = rgba(col.ink, 0.85*A);
+    ctx.lineWidth = r*0.155;
+    ctx.beginPath(); ctx.arc(0,0,r*0.90,0,TAU); ctx.stroke();
+    ctx.strokeStyle = rgba(col.acc, 0.5*A);
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.arc(0,0,r*0.80,0,TAU); ctx.stroke();
+    /* stitching */
+    ctx.save();
+    ctx.strokeStyle = rgba(col.bg, 0.35*A);
+    ctx.lineWidth = 1.2; ctx.setLineDash([3,6]);
+    ctx.beginPath(); ctx.arc(0,0,r*0.90,0,TAU); ctx.stroke();
+    ctx.restore();
+    /* three spokes: 3 o'clock, 9 o'clock, 6 o'clock */
+    ctx.strokeStyle = rgba(col.ink, 0.85*A);
+    ctx.lineCap='round';
+    ctx.lineWidth = r*0.085;
+    [0, Math.PI, Math.PI/2].forEach(a => {
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a)*r*0.20, Math.sin(a)*r*0.20);
+      ctx.lineTo(Math.cos(a)*r*0.80, Math.sin(a)*r*0.80);
+      ctx.stroke();
+    });
+    /* boss */
+    ctx.fillStyle = rgba(mix(col.bg, col.ink, 0.18), 0.95*A);
+    ctx.beginPath(); ctx.arc(0,0,r*0.22,0,TAU); ctx.fill();
+    ctx.strokeStyle = rgba(col.ink, 0.7*A); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0,0,r*0.22,0,TAU); ctx.stroke();
+    ctx.strokeStyle = rgba(col.acc, 0.9*A); ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.arc(0,0,r*0.115,0,TAU); ctx.stroke();
+    ctx.restore();
+  }
+
+  function artDisk(col, lt, A){
+    const {cx,cy,r} = G;
+    const rot = RM ? 0 : lt * 0.7;
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(rot);
+    /* rotor */
+    ctx.beginPath();
+    ctx.arc(0,0,r*0.94,0,TAU);
+    ctx.arc(0,0,r*0.40,0,TAU,true);
+    ctx.fillStyle = rgba(mix(col.ink, col.bg, 0.30), 0.85*A);
+    ctx.fill('evenodd');
+    ctx.strokeStyle = rgba(col.ink, 0.8*A); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0,0,r*0.94,0,TAU); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0,0,r*0.40,0,TAU); ctx.stroke();
+    /* slots + drill holes */
+    ctx.strokeStyle = rgba(col.bg, 0.85*A); ctx.lineWidth = 2.4; ctx.lineCap='round';
+    for (let k=0;k<22;k++){
+      const a = k/22*TAU + 0.18;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a)*r*0.50, Math.sin(a)*r*0.50);
+      ctx.lineTo(Math.cos(a+0.10)*r*0.88, Math.sin(a+0.10)*r*0.88);
+      ctx.stroke();
+    }
+    ctx.fillStyle = rgba(col.bg, 0.8*A);
+    for (let k=0;k<14;k++){
+      const a = k/14*TAU;
+      ctx.beginPath(); ctx.arc(Math.cos(a)*r*0.68, Math.sin(a)*r*0.68, r*0.018, 0, TAU); ctx.fill();
+    }
+    /* hub + bolts */
+    ctx.fillStyle = rgba(mix(col.bg, col.ink, 0.12), 0.95*A);
+    ctx.beginPath(); ctx.arc(0,0,r*0.34,0,TAU); ctx.fill();
+    ctx.strokeStyle = rgba(col.ink, 0.75*A); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0,0,r*0.34,0,TAU); ctx.stroke();
+    ctx.strokeStyle = rgba(col.ink, 0.7*A); ctx.lineWidth = 1.6;
+    for (let k=0;k<5;k++){
+      const a = k/5*TAU - Math.PI/2;
+      ctx.beginPath(); ctx.arc(Math.cos(a)*r*0.20, Math.sin(a)*r*0.20, r*0.045, 0, TAU); ctx.stroke();
+    }
+    ctx.fillStyle = rgba(col.acc, 0.9*A);
+    ctx.beginPath(); ctx.arc(0,0,r*0.045,0,TAU); ctx.fill();
+    ctx.restore();
+  }
+
+  function artVortex(col, lt, A){
+    const {cx,cy,r} = G;
+    const rot = RM ? 0 : lt * 1.5;
+    /* exhaust pipe opening */
+    ctx.fillStyle = rgba(mix(col.ink, col.bg, 0.12), 0.9*A);
+    ctx.beginPath(); ctx.arc(cx,cy,r*0.27,0,TAU); ctx.fill();
+    ctx.strokeStyle = rgba(col.ink, 0.85*A); ctx.lineWidth = r*0.05;
+    ctx.beginPath(); ctx.arc(cx,cy,r*0.30,0,TAU); ctx.stroke();
+    ctx.strokeStyle = rgba(col.acc, 0.6*A); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(cx,cy,r*0.36,0,TAU); ctx.stroke();
+    /* swirling air */
+    ctx.lineCap='round';
+    for (let arm=0; arm<4; arm++){
+      for (let seg=0; seg<3; seg++){
+        const a0s = arm*(TAU/4) + rot + seg*0.9;
+        ctx.strokeStyle = rgba(col.acc, A * (0.55 - seg*0.17));
+        ctx.lineWidth = 2.6 - seg*0.6;
+        ctx.beginPath();
+        for (let k=0;k<=24;k++){
+          const ph = a0s + k/24*0.95;
+          const rr = r * 0.30 * Math.exp(0.42 * (ph - arm*(TAU/4) - rot));
+          if (rr > r*1.08) break;
+          const x = cx + Math.cos(ph)*rr, y = cy + Math.sin(ph)*rr;
+          k ? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+        }
+        ctx.stroke();
+      }
+    }
+    /* puffs drifting out */
+    for (let k=0;k<5;k++){
+      const a = rnd(k*7+2)*TAU + rot*0.6;
+      const rr = r*(0.5 + 0.5*frac(rnd(k*3)+lt*0.9));
+      ctx.strokeStyle = rgba(col.ink, 0.3*A*(1.1 - rr/r));
+      ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.arc(cx+Math.cos(a)*rr, cy+Math.sin(a)*rr, r*0.05, 0, TAU); ctx.stroke();
+    }
+  }
+
+  function artTire(col, lt, A){
+    const {cx,cy,r} = G;
+    const rot = RM ? 0 : lt * 0.4;
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(rot);
+    /* rubber */
+    ctx.beginPath();
+    ctx.arc(0,0,r*0.97,0,TAU);
+    ctx.arc(0,0,r*0.52,0,TAU,true);
+    ctx.fillStyle = rgba(mix(col.ink, col.bg, 0.10), 0.92*A);
+    ctx.fill('evenodd');
+    /* tread blocks */
+    ctx.strokeStyle = rgba(col.bg, 0.8*A); ctx.lineWidth = r*0.035; ctx.lineCap='round';
+    for (let k=0;k<26;k++){
+      const a = k/26*TAU;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a)*r*0.86, Math.sin(a)*r*0.86);
+      ctx.lineTo(Math.cos(a+0.07)*r*1.00, Math.sin(a+0.07)*r*1.00);
+      ctx.stroke();
+    }
+    /* sidewall ring + rim edge */
+    ctx.strokeStyle = rgba(col.bg, 0.35*A); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(0,0,r*0.72,0,TAU); ctx.stroke();
+    ctx.strokeStyle = rgba(col.acc, 0.8*A); ctx.lineWidth = 2.2;
+    ctx.beginPath(); ctx.arc(0,0,r*0.52,0,TAU); ctx.stroke();
+    ctx.restore();
+  }
+
+  function artRing(col, lt, A, sparkle){
+    const {cx,cy,r,fs} = G;
+    const rb = r*0.70, band = r*0.105;
+    /* band — light catches the top */
+    ctx.lineCap='round';
+    ctx.strokeStyle = rgba(mix(col.acc, col.bg, 0.30), 0.95*A);
+    ctx.lineWidth = band;
+    ctx.beginPath(); ctx.arc(cx,cy,rb,0,TAU); ctx.stroke();
+    ctx.strokeStyle = rgba(mix(col.acc, col.ink, 0.35), 0.55*A);
+    ctx.lineWidth = band*0.6;
+    ctx.beginPath(); ctx.arc(cx,cy,rb, Math.PI*0.18, Math.PI*0.82); ctx.stroke();
+    ctx.strokeStyle = rgba(col.bg, 0.5*A);
+    ctx.lineWidth = band*0.28;
+    ctx.beginPath(); ctx.arc(cx,cy,rb+band*0.22, -Math.PI*0.78, -Math.PI*0.22); ctx.stroke();
+    /* prongs */
+    const dy0 = cy - rb, dh = r*0.34, dw = r*0.30;
+    ctx.strokeStyle = rgba(mix(col.acc, col.bg, 0.25), 0.9*A);
+    ctx.lineWidth = band*0.4;
+    [[-dw*0.32, -dh*0.12],[dw*0.32, -dh*0.12]].forEach(p => {
+      ctx.beginPath(); ctx.moveTo(cx+p[0]*0.5, dy0+band*0.2); ctx.lineTo(cx+p[0], dy0+p[1]); ctx.stroke();
+    });
+    /* diamond — crown + pavilion */
+    const ty = dy0 - dh*0.46;
+    const P = {
+      tl:[cx-dw*0.30, ty-dh*0.30], tr:[cx+dw*0.30, ty-dh*0.30],
+      gl:[cx-dw*0.50, ty-dh*0.06], gr:[cx+dw*0.50, ty-dh*0.06],
+      bt:[cx, ty+dh*0.52]
+    };
+    ctx.beginPath();
+    ctx.moveTo(P.tl[0],P.tl[1]); ctx.lineTo(P.tr[0],P.tr[1]);
+    ctx.lineTo(P.gr[0],P.gr[1]); ctx.lineTo(P.bt[0],P.bt[1]);
+    ctx.lineTo(P.gl[0],P.gl[1]); ctx.closePath();
+    ctx.fillStyle = rgba(mix(col.bg, col.acc, 0.10), 0.95*A);
+    ctx.fill();
+    ctx.strokeStyle = rgba(col.ink, 0.6*A); ctx.lineWidth = 1.4; ctx.stroke();
+    ctx.strokeStyle = rgba(col.ink, 0.35*A); ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(P.gl[0],P.gl[1]); ctx.lineTo(P.gr[0],P.gr[1]);
+    ctx.moveTo(P.tl[0],P.tl[1]); ctx.lineTo(P.bt[0],P.bt[1]);
+    ctx.moveTo(P.tr[0],P.tr[1]); ctx.lineTo(P.bt[0],P.bt[1]);
+    ctx.stroke();
+    /* sparkle */
+    const tw = sparkle * (RM ? 1 : (0.55 + 0.45*Math.sin(lt*11)));
+    if (tw > 0.03){
+      glint(P.tr[0]+fs*0.35, P.tl[1]-fs*0.25, fs*0.55*tw, col, A*tw);
+      glint(P.gl[0]-fs*0.25, ty+dh*0.1, fs*0.34*tw, col, A*tw*0.8);
+    }
+  }
+  function glint(x, y, s, col, a){
+    ctx.strokeStyle = rgba(col.acc, a); ctx.lineWidth = 1.6; ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(x-s,y); ctx.lineTo(x+s,y);
+    ctx.moveTo(x,y-s); ctx.lineTo(x,y+s);
+    ctx.moveTo(x-s*0.45,y-s*0.45); ctx.lineTo(x+s*0.45,y+s*0.45);
+    ctx.moveTo(x-s*0.45,y+s*0.45); ctx.lineTo(x+s*0.45,y-s*0.45);
+    ctx.stroke();
+  }
+
+  /* the runner */
+  function drawGirl(x, gy, H, ph, col){
+    const lw = Math.max(2.4, H*0.055);
+    const bounce = RM ? 0 : Math.abs(Math.sin(ph)) * H*0.04;
+    const y0 = gy - bounce;
+    const hip = [x, y0 - H*0.46];
+    const neck = [x + H*0.07, y0 - H*0.78];
+    const headR = H*0.135;
+    const head = [neck[0] + H*0.045, neck[1] - headR*1.05];
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle = rgba(col.ink, 0.92);
+    ctx.lineWidth = lw;
+    /* legs */
+    const s1 = RM ? 0.6 : Math.sin(ph), s2 = RM ? -0.6 : Math.sin(ph + Math.PI);
+    leg(hip, s1, H, gy - bounce);
+    leg(hip, s2, H, gy - bounce);
+    /* torso */
+    ctx.beginPath(); ctx.moveTo(hip[0], hip[1]); ctx.lineTo(neck[0], neck[1]); ctx.stroke();
+    /* skirt */
+    ctx.fillStyle = rgba(col.ink, 0.92);
+    ctx.beginPath();
+    ctx.moveTo(hip[0] - H*0.02, hip[1] - H*0.10);
+    ctx.lineTo(hip[0] - H*0.17, hip[1] + H*0.12);
+    ctx.lineTo(hip[0] + H*0.19, hip[1] + H*0.12);
+    ctx.closePath(); ctx.fill();
+    /* arms */
+    arm(neck, -s1, H);
+    arm(neck, -s2, H);
+    /* head + ponytail */
+    ctx.fillStyle = rgba(col.ink, 0.95);
+    ctx.beginPath(); ctx.arc(head[0], head[1], headR, 0, TAU); ctx.fill();
+    ctx.strokeStyle = rgba(col.acc, 0.95);
+    ctx.lineWidth = lw*0.9;
+    ctx.beginPath();
+    ctx.moveTo(head[0]-headR*0.7, head[1]-headR*0.3);
+    ctx.quadraticCurveTo(head[0]-headR*2.3, head[1]-headR*0.2 + (RM?0:Math.sin(ph)*headR*0.5),
+                         head[0]-headR*3.1, head[1]+headR*0.7);
+    ctx.stroke();
+
+    function leg(hp, s, H, ground){
+      const a = 0.55*s;
+      const knee = [hp[0] + Math.sin(a)*H*0.26, hp[1] + Math.cos(a)*H*0.26];
+      const bend = 0.5 + 0.45*(1 - s);
+      const foot = [knee[0] + Math.sin(a - bend)*H*0.26, Math.min(ground, knee[1] + Math.cos(a - bend)*H*0.26)];
+      ctx.beginPath(); ctx.moveTo(hp[0],hp[1]); ctx.lineTo(knee[0],knee[1]); ctx.lineTo(foot[0],foot[1]); ctx.stroke();
+    }
+    function arm(nk, s, H){
+      const a = 0.7*s;
+      const elb = [nk[0] + Math.sin(a)*H*0.18, nk[1] + Math.cos(a)*H*0.18];
+      const hnd = [elb[0] + Math.sin(a + 0.9)*H*0.16, elb[1] + Math.cos(a + 0.9)*H*0.16];
+      ctx.beginPath(); ctx.moveTo(nk[0],nk[1]); ctx.lineTo(elb[0],elb[1]); ctx.lineTo(hnd[0],hnd[1]); ctx.stroke();
+    }
+  }
+
+  /* ─────────────── the chain of digits ─────────────── */
+
+  function digitGlyph(ch, x, y, fs, scale, alpha, col, hot){
+    ctx.save();
+    ctx.translate(x,y); ctx.scale(scale,scale);
+    ctx.globalAlpha = alpha;
+    ctx.font = "600 " + fs + "px 'Cormorant Garamond', Georgia, serif";
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle = rgba(col.acc, 1);
+    if (hot && !RM){ ctx.shadowColor = rgba(col.acc, 0.8); ctx.shadowBlur = 10; }
+    ctx.fillText(ch, 0, 0);
+    ctx.restore();
+  }
+
+  function chainCircle(col, alive, opts){
+    const {cx, cy, r, dr, fs} = G;
+    const o = opts || {};
+    drawGhost(col, 0.13, o.dashShift || 0);
+    drawDots(col, 0.4 + (o.dotsPulse || 0));
+    const born = alive.reduce((s,v)=>s+v, 0);
+    const aEnd = A0 + born * SLICE;
+    if (born > 0.002){
+      ctx.strokeStyle = rgba(col.acc, 0.95);
+      ctx.lineWidth = Math.max(2.6, r*0.02);
+      ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(cx, cy, r, A0, aEnd); ctx.stroke();
+    }
+    const pulse = o.devour || 0;
+    for (let i=0;i<N;i++){
+      const t = alive[i];
+      if (t <= 0) continue;
+      const e = RM ? 1 : easeOut(t);
+      const rad = dr - pulse * fs * 0.5 * Math.sin((i/N)*Math.PI*2 + 1);
+      const a = slotA(i);
+      digitGlyph(DIGITS[i], cx + Math.cos(a)*rad, cy + Math.sin(a)*rad,
+                 fs, RM ? 1 : 0.55 + 0.45*e, t, col, t < 1);
+      if (i === 0 && alive[1] > 0){
+        const ca = A0 + 1*SLICE;
+        ctx.globalAlpha = alive[1];
+        ctx.font = "400 " + (fs*0.8) + "px 'Spectral', serif";
+        ctx.fillStyle = rgba(col.acc, 0.9);
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText('.', cx + Math.cos(ca)*dr, cy + Math.sin(ca)*dr + fs*0.18);
+        ctx.globalAlpha = 1;
+      }
+    }
+    if (o.compass && !RM){
+      const tx = cx + Math.cos(aEnd)*r, ty = cy + Math.sin(aEnd)*r;
+      ctx.strokeStyle = rgba(col.ink, 0.42); ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(tx,ty); ctx.stroke();
+      ctx.fillStyle = rgba(col.acc, 0.9);
+      ctx.beginPath(); ctx.arc(cx, cy, Math.max(2.4, r*0.018), 0, TAU); ctx.fill();
+      ctx.save();
+      ctx.shadowColor = rgba(col.acc, 0.85); ctx.shadowBlur = 14;
+      ctx.beginPath(); ctx.arc(tx, ty, Math.max(3, r*0.03), 0, TAU); ctx.fill();
+      ctx.restore();
+    } else {
+      ctx.fillStyle = rgba(col.ink, 0.3);
+      ctx.beginPath(); ctx.arc(cx, cy, Math.max(2, r*0.014), 0, TAU); ctx.fill();
+    }
+  }
+
+  function rollGeom(){
+    const Th = TAU - GAP;
+    const L = Math.min(vw*0.86, 9999);
+    const r2 = L / Th;
+    const x0 = G.cx - L/2;
+    const fsL = Math.max(12, Math.min(G.fs, L/N * 0.62));
+    return {Th, L, r2, x0, fsL, gy: G.gy};
+  }
+
+  function chainUnwrap(col, alive, lt){
+    const {cx, cy, r, dr, fs} = G;
+    const R = rollGeom();
+    const shrink = sm(lt / 0.14);
+    const u = sm(clamp((lt - 0.16) / 0.46, 0, 1));
+    const rr  = lerp(r, R.r2, shrink);
+    const drr = rr * 1.18;
+    const fss = lerp(fs, R.fsL, shrink);
+    const ccx = lerp(cx, R.x0, shrink) + u * R.L;
+    const ccy = lerp(cy, R.gy - R.r2, shrink);
+
+    const bornFrac = alive.reduce((s,v)=>s+v, 0) / N;
+
+    /* the laid-down line: a circumference is exactly π·d */
+    if (u > 0.001){
+      const uAcc = Math.min(u, bornFrac);
+      ctx.lineCap='round';
+      ctx.strokeStyle = rgba(col.acc, 0.95);
+      ctx.lineWidth = Math.max(2.6, r*0.02);
+      ctx.beginPath(); ctx.moveTo(R.x0, R.gy); ctx.lineTo(R.x0 + uAcc*R.L, R.gy); ctx.stroke();
+      if (u > bornFrac){
+        ctx.save();
+        ctx.strokeStyle = rgba(col.ink, 0.35);
+        ctx.lineWidth = 1.4; ctx.setLineDash([2,7]);
+        ctx.beginPath(); ctx.moveTo(R.x0 + uAcc*R.L, R.gy); ctx.lineTo(R.x0 + u*R.L, R.gy); ctx.stroke();
+        ctx.restore();
+      }
+      ctx.strokeStyle = rgba(col.ink, 0.5); ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(R.x0, R.gy - 7); ctx.lineTo(R.x0, R.gy + 7); ctx.stroke();
+    }
+    /* rolling circle */
+    ctx.save();
+    ctx.strokeStyle = rgba(col.ink, 0.35);
+    ctx.lineWidth = 1.2; ctx.setLineDash([2,7]);
+    ctx.beginPath(); ctx.arc(ccx, ccy, rr, 0, TAU); ctx.stroke();
+    ctx.restore();
+    ctx.strokeStyle = rgba(col.ink, 0.3); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(ccx, ccy); ctx.lineTo(ccx, ccy + rr); ctx.stroke();
+    if (u > 0.001){
+      ctx.fillStyle = rgba(col.acc, 0.85);
+      ctx.beginPath(); ctx.arc(ccx, ccy + rr, 3, 0, TAU); ctx.fill();
+    }
+
+    /* girl runs once the road is ready */
+    const gT = sm(clamp((lt - 0.52) / 0.46, 0, 1));
+    let girlX = null;
+    if (gT > 0.001 && gT < 0.999){
+      const H = clamp(R.r2 * 1.7, 46, G.sh*0.14);
+      girlX = lerp(R.x0 - R.fsL*2.5, vw + H, gT);
+      const ph = RM ? 0 : girlX / (H*0.42);
+      drawGirl(girlX, R.gy, H, ph, col);
+    }
+
+    /* digits: still riding the wheel, or landed on the line */
+    for (let i=0;i<N;i++){
+      const t = alive[i];
+      if (t <= 0) continue;
+      const s = (i + 0.5) / N;
+      let x, y, sc = 1, hot = false;
+      if (shrink < 1){
+        const a = slotA(i);
+        const bx = lerp(cx, R.x0, shrink), by = ccy;
+        x = bx + Math.cos(a)*drr; y = by + Math.sin(a)*drr;
+      } else if (s <= u){
+        x = R.x0 + s * R.L; y = R.gy + R.fsL*0.85;
+        if (girlX !== null && Math.abs(x - girlX) < R.L/(N*1.6)){ sc = 1.25; hot = true; }
+      } else {
+        const ph2 = Math.PI/2 - (s - u) * R.Th;
+        x = ccx + Math.cos(ph2)*drr; y = ccy + Math.sin(ph2)*drr;
+      }
+      digitGlyph(DIGITS[i], x, y, shrink < 1 ? fss : R.fsL, sc, t, col, hot);
+    }
+  }
+
+  function chainWrap(col, alive, lt, faceOverride){
+    const {cx, cy, r, dr, fs} = G;
+    const R = rollGeom();
+    const w = sm(clamp((lt - 0.04) / 0.78, 0, 1));
+    /* every digit slides from its place on the line to its slot on the circle */
+    const pts = [];
+    for (let i=0;i<=N;i++){
+      const s = i / N;
+      const lx = R.x0 + s*R.L, ly = R.gy;
+      const a = A0 + s * (TAU - GAP);
+      const px = cx + Math.cos(a)*r, py = cy + Math.sin(a)*r;
+      pts.push([lerp(lx,px,w), lerp(ly,py,w)]);
+    }
+    const bornFrac = alive.reduce((s,v)=>s+v, 0) / N;
+    const cut = Math.max(1, Math.round(bornFrac * N));
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle = rgba(col.acc, 0.95);
+    ctx.lineWidth = Math.max(2.6, r*0.02);
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i=1;i<=cut;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.stroke();
+    if (cut < N){
+      ctx.save();
+      ctx.strokeStyle = rgba(col.ink, 0.35);
+      ctx.lineWidth = 1.4; ctx.setLineDash([2,7]);
+      ctx.beginPath();
+      ctx.moveTo(pts[cut][0], pts[cut][1]);
+      for (let i=cut+1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    drawDots(col, 0.4 * w);
+
+    for (let i=0;i<N;i++){
+      const t = alive[i];
+      if (t <= 0) continue;
+      const s = (i + 0.5) / N;
+      const lx = R.x0 + s*R.L, ly = R.gy + R.fsL*0.85;
+      const a = slotA(i);
+      const px = cx + Math.cos(a)*dr, py = cy + Math.sin(a)*dr;
+      digitGlyph(DIGITS[i], lerp(lx,px,w), lerp(ly,py,w), lerp(R.fsL, fs, w), 1, t, col, false);
+    }
+    drawFace(col, faceOverride !== undefined ? faceOverride : sm((w - 0.62) / 0.34));
+  }
+
+  function drawFace(col, a){
+    if (a <= 0.01) return;
+    const {cx, cy, r} = G;
+    ctx.strokeStyle = rgba(col.acc, 0.9*a);
+    ctx.lineWidth = Math.max(2.6, r*0.024);
+    ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.arc(cx, cy - r*0.06, r*0.52, Math.PI*0.18, Math.PI*0.82);
+    ctx.stroke();
+    ctx.fillStyle = rgba(col.ink, 0.85*a);
+    [[-1,0],[1,0]].forEach(p => {
+      ctx.beginPath();
+      ctx.arc(cx + p[0]*r*0.32, cy - r*0.27, r*0.05, 0, TAU);
+      ctx.fill();
+    });
+  }
+
+  function escapeDigits(col, e){
+    if (e <= 0.02) return;
+    const {cx, cy, r, dr, fs} = G;
+    const gx = cx, gyT = cy - dr;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    for (let j=0;j<ESC.length;j++){
+      const a = e * Math.max(0, 1 - j/6.5) * 0.85;
+      if (a <= 0.01) continue;
+      const drift = e * (j + 1) * fs * 0.72;
+      const ex = gx + Math.sin(j*1.9)*fs*0.7 + drift*0.35;
+      const ey = gyT - drift - e*6;
+      ctx.globalAlpha = a;
+      ctx.font = "500 " + (fs*(0.92 - j*0.05)) + "px 'Cormorant Garamond', Georgia, serif";
+      ctx.fillStyle = rgba(col.acc, 1);
+      ctx.fillText(ESC[j], ex, ey);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  /* ─────────────── compositor ─────────────── */
+
+  const FADE = 0.28;  /* crossfade window at scene boundaries, in scene units */
+
+  function sceneAlpha(f, i){
+    const inA  = sm((f - CUM[i]) / FADE);
+    const outA = 1 - sm((f - (CUM[i+1] - FADE)) / FADE);
+    return clamp(Math.min(inA, outA), 0, 1);
+  }
+
+  function drawArt(id, col, lt, A, f){
+    if (A <= 0.01) return;
+    switch(id){
+      case 'start':  artStart(col, lt); break;
+      case 'lumber': artLumber(col, lt, A); break;
+      case 'wheel':  artWheel(col, lt, A); break;
+      case 'disk':   artDisk(col, lt, A); break;
+      case 'vortex': artVortex(col, lt, A); break;
+      case 'tire':   artTire(col, lt, A); break;
+      case 'ring':   artRing(col, lt, A, 1); break;
+      case 'wife': {
+        const fade = 1 - sm(lt * 1.15);
+        artRing(col, lt, A * fade, fade * fade);
+        break;
+      }
+    }
+  }
+
+  function render(f){
+    ctx.clearRect(0, 0, vw, vh);
+    const cs = getComputedStyle(document.body);
+    const col = {
+      acc: hex(cs.getPropertyValue('--acc')),
+      ink: hex(cs.getPropertyValue('--ink')),
+      bg:  hex(cs.getPropertyValue('--bg'))
+    };
+    const k = Math.min(SCN.length - 1, Math.max(0, CUM.findIndex(c => c > f) - 1));
+    const id = SCN[k].id;
+    const lt = (f - CUM[k]) / SCN[k].len;
+    const alive = aliveAll(f);
+
+    /* illustration layer (current + neighbours crossfade) */
+    for (let i = Math.max(0,k-1); i <= Math.min(SCN.length-1, k+1); i++){
+      const A = sceneAlpha(f, i);
+      drawArt(SCN[i].id, col, i===k ? lt : (i<k ? 1 : 0), A, f);
+    }
+
+    /* chain layer */
+    if (id === 'unwrap'){
+      chainUnwrap(col, alive, lt);
+    } else if (id === 'wrap'){
+      chainWrap(col, alive, lt);
+    } else if (id === 'free'){
+      const faceA = clamp(1 - lt*1.5, 0, 1);
+      chainCircle(col, alive, { compass: lt > 0.2 && lt < 0.8 });
+      drawFace(col, faceA * 0.9);
+      escapeDigits(col, easeOut(clamp((lt - 0.8) / 0.2, 0, 1)));
+    } else {
+      chainCircle(col, alive, {
+        compass: (id === 'digA' || id === 'digB') && lt > 0.004 && lt < 0.996,
+        devour: id === 'she' ? Math.sin(clamp(lt,0,1)*Math.PI) : 0,
+        dashShift: id === 'why' ? lt * 60 : 0,
+        dotsPulse: id === 'why' ? 0.25 * Math.sin(lt * Math.PI * 5) : 0
+      });
+    }
+    return alive;
+  }
+
+  /* ─────────────── DOM sync ─────────────── */
+
+  function sync(f){
+    const alive = render(f);
+
+    blocks.forEach(b => {
+      const s0 = CUM[+b.dataset.s0], s1 = CUM[+b.dataset.s1];
+      const ff = f + 0.14;
+      b.classList.toggle('on', ff >= s0 && ff < s1);
+    });
+    hws.forEach(h => h.classList.toggle('lit', f >= CUM[+h.dataset.sc] + 0.12));
+    ws.forEach(w => w.classList.toggle('lit', alive[+w.dataset.g] >= 0.55));
+    trackerBtns.forEach(b => b.classList.toggle('born', alive[+b.dataset.i] >= 0.55));
+
+    const born = alive.filter(v => v >= 0.55).length;
+    const stage = born >= 18 ? '3' : born >= 13 ? '2' : born >= 6 ? '1' : '0';
+    if (document.body.dataset.stage !== stage) document.body.dataset.stage = stage;
+  }
+
+  trackerBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      const i = +b.dataset.i;
+      const id = i < 6 ? 'digA' : i < 13 ? 'digB' : 'free';
+      window.scrollTo({ top: CUM[IDX[id]] * UNIT + 2, behavior: RM ? 'auto' : 'smooth' });
+    });
+  });
+
+  /* progress glides toward the finger: a fast flick plays the scenes
+     through instead of teleporting past them */
+  let cur = 0, target = 0, rafOn = false, lastTs = 0;
+  function tick(ts){
+    const dt = Math.min(0.05, lastTs ? (ts - lastTs)/1000 : 0.016);
+    lastTs = ts;
+    /* Adaptive follow speed. Small gaps (precise scrolling) snap almost 1:1 so
+       the page feels glued to the finger; big gaps (a fast flick across scenes)
+       glide slower so the scenes still play through instead of teleporting.
+       Was a flat rate of 6 → ~400ms to settle, which read as "floaty". */
+    const gap = Math.abs(target - cur);
+    const speed = 10 + 13 * (1 - Math.min(1, gap / 0.8));   /* 23 when tight → 10 on a flick */
+    const k = RM ? 1 : 1 - Math.exp(-dt * speed);
+    cur += (target - cur) * k;
+    if (Math.abs(target - cur) < 0.0006){
+      cur = target; sync(cur); rafOn = false; lastTs = 0; return;
+    }
+    sync(cur);
+    requestAnimationFrame(tick);
+  }
+  function kick(){
+    target = getF();
+    if (!rafOn){ rafOn = true; lastTs = 0; requestAnimationFrame(tick); }
+  }
+  window.addEventListener('scroll', kick, { passive:true });
+  window.addEventListener('resize', () => {
+    layout();
+    cur = target = getF();
+    sync(cur);
+  });
+
+  /* the body colour eases over ~1.1s — keep painting while it does */
+  let glow = null;
+  new MutationObserver(() => {
+    if (glow) clearInterval(glow);
+    let n = 0;
+    glow = setInterval(() => { sync(cur); if (++n > 14) clearInterval(glow); }, 90);
+  }).observe(document.body, { attributes:true, attributeFilter:['data-stage'] });
+
+  layout();
+  cur = target = getF();
+  sync(cur);
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(() => { layout(); sync(cur); });
+  }
+})();
+</script>
+</body>
+</html>
