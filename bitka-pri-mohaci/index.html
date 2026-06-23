@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <title>Bitka pri Moháči 1526 — Strava roku 1526</title>
     <meta name="description" content="Animovaná vizualizácia pohybu historických postáv okolo bitky pri Moháči (1526)." />
-    <script type="module" crossorigin src="./assets/index-CpdBW5wy.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-9-do1lV9.css">
+    <script type="module" crossorigin src="./assets/index-DYs4_WVD.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BspRF3kP.css">
   </head>
   <body>
     <div id="map"></div>
@@ -26,12 +26,53 @@
       </div>
     </header>
 
-    <!-- Legend -->
+    <!-- Legend + layers -->
     <aside id="legend">
       <h2 data-i18n="legendTitle">Strany</h2>
       <ul id="legend-list"></ul>
+      <h2 class="layers-head" data-i18n="layersTitle">Vrstvy</h2>
+      <ul id="layers-list">
+        <li><label><input type="checkbox" id="layer-control" checked /> <span data-i18n="layerControl">Zóna osmanskej kontroly</span></label></li>
+        <li><label><input type="checkbox" id="layer-crowd" /> <span data-i18n="layerCrowd">Hustota vojsk</span></label></li>
+        <li><label><input type="checkbox" id="layer-fortress" checked /> <span data-i18n="layerFortress">Pohraničné pevnosti</span></label></li>
+      </ul>
       <p class="hint" data-i18n="legendHint">Klikni na postavu na mape pre jej príbeh.</p>
     </aside>
+
+    <!-- Auto milestone card (appears during playback) -->
+    <section id="milestone-card" class="hidden">
+      <button id="ms-close" aria-label="Zavrieť">✕</button>
+      <span class="ms-date" id="ms-date"></span>
+      <h3 id="ms-title"></h3>
+      <div class="ms-block"><span class="ms-label" data-i18n="whatLabel">Čo sa stalo</span><p id="ms-what"></p></div>
+      <div class="ms-block ms-why"><span class="ms-label" data-i18n="whyLabel">Prečo</span><p id="ms-why"></p></div>
+      <button id="ms-battle-btn" class="hidden" data-i18n="battleDetail">⚔ Detail bitky</button>
+    </section>
+
+    <!-- Wider-arc era axis (1521–1541) -->
+    <div id="era-axis">
+      <span class="era-axis-label" data-i18n="eraAxisLabel">Širší oblúk</span>
+      <div class="era-track" id="era-track"></div>
+    </div>
+
+    <!-- Battle detail panel -->
+    <section id="battle-panel" class="hidden">
+      <div class="bp-header">
+        <h2 data-i18n="battleTitle">Bitka pri Moháči — krok za krokom</h2>
+        <button id="bp-exit" data-i18n="exitBattle">✕ Späť na mapu</button>
+      </div>
+      <span class="bp-time" id="bp-time"></span>
+      <h3 id="bp-title"></h3>
+      <div class="ms-block"><span class="ms-label" data-i18n="whatLabel">Čo sa stalo</span><p id="bp-what"></p></div>
+      <div class="ms-block ms-why"><span class="ms-label" data-i18n="whyLabel">Prečo</span><p id="bp-why"></p></div>
+      <div class="bp-controls">
+        <button id="bp-prev" data-i18n="prevPhase">‹ Späť</button>
+        <span id="bp-progress"></span>
+        <button id="bp-next" data-i18n="nextPhase">Ďalej ›</button>
+      </div>
+      <button id="bp-play" class="bp-play" data-i18n="playPhases">▶ Prehrať fázy</button>
+      <p class="bp-note" id="bp-note"></p>
+    </section>
 
     <!-- Story panel -->
     <section id="story" class="hidden" aria-live="polite">
@@ -53,6 +94,9 @@
     <!-- Tooltip -->
     <div id="tooltip" class="hidden"></div>
 
+    <!-- Milestone strip -->
+    <div id="milestone-strip"></div>
+
     <!-- Timeline controls -->
     <footer id="timeline">
       <button id="play" class="play-btn" aria-label="Prehrať">▶</button>
@@ -70,6 +114,16 @@
         </select>
       </div>
     </footer>
-
+
+    <!-- Intro overlay -->
+    <div id="intro">
+      <div class="intro-box">
+        <h1 data-i18n="introTitle">Strava roku 1526</h1>
+        <p data-i18n="introBody"></p>
+        <button id="intro-start" data-i18n="introStart">Spustiť vizualizáciu ▶</button>
+        <p class="intro-hint" data-i18n="introHint"></p>
+      </div>
+    </div>
+
   </body>
 </html>
