@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const CACHE_VERSION = 'hypokalkulacka-v2';
+const CACHE_VERSION = 'hypokalkulacka-v5';
 
 // Všetky assety potrebné na offline beh. Relatívne cesty voči scope ('./').
 const ASSETS = [

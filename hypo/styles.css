@@ -12,6 +12,7 @@
   --ink: #1d2733;
   --ink-2: #3c4858;
   --ink-soft: #6a7484;     /* mierne ztmavené oproti #717b8a kvôli kontrastu na papieri */
+  --ink-meta: #76808f;     /* meta/pomocné texty — medzistupeň medzi --ink-soft a najslabšími tónmi */
   --paper: #f4f0e7;
   --paper-soft: #cdc8ba;
   --surface: #fbf9f3;
@@ -182,8 +183,9 @@ h1, h3 { margin: 0; }
 .text-\[\#f0ead6\] { color: var(--ink); }
 /* tlmený text → ink-soft */
 .text-\[\#a39b87\] { color: var(--ink-soft); }
-/* najtlmenejší text (kicker/meta) → ink-soft (zdvih kontrastu na papieri) */
-.text-\[\#70684f\] { color: var(--ink-soft); }
+/* najtlmenejší text (kicker/meta/hint) → ink-meta (medzistupeň hierarchie:
+   slabší než --ink-soft, no stále čitateľný na papieri) */
+.text-\[\#70684f\] { color: var(--ink-meta); }
 /* accent / mosadz → brass */
 .text-\[\#d4873c\] { color: var(--brass); }
 /* sekundárna mosadz (warn tone) → brass-deep, čitateľnejšie na svetlej karte */
@@ -246,6 +248,9 @@ input[type=range] {
   accent-color: var(--brass);
   background: var(--line);
   border-radius: 2px;
+  /* flex item smie skrknúť pod intrinsic šírku — inak horizontálny
+     overflow v 2-stĺpcových grid slideroch na úzkych mobiloch */
+  min-width: 0;
 }
 input[type=number]::-webkit-inner-spin-button { opacity: 1; }
 input[type=range]::-webkit-slider-thumb {
@@ -260,7 +265,8 @@ input[type=range]::-moz-range-thumb {
 input[type=number] {
   -moz-appearance: textfield;
 }
-input::placeholder { color: #b3ad9f; }
+/* placeholder — pôvodný #b3ad9f bol na bielom poli príliš slabý */
+input::placeholder { color: var(--ink-meta); }
 
 /* ===========================================================================
    ŠTRUKTÚRNE VRSTVY — hierarchia kariet, masthead accent, mobil
@@ -281,6 +287,24 @@ input::placeholder { color: #b3ad9f; }
 }
 /* o niečo väčší vnútorný priestor kariet (p-5 → ~1.4rem) */
 .border.rounded-sm.p-5 { padding: 1.4rem 1.5rem; }
+
+/* ————— Hero suma (accent karta: „Maximálny úver" / cieľové mzdy) —————
+   Hlavný výsledok v Fraunces namiesto mono — suma „spieva" ako displayový
+   nadpis. Cielime len na large Metric hodnotu vnútri accent karty,
+   utility triedy v app.js ostávajú nedotknuté. */
+.border-\[\#d4873c\]\/40.bg-gradient-amber .text-3xl.font-mono {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-weight: 395;
+  font-size: 2.25rem;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  font-variant-numeric: lining-nums;
+}
+
+/* ————— Deliče stĺpcov DTI/DSTI/LTV — jemná linka namiesto plnej —————
+   (kombinácia .border-r.border-[#2a2620] sa používa len v týchto stĺpcoch) */
+.border-r.border-\[\#2a2620\] { border-color: var(--line-soft); }
 
 /* ————— Masthead accent (brass underline ako Trovy .masthead::after) ————— */
 header.mb-8 { position: relative; }
@@ -334,4 +358,146 @@ header.mb-8::after {
     flex-direction: column;
     gap: 0.5rem;
   }
+
+  /* hero suma vo Fraunces — na úzkych kartách o stupeň menšia */
+  .border-\[\#d4873c\]\/40.bg-gradient-amber .text-3xl.font-mono { font-size: 1.9rem; }
+}
+
+/* ===========================================================================
+   STATICKÝ OBSAH POD APPKOU — FAQ + Upozornenie (SEO sekcie v index.html)
+   Mimo #root — appka ich pri re-renderi nemaže. Tokeny LE Legal Ledger.
+   =========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* kotvové odkazy vo footeri appky (#faq / #disclaimer) */
+footer a {
+  text-decoration: underline;
+  text-decoration-color: var(--paper-soft);
+  text-underline-offset: 2px;
+}
+footer a:hover { text-decoration-color: var(--brass); }
+
+.static-content {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3.5rem;
+}
+.static-section {
+  margin-top: 3rem;
+  scroll-margin-top: 1.25rem;
+}
+.static-kicker {
+  display: block;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--brass);
+  margin-bottom: 0.5rem;
+}
+.static-heading {
+  font-family: 'Fraunces', serif;
+  font-optical-sizing: auto;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.static-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 56px;
+  height: 3px;
+  background: var(--brass);
+}
+
+/* ————— FAQ accordion — <details>/<summary>, bez JS ————— */
+.faq-list {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+}
+.faq-item + .faq-item { border-top: 1px solid var(--line-soft); }
+.faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0.9rem 2.75rem 0.9rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--ink);
+  transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+";
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  color: var(--brass);
+  position: absolute;
+  right: 1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.faq-item[open] summary::after { content: "−"; }
+.faq-item summary:hover { color: var(--brass-deep); }
+.faq-item summary:focus-visible { outline: 2px solid var(--brass); outline-offset: -2px; }
+.faq-a { padding: 0 1.25rem 1rem; }
+.faq-a p {
+  margin: 0 0 0.65rem;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 75ch;
+}
+.faq-zdroj {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-meta);
+  margin: 0;
+  padding-top: 0.4rem;
+  border-top: 1px dashed var(--line-soft);
+}
+
+/* ————— Upozornenie — kompaktný záverečný blok ————— */
+.disclaimer-body {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.4rem 1.5rem;
+}
+.disclaimer-body p {
+  margin: 0 0 0.75rem;
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 80ch;
+}
+.disclaimer-body p:last-child { margin-bottom: 0; }
+.disclaimer-body a {
+  color: var(--brass-deep);
+  text-decoration-color: var(--brass-light);
+  text-underline-offset: 2px;
+}
+.disclaimer-body a:hover { color: var(--brass); }
+.disclaimer-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px;
+  color: var(--ink-meta);
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--line-soft);
 }

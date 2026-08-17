@@ -4,7 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hypotekárna kalkulačka — Legal Engineering, s. r. o.</title>
-  <meta name="description" content="Hypotekárna kalkulačka pre slovenský trh — maximálna výška úveru a cena nehnuteľnosti podľa NBS ukazovateľov DTI, DSTI, LTV a stres testu." />
+  <meta name="description" content="Hypotekárna kalkulačka podľa pravidiel NBS — DTI, DSTI, LTV a stres test. Zistite, koľko si môžete požičať a aký príjem na hypotéku potrebujete." />
+  <link rel="canonical" href="https://legalengineering.sk/hypo/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Hypotekárna kalkulačka — Legal Engineering" />
+  <meta property="og:description" content="Hypotekárna kalkulačka podľa pravidiel NBS — DTI, DSTI, LTV a stres test. Zistite, koľko si môžete požičať a aký príjem na hypotéku potrebujete." />
+  <meta property="og:url" content="https://legalengineering.sk/hypo/" />
+  <meta property="og:locale" content="sk_SK" />
+  <meta property="og:site_name" content="Legal Engineering" />
 
   <!-- PWA -->
   <meta name="theme-color" content="#f4f0e7" />
@@ -13,9 +22,262 @@
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Štruktúrované dáta: aplikácia -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Hypotekárna kalkulačka",
+    "url": "https://legalengineering.sk/hypo/",
+    "description": "Hypotekárna kalkulačka podľa pravidiel NBS — DTI, DSTI, LTV a stres test. Zistite, koľko si môžete požičať a aký príjem na hypotéku potrebujete.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "browserRequirements": "Vyžaduje JavaScript",
+    "inLanguage": "sk",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+    "publisher": { "@type": "Organization", "name": "Legal Engineering, s. r. o.", "url": "https://legalengineering.sk/" },
+    "featureList": "Výpočet maximálnej výšky úveru podľa NBS ukazovateľov DTI, DSTI a LTV, stres test úrokovej sadzby, prepočet hrubej a čistej mzdy, životné minimum domácnosti",
+    "softwareVersion": "2.0"
+  }
+  </script>
+
+  <!-- Štruktúrované dáta: FAQ — texty MUSIA byť zhodné so sekciou #faq nižšie -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "inLanguage": "sk",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Čo znamenajú skratky DTI, DSTI a LTV?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sú to tri úverové ukazovatele, ktorými Národná banka Slovenska obmedzuje poskytovanie úverov na bývanie. DTI (debt-to-income) hovorí, že celkový dlh žiadateľa spravidla nesmie presiahnuť 8-násobok jeho čistého ročného príjmu. DSTI (debt service-to-income) obmedzuje mesačné splátky všetkých úverov na 60 % príjmu zníženého o životné minimum, takže 40 % vám vždy zostane ako rezerva. LTV (loan-to-value) je pomer úveru k hodnote nehnuteľnosti — nesmie presiahnuť 90 % a len obmedzená časť úverov smie byť nad 80 %. Kalkulačka počíta všetky tri limity naraz a záväzný je vždy ten najprísnejší."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Čo je stres test a prečo kalkulačka počíta s vyššou sadzbou, než mám v ponuke?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Banka musí overiť, že úver zvládnete splácať aj po raste úrokových sadzieb. Splátka sa preto počíta aj pri sadzbe zvýšenej o 2 percentuálne body (najviac však na 6 %) a pri splatnosti 30 rokov; pri fixácii sadzby nad 10 rokov stačí test s nárastom o 1 percentuálny bod. Do limitu DSTI vstupuje táto vyššia, „stresovaná“ splátka, nie tá reálna. Preto vychádza nižší maximálny úver, než by ste čakali z bežnej splátkovej kalkulačky."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Prečo mi kalkulačka ukazuje nižší úver, než sľubuje reklama banky?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Reklamné kalkulačky často počítajú len splátku zo zadanej sumy alebo iba jeden ukazovateľ (napríklad 8-násobok príjmu) a nezohľadňujú stres test, životné minimum ani existujúce splátky. Táto kalkulačka aplikuje plnú metodiku NBS — DTI, DSTI so stres testom aj LTV — a ukáže najprísnejší z limitov, teda sumu bližšiu reálnemu posúdeniu v banke. Zároveň platí, že pravidlá NBS sú len minimálne požiadavky: banka môže na základe vlastných kritérií poskytnúť aj menej."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Aký príjem potrebujem, aby mi banka požičala konkrétnu sumu?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Prepnite kalkulačku do režimu „Mám cieľ“ a zadajte cenu nehnuteľnosti alebo požadovanú výšku úveru. Kalkulačka spätne dopočíta, aký čistý mesačný príjem domácnosti je potrebný na splnenie limitov DTI aj DSTI vrátane stres testu. Výsledok zohľadňuje počet členov domácnosti aj existujúce splátky, preto rovnaká suma úveru vyžaduje v rôznych domácnostiach rôzny príjem."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Ako výsledok ovplyvňujú existujúce úvery, kreditné karty a povolené prečerpanie?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Výrazne. Splátky existujúcich úverov zmenšujú priestor pre novú splátku v limite DSTI a zostatky dlhov sa započítavajú do celkovej zadlženosti v limite DTI. Pri kreditných kartách a povolenom prečerpaní banka započítava vyčerpanú časť v plnej výške a z nevyčerpaného úverového rámca 20 %. Nepoužívanú kreditku či prečerpanie sa preto oplatí pred žiadosťou o hypotéku zrušiť. V kalkulačke zadajte mesačné splátky existujúcich úverov do samostatného poľa; vplyv kreditiek si viete priblížiť ich pripočítaním k existujúcim splátkam."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Prečo mi po štyridsiatke vychádza nižší maximálny úver?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Od 1. januára 2023 sa pri úveroch, ktorých splácanie má presiahnuť vek 65 rokov (zasahujú do dôchodku), znižuje limit DTI o 0,25 za každý rok veku nad 40 — z 8-násobku pri veku 40 postupne až na 3-násobok pri veku 60 a viac. Hovorovo sa tomu hovorí aj „strieborná hypotéka“; cieľom je, aby vysoký dlh neprechádzal do obdobia s nižším dôchodkovým príjmom. Ak zvolíte splatnosť tak, aby bol úver splatený do 65 rokov, zníženie sa neuplatní a platí štandardný 8-násobok. Kalkulačka toto pravidlo počíta automaticky z veku a splatnosti."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Platí pre mladých do 35 rokov vyšší limit — 9-násobok príjmu?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Áno, ale len ako výnimka, nie ako nárok. Banky môžu obmedzenú časť nových úverov (do 5 % objemu) poskytnúť žiadateľom do 35 rokov s príjmom najviac 1,3-násobku priemernej mzdy až do DTI 9. Či a komu banka výnimku prizná, je jej vlastné rozhodnutie. Kalkulačka preto počíta so štandardným limitom 8-násobku — ak podmienky spĺňate, banka vám v konkrétnom prípade môže ponúknuť o niečo viac."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Počíta kalkulačka daňový bonus na zaplatené úroky?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nie, a je to zámer. Daňový bonus na zaplatené úroky (50 % zo zaplatených úrokov, najviac 1 200 € ročne počas 5 rokov, pre žiadateľov vo veku 18 až 35 rokov s príjmom do 1,6-násobku priemernej mzdy) sa uplatňuje až v daňovom priznaní alebo ročnom zúčtovaní. Nezvyšuje maximálnu výšku úveru a banka naň pri posudzovaní schopnosti splácať neprihliada — preto do výpočtu úverového stropu nevstupuje. Pri zmluvách uzavretých v skorších rokoch platia podmienky účinné v čase uzavretia zmluvy."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Mám zadať hrubú alebo čistú mzdu?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ktorúkoľvek — kalkulačka prepočítava hrubú mzdu na čistú (a naopak) podľa daňovo-odvodových parametrov platných pre rok 2026 (odvody zamestnanca, nezdaniteľná časť základu dane, daňové pásma). Pre posúdenie úveru je rozhodujúci čistý príjem, ktorý viete banke zdokladovať. Prepočet je nastavený pre zamestnanca v trvalom pracovnom pomere; pri SZČO, konateľoch alebo príjmoch z dohôd posudzujú banky príjem odlišne, preto berte výsledok ako orientačný."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Prečo sa výsledky líšia medzi bankami?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pravidlá NBS sú minimálne požiadavky — každá banka si nad ich rámec nastavuje vlastné interné kritériá. Banky sa líšia v tom, aké typy príjmov akceptujú (dohody, SZČO, príjem zo zahraničia), ako prísne počítajú výdavky a záväzky, a niektoré uplatňujú aj vlastné prísnejšie testy. Dve banky preto ponúknu tomu istému klientovi rôzne maximá a obe pritom pravidlá NBS dodržia. Kalkulačka ukazuje strop podľa metodiky NBS — konkrétna banka sa môže pohybovať pod ním."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Koľko vlastných úspor potrebujem?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Úver na bývanie nesmie presiahnuť 90 % hodnoty nehnuteľnosti a úvery medzi 80 % a 90 % smú tvoriť najviac 20 % nových úverov banky — 90 % financovanie teda nie je automatické. V praxi počítajte s vlastnými zdrojmi aspoň 10 %, istejšie 20 % z ceny nehnuteľnosti, plus rezervou na náklady spojené s kúpou (kataster, znalecký posudok, prípadná provízia). Kalkulačka vám pri zvolenom LTV ukáže maximálnu cenu nehnuteľnosti aj potrebnú hotovosť. NBS avizovala zmenu týchto pravidiel (okrem iného miernejší režim pre prvé bývanie mladých do 35 rokov), ktorá v čase prípravy tejto odpovede ešte nebola účinná — platnosť parametrov kalkulačky vidíte v záhlaví."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Prečo výsledok závisí od počtu členov domácnosti?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Do limitu DSTI vstupuje čistý príjem znížený o životné minimum všetkých posudzovaných osôb — žiadateľa, manžela či manželky a detí. Od 1. júla 2026 do 30. júna 2027 je životné minimum 295,22 € na prvú plnoletú osobu, 205,96 € na ďalšiu plnoletú osobu a 134,80 € na dieťa. Čím väčšia domácnosť, tým menší disponibilný príjem zostáva na splácanie — rovnaký príjem preto vedie pri rodine s deťmi k nižšiemu maximálnemu úveru než u jednotlivca."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <div id="root"></div>
+
+  <!-- =====================================================================
+       STATICKÝ OBSAH (mimo #root — appka ho pri re-renderi nemaže).
+       Crawlable bez JS. FAQ texty MUSIA zostať zhodné s FAQPage JSON-LD
+       v <head> — pri úprave meniť obe miesta.
+       ===================================================================== -->
+  <div class="static-content">
+
+    <section id="faq" class="static-section" aria-labelledby="faq-heading">
+      <span class="static-kicker">Otázky a odpovede</span>
+      <h2 id="faq-heading" class="static-heading">Časté otázky</h2>
+      <div class="faq-list">
+
+        <details class="faq-item">
+          <summary>Čo znamenajú skratky DTI, DSTI a LTV?</summary>
+          <div class="faq-a">
+            <p>Sú to tri úverové ukazovatele, ktorými Národná banka Slovenska obmedzuje poskytovanie úverov na bývanie. DTI (debt-to-income) hovorí, že celkový dlh žiadateľa spravidla nesmie presiahnuť 8-násobok jeho čistého ročného príjmu. DSTI (debt service-to-income) obmedzuje mesačné splátky všetkých úverov na 60 % príjmu zníženého o životné minimum, takže 40 % vám vždy zostane ako rezerva. LTV (loan-to-value) je pomer úveru k hodnote nehnuteľnosti — nesmie presiahnuť 90 % a len obmedzená časť úverov smie byť nad 80 %. Kalkulačka počíta všetky tri limity naraz a záväzný je vždy ten najprísnejší.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016, ktorým sa ustanovujú podrobnosti o posúdení schopnosti spotrebiteľa splácať úver na bývanie, v znení neskorších opatrení (oznámenie č. 373/2016 Z. z.; vydané podľa § 8 ods. 16 zákona č. 90/2016 Z. z. o úveroch na bývanie); prehľad NBS „Opatrenia v oblasti obozretného poskytovania úverov na bývanie“, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Čo je stres test a prečo kalkulačka počíta s vyššou sadzbou, než mám v ponuke?</summary>
+          <div class="faq-a">
+            <p>Banka musí overiť, že úver zvládnete splácať aj po raste úrokových sadzieb. Splátka sa preto počíta aj pri sadzbe zvýšenej o 2 percentuálne body (najviac však na 6 %) a pri splatnosti 30 rokov; pri fixácii sadzby nad 10 rokov stačí test s nárastom o 1 percentuálny bod. Do limitu DSTI vstupuje táto vyššia, „stresovaná“ splátka, nie tá reálna. Preto vychádza nižší maximálny úver, než by ste čakali z bežnej splátkovej kalkulačky.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016 v znení neskorších opatrení — metodika zohľadnenia nárastu úrokových sadzieb; prehľad NBS, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Prečo mi kalkulačka ukazuje nižší úver, než sľubuje reklama banky?</summary>
+          <div class="faq-a">
+            <p>Reklamné kalkulačky často počítajú len splátku zo zadanej sumy alebo iba jeden ukazovateľ (napríklad 8-násobok príjmu) a nezohľadňujú stres test, životné minimum ani existujúce splátky. Táto kalkulačka aplikuje plnú metodiku NBS — DTI, DSTI so stres testom aj LTV — a ukáže najprísnejší z limitov, teda sumu bližšiu reálnemu posúdeniu v banke. Zároveň platí, že pravidlá NBS sú len minimálne požiadavky: banka môže na základe vlastných kritérií poskytnúť aj menej.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016 v znení neskorších opatrení (limity sú minimálne požiadavky); prehľad NBS, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Aký príjem potrebujem, aby mi banka požičala konkrétnu sumu?</summary>
+          <div class="faq-a">
+            <p>Prepnite kalkulačku do režimu „Mám cieľ“ a zadajte cenu nehnuteľnosti alebo požadovanú výšku úveru. Kalkulačka spätne dopočíta, aký čistý mesačný príjem domácnosti je potrebný na splnenie limitov DTI aj DSTI vrátane stres testu. Výsledok zohľadňuje počet členov domácnosti aj existujúce splátky, preto rovnaká suma úveru vyžaduje v rôznych domácnostiach rôzny príjem.</p>
+            <p class="faq-zdroj">Zdroj: Limity podľa opatrenia NBS č. 10/2016 v znení neskorších opatrení; výpočtový režim kalkulačky</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Ako výsledok ovplyvňujú existujúce úvery, kreditné karty a povolené prečerpanie?</summary>
+          <div class="faq-a">
+            <p>Výrazne. Splátky existujúcich úverov zmenšujú priestor pre novú splátku v limite DSTI a zostatky dlhov sa započítavajú do celkovej zadlženosti v limite DTI. Pri kreditných kartách a povolenom prečerpaní banka započítava vyčerpanú časť v plnej výške a z nevyčerpaného úverového rámca 20 %. Nepoužívanú kreditku či prečerpanie sa preto oplatí pred žiadosťou o hypotéku zrušiť. V kalkulačke zadajte mesačné splátky existujúcich úverov do samostatného poľa; vplyv kreditiek si viete priblížiť ich pripočítaním k existujúcim splátkam.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016 v znení neskorších opatrení — započítanie celkovej zadlženosti; prehľad NBS, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Prečo mi po štyridsiatke vychádza nižší maximálny úver?</summary>
+          <div class="faq-a">
+            <p>Od 1. januára 2023 sa pri úveroch, ktorých splácanie má presiahnuť vek 65 rokov (zasahujú do dôchodku), znižuje limit DTI o 0,25 za každý rok veku nad 40 — z 8-násobku pri veku 40 postupne až na 3-násobok pri veku 60 a viac. Hovorovo sa tomu hovorí aj „strieborná hypotéka“; cieľom je, aby vysoký dlh neprechádzal do obdobia s nižším dôchodkovým príjmom. Ak zvolíte splatnosť tak, aby bol úver splatený do 65 rokov, zníženie sa neuplatní a platí štandardný 8-násobok. Kalkulačka toto pravidlo počíta automaticky z veku a splatnosti.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016 v znení opatrenia účinného od 1. 1. 2023; Otázky a odpovede NBS k novinkám pre úvery zasahujúce do dôchodku, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Platí pre mladých do 35 rokov vyšší limit — 9-násobok príjmu?</summary>
+          <div class="faq-a">
+            <p>Áno, ale len ako výnimka, nie ako nárok. Banky môžu obmedzenú časť nových úverov (do 5 % objemu) poskytnúť žiadateľom do 35 rokov s príjmom najviac 1,3-násobku priemernej mzdy až do DTI 9. Či a komu banka výnimku prizná, je jej vlastné rozhodnutie. Kalkulačka preto počíta so štandardným limitom 8-násobku — ak podmienky spĺňate, banka vám v konkrétnom prípade môže ponúknuť o niečo viac.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016 v znení neskorších opatrení — výnimka „5 % + 5 %“ pri DTI; prehľad NBS, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Počíta kalkulačka daňový bonus na zaplatené úroky?</summary>
+          <div class="faq-a">
+            <p>Nie, a je to zámer. Daňový bonus na zaplatené úroky (50 % zo zaplatených úrokov, najviac 1 200 € ročne počas 5 rokov, pre žiadateľov vo veku 18 až 35 rokov s príjmom do 1,6-násobku priemernej mzdy) sa uplatňuje až v daňovom priznaní alebo ročnom zúčtovaní. Nezvyšuje maximálnu výšku úveru a banka naň pri posudzovaní schopnosti splácať neprihliada — preto do výpočtu úverového stropu nevstupuje. Pri zmluvách uzavretých v skorších rokoch platia podmienky účinné v čase uzavretia zmluvy.</p>
+            <p class="faq-zdroj">Zdroj: § 33a zákona č. 595/2003 Z. z. o dani z príjmov (overené cez Slov-Lex, konsolidované znenie účinné v r. 2026); metodika NBS — daňové zvýhodnenie sa do posúdenia schopnosti splácať nezapočítava</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Mám zadať hrubú alebo čistú mzdu?</summary>
+          <div class="faq-a">
+            <p>Ktorúkoľvek — kalkulačka prepočítava hrubú mzdu na čistú (a naopak) podľa daňovo-odvodových parametrov platných pre rok 2026 (odvody zamestnanca, nezdaniteľná časť základu dane, daňové pásma). Pre posúdenie úveru je rozhodujúci čistý príjem, ktorý viete banke zdokladovať. Prepočet je nastavený pre zamestnanca v trvalom pracovnom pomere; pri SZČO, konateľoch alebo príjmoch z dohôd posudzujú banky príjem odlišne, preto berte výsledok ako orientačný.</p>
+            <p class="faq-zdroj">Zdroj: Daň z príjmov podľa zákona č. 595/2003 Z. z.; daňovo-odvodové parametre kalkulačky pre rok 2026 (platnosť uvedená v záhlaví)</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Prečo sa výsledky líšia medzi bankami?</summary>
+          <div class="faq-a">
+            <p>Pravidlá NBS sú minimálne požiadavky — každá banka si nad ich rámec nastavuje vlastné interné kritériá. Banky sa líšia v tom, aké typy príjmov akceptujú (dohody, SZČO, príjem zo zahraničia), ako prísne počítajú výdavky a záväzky, a niektoré uplatňujú aj vlastné prísnejšie testy. Dve banky preto ponúknu tomu istému klientovi rôzne maximá a obe pritom pravidlá NBS dodržia. Kalkulačka ukazuje strop podľa metodiky NBS — konkrétna banka sa môže pohybovať pod ním.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016 v znení neskorších opatrení (limity ako minimálne požiadavky); prehľad NBS, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Koľko vlastných úspor potrebujem?</summary>
+          <div class="faq-a">
+            <p>Úver na bývanie nesmie presiahnuť 90 % hodnoty nehnuteľnosti a úvery medzi 80 % a 90 % smú tvoriť najviac 20 % nových úverov banky — 90 % financovanie teda nie je automatické. V praxi počítajte s vlastnými zdrojmi aspoň 10 %, istejšie 20 % z ceny nehnuteľnosti, plus rezervou na náklady spojené s kúpou (kataster, znalecký posudok, prípadná provízia). Kalkulačka vám pri zvolenom LTV ukáže maximálnu cenu nehnuteľnosti aj potrebnú hotovosť. NBS avizovala zmenu týchto pravidiel (okrem iného miernejší režim pre prvé bývanie mladých do 35 rokov), ktorá v čase prípravy tejto odpovede ešte nebola účinná — platnosť parametrov kalkulačky vidíte v záhlaví.</p>
+            <p class="faq-zdroj">Zdroj: Opatrenie NBS č. 10/2016 v znení neskorších opatrení — limity LTV; prehľad NBS, nbs.sk</p>
+          </div>
+        </details>
+
+        <details class="faq-item">
+          <summary>Prečo výsledok závisí od počtu členov domácnosti?</summary>
+          <div class="faq-a">
+            <p>Do limitu DSTI vstupuje čistý príjem znížený o životné minimum všetkých posudzovaných osôb — žiadateľa, manžela či manželky a detí. Od 1. júla 2026 do 30. júna 2027 je životné minimum 295,22 € na prvú plnoletú osobu, 205,96 € na ďalšiu plnoletú osobu a 134,80 € na dieťa. Čím väčšia domácnosť, tým menší disponibilný príjem zostáva na splácanie — rovnaký príjem preto vedie pri rodine s deťmi k nižšiemu maximálnemu úveru než u jednotlivca.</p>
+            <p class="faq-zdroj">Zdroj: Zákon č. 601/2003 Z. z. o životnom minime; sumy platné od 1. 7. 2026 do 30. 6. 2027 (parametre kalkulačky)</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <section id="disclaimer" class="static-section" aria-labelledby="disclaimer-heading">
+      <span class="static-kicker">Legal Engineering, s. r. o.</span>
+      <h2 id="disclaimer-heading" class="static-heading">Upozornenie</h2>
+      <div class="disclaimer-body">
+        <p>Hypotekárna kalkulačka je softvérová pomôcka na orientačný výpočet maximálnej výšky úveru na bývanie podľa zákonných limitov a limitov Národnej banky Slovenska (najmä ukazovateľov DTI a DSTI v zmysle zákona č. 90/2016 Z. z. o úveroch na bývanie a súvisiacich opatrení NBS). Výsledok nie je úverovým rozhodnutím a nepredstavuje finančné ani právne poradenstvo.</p>
+        <p>Banky posudzujú každú žiadosť aj podľa vlastných rizikových a obchodných kritérií nad rámec zákonnej regulácie. Skutočná ponuka konkrétnej banky sa preto môže od výsledku kalkulačky líšiť — a to oboma smermi.</p>
+        <p>Platnosť parametrov: sumy životného minima platia od 1. 7. 2026 do 30. 6. 2027, daňové a mzdové veličiny zodpovedajú roku 2026 (1. 1. – 31. 12. 2026). Po uplynutí týchto období odporúčame overiť aktuálnosť výpočtu.</p>
+        <p>Použitie kalkulačky je na vlastnú zodpovednosť používateľa. Ak ste narazili na chybu alebo máte návrh na zlepšenie, napíšte nám na <a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a> — každú spätnú väzbu privítame.</p>
+        <p class="disclaimer-meta">Kalkulačku prevádzkuje Legal Engineering, s. r. o.</p>
+      </div>
+    </section>
+
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>

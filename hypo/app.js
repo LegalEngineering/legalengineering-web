@@ -8,7 +8,7 @@
  *
  * Zdroje:
  *  - Životné minimum od 1.7.2026 do 30.6.2027: 295,22 / 205,96 / 134,80 €
- *    (nové ŽM platí od 1.7.2027, zverejnenie v máji 2027)
+ *    (nové ŽM platí od 1.7.2027, zverejnenie v júni 2027)
  *  - NBS opatrenie o hypotékach: DTI max 8× čistý ročný príjem (−0,25/rok nad 40 pri úvere do dôchodku),
  *    DSTI max 60 % disponibilného príjmu (70 % výnimka pre 5 % objemu),
  *    stres test +2 pp (resp. +1 pp pre fixáciu nad 10 rokov), úrok capped na 6 %,
@@ -17,29 +17,40 @@
  *    max VZ sociálneho poistenia 16 764 €/mes
  *  - Daň z príjmu 2026 (mesačný základ dane):
  *    19 % do 3 665,28 €; 25 % do 5 029,10 €; 30 % do 6 250,86 €; 35 % nad
- *  - NČZD 2026: 497,23 €/mes; kráti sa pri ročnom ZD > 26 367,26 €;
- *    NČZD = 12 558,55 − ZD_ročný/4, zrušená pri ZD_ročný ≥ 50 234,18 €
- *  - Daňový bonus: 100 €/mes pre dieťa < 15 r., 50 €/mes pre 15–18 r.
+ *  - NČZD 2026 (§ 11 ods. 2 zákona č. 595/2003 Z. z. v znení od 1.1.2026,
+ *    ŽM k 1.1.2026 = 284,13 €): 497,23 €/mes (21× ŽM / 12); kráti sa pri
+ *    ročnom ZD > 26 083,13 € (91,8× ŽM); NČZD_ročná = 14 661,11 (51,6× ŽM)
+ *    − ZD_ročný/3, zrušená pri ZD_ročný ≥ 43 983,32 € (154,8× ŽM)
+ *  - Daňový bonus na deti (§ 33 zákona č. 595/2003 Z. z.): 100 €/mes pre
+ *    dieťa < 15 r., 50 €/mes pre 15–18 r.; strop = % základu dane podľa
+ *    počtu detí (29/36/43/50/57/64 %, § 33 ods. 6); pri ZD_mes > 2 286 €
+ *    (1,5× priemerná mzda 2024) sa kráti o 1/10 rozdielu na KAŽDÉ dieťa
+ *    (§ 33 ods. 11). V kalkulačke je bonus OPT-IN (state.bonusDeti,
+ *    default false) — uplatniť ho môže len jeden z rodičov, ak má nárok.
  */
 'use strict';
 
 // ————— KONŠTANTY ————————————————————————————————————————————————————
-// Životné minimum platné od 1.7.2026 do 30.6.2027 (nové ŽM platí od 1.7.2027, zverejnenie v máji 2027).
+// Životné minimum platné od 1.7.2026 do 30.6.2027 (nové ŽM platí od 1.7.2027, zverejnenie v júni 2027).
 const ZM = { dosp1: 295.22, dosp2: 205.96, dieta: 134.80 };
 
 const SOC = 0.094, ZDR = 0.05;
 const SOC_MAX_VZ_MES = 16764;
 const NCZD_MES = 497.23;
-const NCZD_HRANICA_ROK = 26367.26;
-const NCZD_NULA_ROK = 50234.18;
-const NCZD_KONSTANTA = 12558.55;
+const NCZD_HRANICA_ROK = 26083.13; // 91,8× ŽM 284,13 (§ 11 ods. 2 písm. a))
+const NCZD_NULA_ROK = 43983.32;    // 154,8× ŽM — NČZD klesne na nulu
+const NCZD_KONSTANTA = 14661.11;   // 51,6× ŽM (§ 11 ods. 2 písm. b))
 const PASMA = [
   { hr: 3665.28, s: 0.19 },
   { hr: 5029.10, s: 0.25 },
   { hr: 6250.86, s: 0.30 },
   { hr: Infinity, s: 0.35 },
 ];
-const BONUS_LIMIT_ZD_MES = 2640;
+// 1,5× priemerná mesačná mzda 2024 (1 524 €, ŠÚ SR) — § 33 ods. 11
+const BONUS_LIMIT_ZD_MES = 2286;
+// Strop bonusu ako % základu dane podľa počtu detí — § 33 ods. 6
+// index = počet detí (1..6+): 29 / 36 / 43 / 50 / 57 / 64 %
+const BONUS_PCT_CAP = [0, 0.29, 0.36, 0.43, 0.50, 0.57, 0.64];
 
 // ————— VÝPOČTY ————————————————————————————————————————————————————
 function hrubaNaCistu(hruba, { uplNCZD = true, detiDo15 = 0, deti15_18 = 0 } = {}) {
@@ -52,7 +63,7 @@ function hrubaNaCistu(hruba, { uplNCZD = true, detiDo15 = 0, deti15_18 = 0 } = {
   let ncdz = 0;
   if (uplNCZD) {
     if (zdRok <= NCZD_HRANICA_ROK) ncdz = NCZD_MES;
-    else if (zdRok < NCZD_NULA_ROK) ncdz = Math.max(0, (NCZD_KONSTANTA - zdRok / 4) / 12);
+    else if (zdRok < NCZD_NULA_ROK) ncdz = Math.max(0, (NCZD_KONSTANTA - zdRok / 3) / 12);
   }
   const zd_zdan = Math.max(0, zd - ncdz);
 
@@ -65,11 +76,16 @@ function hrubaNaCistu(hruba, { uplNCZD = true, detiDo15 = 0, deti15_18 = 0 } = {
     prev = p.hr;
   }
 
-  // Daňový bonus (približný; kráti sa pri ZD_mes > 2640 o 1/10 rozdielu)
+  // Daňový bonus na deti (§ 33 zákona č. 595/2003 Z. z.; mesačná aproximácia)
   let bonus = detiDo15 * 100 + deti15_18 * 50;
-  if (zd > BONUS_LIMIT_ZD_MES && bonus > 0) {
-    const redukcia = (zd - BONUS_LIMIT_ZD_MES) / 10;
-    bonus = Math.max(0, bonus - redukcia);
+  if (bonus > 0) {
+    const pocetDeti = detiDo15 + deti15_18;
+    // Strop: % základu dane podľa počtu detí (§ 33 ods. 6)
+    bonus = Math.min(bonus, BONUS_PCT_CAP[Math.min(pocetDeti, 6)] * zd);
+    // Krátenie pri ZD_mes > 2 286 € — o 1/10 rozdielu na KAŽDÉ dieťa (§ 33 ods. 11)
+    if (zd > BONUS_LIMIT_ZD_MES) {
+      bonus = Math.max(0, bonus - pocetDeti * (zd - BONUS_LIMIT_ZD_MES) / 10);
+    }
   }
 
   // Cena práce (odvody zamestnávateľa ~ 35,2 %: soc 25,2 + zdr 10 (ZP 2026))
@@ -126,6 +142,7 @@ const pct = (n, dec = 2) => `${n.toFixed(dec).replace('.', ',')} %`;
 
 const DEFAULT_STATE = {
   ziadatelov: 1, deti: 0, detiDo15: 0, deti15_18: 0,
+  bonusDeti: false,
   vek1: 35, vek2: 35,
   vstupnyMod: 'hruba',
   hruba1: 2000, hruba2: 0, cista1: 0, cista2: 0,
@@ -257,29 +274,81 @@ function Field(label, child, hint) {
   );
 }
 
+// Flag: potláča min/max clamp v blur handleroch NumInput počas re-renderu.
+// render() pred zmazaním DOM aktívne pole explicitne odfokusuje (viď capture
+// blok) — bez toho by Chrome po odstránení fokusovaného elementu vystrelil
+// falošný blur, ktorý by clampoval hodnotu uprostred písania.
+let suppressNumBlur = false;
+
+// Sanitizácia číselného vstupu: povolené sú číslice a jedna desatinná
+// čiarka ALEBO bodka; ostatné znaky sa ignorujú.
+function sanitizeNumStr(s) {
+  let out = '', sep = false;
+  for (const ch of s) {
+    if (ch >= '0' && ch <= '9') out += ch;
+    else if ((ch === ',' || ch === '.') && !sep) { out += ch; sep = true; }
+  }
+  return out;
+}
+// Parsovanie sanitizovaného reťazca: čiarka = desatinná bodka; prázdne pole = 0.
+function parseNumStr(s) {
+  const v = parseFloat(sanitizeNumStr(s).replace(',', '.'));
+  return isFinite(v) ? v : 0;
+}
+
 function NumInput({ value, onChange, step = 1, min = 0, max, suffix = '€', dataKey }) {
+  // type="text" (nie "number"): number input v Chrome nepodporuje
+  // selectionStart/setSelectionRange, takže obnova caretu po re-renderi
+  // nefungovala a kurzor po každej cifre skočil na začiatok poľa.
+  // step/min/max atribúty na text inpute nefungujú — min/max sa clampuje
+  // až pri blur (počas písania by clamp rozbíjal zadávanie, napr. vek „4“).
   const input = el('input', {
     class: 'w-full bg-[#1a1a1e] border border-[#3a362c] text-[#f0ead6] px-3 py-2 pr-10 rounded-sm font-mono text-sm focus:outline-none focus:border-[#d4873c] transition-colors',
-    type: 'number',
-    value: value === 0 ? '' : value,
+    type: 'text',
+    inputmode: 'decimal',
+    autocomplete: 'off',
+    value: value === 0 ? '' : String(value).replace('.', ','),
     placeholder: '0',
-    step,
-    min,
-    max,
     // Stabilný identifikátor poľa pre obnovu focusu po re-renderi (viď render()).
     'data-fk': dataKey || null,
   });
-  input.addEventListener('input', e => onChange(parseFloat(e.target.value) || 0));
+  input.addEventListener('input', () => {
+    const raw = input.value;
+    const clean = sanitizeNumStr(raw);
+    if (clean !== raw) {
+      // Neplatné znaky odstráň priamo v poli a caret posuň o počet
+      // odstránených znakov pred pôvodnou pozíciou caretu.
+      const pos = input.selectionStart != null ? input.selectionStart : clean.length;
+      const cleanBefore = sanitizeNumStr(raw.slice(0, pos));
+      input.value = clean;
+      input.setSelectionRange(cleanBefore.length, cleanBefore.length);
+    }
+    onChange(parseNumStr(input.value));
+  });
+  input.addEventListener('blur', () => {
+    // Falošný blur počas re-renderu (viď suppressNumBlur v render()) ani
+    // blur na odpojenom elemente NIE je skutočný odchod používateľa z poľa
+    // — clamp len pri reálnom blure na pripojenom inpute.
+    if (suppressNumBlur || !input.isConnected) return;
+    const v = parseNumStr(input.value);
+    let c = v;
+    if (min != null && c < min) c = min;
+    if (max != null && c > max) c = max;
+    // Normalizuj zobrazenie (napr. „123,“ → „123“; desatinná bodka → čiarka).
+    input.value = c === 0 ? '' : String(c).replace('.', ',');
+    if (c !== v) onChange(c);
+  });
   return el('div', 'relative flex items-center',
     input,
     el('span', 'absolute right-3 text-[#70684f] text-xs font-mono pointer-events-none', suffix),
   );
 }
 
-function Slider({ value, onChange, min, max, step = 1, suffix = '' }) {
+function Slider({ value, onChange, min, max, step = 1, suffix = '', disabled = false }) {
   const input = el('input', {
     class: 'flex-1 accent-[#d4873c]',
     type: 'range', value, min, max, step,
+    disabled: disabled ? true : null,
   });
   input.addEventListener('input', e => onChange(parseFloat(e.target.value)));
   return el('div', 'flex items-center gap-3',
@@ -335,8 +404,11 @@ function render() {
     const hh = cistaNaHrubu(cista, { detiDo15, deti15_18 });
     return Object.assign({}, hrubaNaCistu(hh, { detiDo15, deti15_18 }), { hruba: hh });
   };
-  const deti1Do15 = state.detiDo15;
-  const deti1_15_18 = state.deti15_18;
+  // Daňový bonus je OPT-IN: keď je checkbox vypnutý, do čistej mzdy sa
+  // bonus nepočíta (deti pre bonus = 0). ŽM logika nižšie používa surové
+  // state.detiDo15/deti15_18 — na ňu checkbox nemá vplyv.
+  const deti1Do15 = state.bonusDeti ? state.detiDo15 : 0;
+  const deti1_15_18 = state.bonusDeti ? state.deti15_18 : 0;
   const m1 = vyp(state.hruba1, state.cista1, deti1Do15, deti1_15_18);
   const m2 = state.ziadatelov === 2 ? vyp(state.hruba2, state.cista2, 0, 0) : null;
   const mzdaVypocty = { m1, m2 };
@@ -411,20 +483,27 @@ function render() {
   // ——— Zachytenie focusu PRED zmazaním DOM ———
   // Live prepočet (input event) volá render() po každej cifre, čo zmaže a znovu
   // postaví celý DOM. Bez tohto by editovaný <input> zanikol → strata focusu a
-  // caretu → používateľa „vyhodí z poľa". Zachytíme aktívne number pole a po
-  // prestavbe naň vrátime focus + caret. Mapovanie podľa data-fk (stabilný kľúč
-  // poľa), s fallbackom na index medzi number inputmi.
+  // caretu → používateľa „vyhodí z poľa". Zachytíme aktívne číselné pole
+  // (input[data-fk]) a po prestavbe naň vrátime focus + caret + rozpísaný text.
+  // Mapovanie podľa data-fk (stabilný kľúč poľa), s fallbackom na index.
   let focusRestore = null;
   const active = document.activeElement;
-  if (active && active.tagName === 'INPUT' && active.type === 'number' && root.contains(active)) {
-    const numbers = [...root.querySelectorAll('input[type=number]')];
+  if (active && active.tagName === 'INPUT' && active.hasAttribute('data-fk') && root.contains(active)) {
+    const fields = [...root.querySelectorAll('input[data-fk]')];
     let caret = null;
-    try { caret = active.selectionStart; } catch (e) { /* number input nemusí podporovať selectionStart */ }
+    try { caret = active.selectionStart; } catch (e) { /* pre istotu — na type=text selectionStart funguje */ }
     focusRestore = {
       fk: active.getAttribute('data-fk'),
-      index: numbers.indexOf(active),
+      index: fields.indexOf(active),
+      raw: active.value,
       caret,
     };
+    // Odfokusuj pole PRED zmazaním DOM (s potlačeným clamp-blur handlerom).
+    // Ak by sa fokusovaný element odstránil z DOM, Chrome by dodatočne
+    // vystrelil falošný blur na novo-fokusovanom inpute → clamp pri písaní.
+    suppressNumBlur = true;
+    active.blur();
+    suppressNumBlur = false;
   }
 
   root.textContent = '';
@@ -447,7 +526,7 @@ function render() {
         `${zm.dosp1} / ${zm.dosp2} / ${zm.dieta} €`,
       ),
       el('div', 'text-[10px] text-[#70684f] mono text-right max-w-[14rem]',
-        'platné 1. 7. 2026 – 30. 6. 2027 · nové ŽM platí od 1. 7. 2027 (zverejnenie v máji 2027)',
+        'platné 1. 7. 2026 – 30. 6. 2027 · nové ŽM platí od 1. 7. 2027 (zverejnenie v júni 2027)',
       ),
     ),
   );
@@ -484,11 +563,28 @@ function render() {
         Slider({ value: state.deti, onChange: v => up('deti', v), min: 0, max: 5 }),
         `${state.deti} × ${zm.dieta} €`,
       ),
-      el('div', 'grid grid-cols-2 gap-3',
+      el('label', { class: 'flex items-start gap-2 mb-3', style: { cursor: 'pointer' } },
+        el('input', {
+          type: 'checkbox',
+          class: 'accent-[#d4873c] mt-0.5 shrink-0',
+          checked: state.bonusDeti ? true : null,
+          'data-testid': 'bonus-deti-chk',
+          onchange: (e) => up('bonusDeti', e.target.checked),
+        }),
+        el('div', null,
+          el('div', 'text-xs text-[#f0ead6]', 'Zohľadniť daňový bonus na deti v čistej mzde'),
+          el('div', 'text-[10px] text-[#70684f] leading-relaxed mt-0.5',
+            'Bonus zvyšuje čistý príjem, len ak naň máte nárok (§ 33 zákona o dani z príjmov) — uplatňuje ho len jeden z rodičov.'),
+        ),
+      ),
+      el('div', {
+          class: 'grid grid-cols-2 gap-3' + (state.bonusDeti ? '' : ' pointer-events-none'),
+          style: state.bonusDeti ? null : { opacity: 0.45 },
+        },
         Field('Deti < 15 r. (bonus)',
-          Slider({ value: state.detiDo15, onChange: v => up('detiDo15', v), min: 0, max: 5, suffix: '' })),
+          Slider({ value: state.detiDo15, onChange: v => up('detiDo15', v), min: 0, max: 5, suffix: '', disabled: !state.bonusDeti })),
         Field('Deti 15–18 r. (bonus)',
-          Slider({ value: state.deti15_18, onChange: v => up('deti15_18', v), min: 0, max: 5, suffix: '' })),
+          Slider({ value: state.deti15_18, onChange: v => up('deti15_18', v), min: 0, max: 5, suffix: '', disabled: !state.bonusDeti })),
       ),
       el('div', `grid gap-3 ${state.ziadatelov === 2 ? 'grid-cols-2' : 'grid-cols-1'}`,
         Field('Vek žiadateľ 1',
@@ -718,8 +814,9 @@ function render() {
       infoRow('DTI', '= max 8-násobok čistého ročného príjmu. Nad 40 r. a ak splatnosť presahuje 65. rok života, DTI sa znižuje o 0,25 za každý rok nad 40 (tzv. strieborná hypotéka · NBS od 1.1.2023).'),
       infoRow('DSTI', '= splátka ≤ 60 % (disponibilný príjem − životné minimum − existujúce splátky). Banky môžu dať výnimku 70 % pre max 5 % objemu nových úverov.'),
       infoRow('Stres test', '= aktuálny úrok + 2 pp (+1 pp pre fixáciu > 10 rokov), capped na 6 %. DSTI sa počíta z väčšej zo splátok (reálna vs. stresovaná) pri splatnosti minimálne 30 rokov.'),
-      infoRow('Životné minimum', `platné 1.7.2026 – 30.6.2027: ${ZM.dosp1} / ${ZM.dosp2} / ${ZM.dieta} € (plnoletá FO / ďalšia spoločne posudzovaná plnoletá FO / nezaopatrené dieťa). Nové ŽM platí od 1. 7. 2027 (zverejnenie v máji 2027).`),
-      infoRow('Mzdové odvody 2026', ': soc. 9,4 % · zdr. 5 % · daň progresívne 19 / 25 / 30 / 35 %. NČZD 497,23 €/mes kráti sa pri ročnom ZD nad 26 367,26 €.'),
+      infoRow('Životné minimum', `platné 1.7.2026 – 30.6.2027: ${ZM.dosp1} / ${ZM.dosp2} / ${ZM.dieta} € (plnoletá FO / ďalšia spoločne posudzovaná plnoletá FO / nezaopatrené dieťa). Nové ŽM platí od 1. 7. 2027 (zverejnenie v júni 2027).`),
+      infoRow('Mzdové odvody 2026', ': soc. 9,4 % · zdr. 5 % · daň progresívne 19 / 25 / 30 / 35 %. NČZD 497,23 €/mes, kráti sa pri ročnom ZD nad 26 083,13 € (zaniká pri 43 983,32 €).'),
+      infoRow('Daňový bonus na deti', '= 100 €/mes (dieťa do 15 r.) / 50 €/mes (15–18 r.), najviac % základu dane podľa počtu detí; pri základe dane nad 2 286 €/mes sa kráti (§ 33 zákona č. 595/2003 Z. z.). V kalkulačke sa započíta, len ak ho zapnete — uplatniť ho môže len jeden z rodičov.'),
     ),
   });
 
@@ -733,7 +830,12 @@ function render() {
   // ——— FOOTER ———
   const footer = el('footer', 'mt-10 pt-4 border-t border-[#2a2620] text-[10px] text-[#70684f] mono flex justify-between',
     el('span', null, 'Výsledky sú orientačné · jednotlivé banky si môžu pravidlá upraviť prísnejšie'),
-    el('span', null, 'Legal Engineering · v2.0 / 2026-04-20'),
+    el('span', null,
+      el('a', { class: 'text-[#70684f] hover:text-[#f0ead6] transition-colors', href: '#faq' }, 'Časté otázky'),
+      ' · ',
+      el('a', { class: 'text-[#70684f] hover:text-[#f0ead6] transition-colors', href: '#disclaimer' }, 'Upozornenie'),
+      ' · Legal Engineering · v2.1 / 2026-08-17',
+    ),
   );
 
   const inner = el('div', 'max-w-[1240px] mx-auto px-6 py-8',
@@ -745,18 +847,27 @@ function render() {
   // Prednostne podľa stabilného kľúča (data-fk); ak pole v novom DOM neexistuje
   // (napr. zmena módu/počtu žiadateľov zmenila skladbu polí), fallback na index.
   if (focusRestore) {
-    const numbers = [...root.querySelectorAll('input[type=number]')];
+    const fields = [...root.querySelectorAll('input[data-fk]')];
     let target = null;
     if (focusRestore.fk) {
-      target = numbers.find(i => i.getAttribute('data-fk') === focusRestore.fk) || null;
+      target = fields.find(i => i.getAttribute('data-fk') === focusRestore.fk) || null;
     }
-    if (!target && focusRestore.index >= 0 && focusRestore.index < numbers.length) {
-      target = numbers[focusRestore.index];
+    const sameField = !!target;
+    if (!target && focusRestore.index >= 0 && focusRestore.index < fields.length) {
+      target = fields[focusRestore.index];
     }
     if (target) {
       target.focus();
-      if (focusRestore.caret != null) {
-        try { target.setSelectionRange(focusRestore.caret, focusRestore.caret); } catch (e) { /* number input v niektorých prehliadačoch hádže na setSelectionRange */ }
+      if (sameField) {
+        // Rozpísaný text má prednosť pred normalizovanou hodnotou zo state —
+        // inak by medzistavy ako „123,“ (rozpísané desatinné číslo) alebo
+        // „0“ pri písaní „0,5“ po re-renderi zanikli.
+        if (focusRestore.raw != null && target.value !== focusRestore.raw) {
+          target.value = focusRestore.raw;
+        }
+        if (focusRestore.caret != null) {
+          try { target.setSelectionRange(focusRestore.caret, focusRestore.caret); } catch (e) { /* defensive */ }
+        }
       }
     }
   }
