@@ -1,0 +1,22 @@
+# Súbory, ktoré Cloudflare Workers NESMIE nasadiť ako verejné assets.
+# (syntax ako .gitignore; súbor musí ležať v assets.directory = koreň repa)
+.git
+.git/
+.github/
+.gitignore
+.assetsignore
+.wrangler/
+.dev.vars*
+.env*
+node_modules/
+wrangler.json
+wrangler.jsonc
+wrangler.toml
+package.json
+package-lock.json
+README.md
+CLAUDE.md
+*.py
+*.sh
+CNAME
+.nojekyll
