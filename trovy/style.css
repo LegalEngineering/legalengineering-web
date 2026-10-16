@@ -863,3 +863,5 @@ table.breakdown tr.total td.num {
   padding: 0.25rem;
 }
 .update-toast .toast-dismiss:hover { color: #faf7ef; }
+
+.app-footer-legal { margin-top: 0.6rem; font-size: 0.78rem; opacity: 0.8; }

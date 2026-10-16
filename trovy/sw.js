@@ -7,7 +7,7 @@
 //   vyhlášky) bumpni CACHE verziu nižšie aj `version` v version.json a TARIFF.meta.version,
 //   inak používatelia s nainštalovanou PWA dostanú toast a po obnovení novú verziu.
 
-const CACHE = 'trovy-2026.06.01b';
+const CACHE = 'trovy-2026.06.01b-p1';
 
 // Produkčné statické súbory. NEZAHŔŇAŤ _review.html, server.py, *.cmd, tests/ (dev nástroje).
 const ASSETS = [
