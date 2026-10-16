@@ -1822,8 +1822,8 @@ function exportPrintDoc(result, includeOdov) {
   }
   return '<!DOCTYPE html><html lang="sk"><head><meta charset="UTF-8">'
     + `<title>${esc(title)}</title>`
-    + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
-    + 'family=Archivo:wght@400;600&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap">'
+    + '<link rel="stylesheet" href="' + location.origin + '/assets/fonts/archivo.css">'
+    + '<link rel="stylesheet" href="' + location.origin + '/assets/fonts/fraunces.css">'
     + `<style>${PRINT_CSS}</style></head><body>${body}`
     + '<script>window.addEventListener("load",function(){setTimeout(function(){'
     + 'window.focus();window.print();},350);});<\/script></body></html>';
