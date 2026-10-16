@@ -1243,7 +1243,17 @@ function renderPrilohy() {
 
 function renderFooter() {
   return el('footer', { class: 'app-footer' }, [
-    el('p', {}, [ el('strong', {}, 'Upozornenie: '), TARIFF.disclaimer ])
+    el('p', {}, [ el('strong', {}, 'Upozornenie: '), TARIFF.disclaimer ]),
+    el('p', { class: 'app-footer-legal' }, [
+      'Kalkulačku prevádzkuje Legal Engineering, s. r. o., Nevädzová 6, 821 01 Bratislava – mestská časť Ružinov · ' +
+      'IČO: 48 336 076 · DIČ: 2120146127 · IČ DPH: SK2120146127 · ' +
+      'zapísaná v Obchodnom registri Mestského súdu Bratislava III, oddiel: Sro, vložka č. 106968/B · e-mail: ',
+      el('a', { href: 'mailto:kontakt@legalengineering.sk' }, 'kontakt@legalengineering.sk'),
+      ' · tel.: ',
+      el('a', { href: 'tel:+421908849910' }, '+421 908 849 910'),
+      ' · Orgán dozoru: Slovenská obchodná inšpekcia, Inšpektorát SOI pre Bratislavský kraj, ' +
+      'Bajkalská 21/A, P. O. BOX č. 5, 820 07 Bratislava'
+    ])
   ]);
 }
 
