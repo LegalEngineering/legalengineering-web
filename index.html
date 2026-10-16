@@ -16,11 +16,9 @@
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='3' y='3' width='42' height='42' rx='11' fill='%232F6B43'/%3E%3Ctext x='24' y='32' font-family='Georgia,serif' font-size='22' font-weight='600' fill='%23F6F1E7' text-anchor='middle'%3ELE%3C/text%3E%3C/svg%3E" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Fonts load non-render-blocking so the page (and reveal script) paints immediately -->
-  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&display=swap"></noscript>
+  <!-- Písma hosťované lokálne (OFL, licencie v /assets/fonts/) – žiadne požiadavky na Google Fonts -->
+  <link rel="stylesheet" href="/assets/fonts/fraunces.css">
+  <link rel="stylesheet" href="/assets/fonts/source-sans-3.css">
   <script>document.documentElement.classList.add('js');</script>
 
   <!--
@@ -32,6 +30,7 @@
       Vygumovanie     → vygumovanie/   (folder shipped in this deploy)
       Mortgage calc   → hypo/
       Legal cost calc → trovy/
+      Zaručená konverzia → konverzia/ (Slovak guide)
       BiznisBox       → coming soon (folder not shipped yet; re-add biznisbox/ + relink when ready)
       Box na pozemku  → https://www.boxnapozemku.sk   (own live domain — external)
       ScreenWhile     → coming soon (own domain not live yet; swap the card back to a link when ready)
@@ -376,6 +375,19 @@
             </div>
           </a>
 
+          <!-- Zaručená konverzia (sprievodca, SK) -->
+          <a class="work reveal" href="konverzia/" aria-label="Open Zaručená konverzia guide">
+            <div class="thumb-frame">
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/konverzia</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/konverzia.jpg" width="760" height="475" loading="lazy" alt="Preview of the Zaručená konverzia guide"></div>
+            </div>
+            <div class="work-meta">
+              <div class="work-head"><span class="work-name">Zaručená konverzia</span><span class="work-tag">Guide</span></div>
+              <p class="work-desc">Turning paper into legally valid electronic documents under Slovak e-Government law — who may do it, when you need it and the statutory price cap. In Slovak.</p>
+              <span class="work-open">Open <span class="a">→</span></span>
+            </div>
+          </a>
+
           <!-- BiznisBox (coming soon — not live yet; swap back to <a href="biznisbox/"> + ship the /biznisbox/ folder when ready) -->
           <div class="work work-soon reveal" aria-label="BiznisBox — coming soon">
             <div class="thumb-frame">
@@ -467,6 +479,7 @@
             <a href="pi-poem/" target="_blank" rel="noopener">Pi poem</a>
             <a href="hypo/" target="_blank" rel="noopener">Mortgage Calculator</a>
             <a href="trovy/" target="_blank" rel="noopener">Legal Cost Calculator</a>
+            <a href="konverzia/">Zaručená konverzia</a>
             <span style="color:rgba(246,240,232,.5)">BiznisBox · soon</span>
             <a href="https://www.boxnapozemku.sk" target="_blank" rel="noopener">Box na pozemku</a>
             <span style="color:rgba(246,240,232,.5)">ScreenWhile · soon</span>
