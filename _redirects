@@ -1,0 +1,4 @@
+# Stiahnuté podstránky -> hlavná stránka (Workers static assets, _redirects)
+/bitka-pri-mohaci / 301
+/bitka-pri-mohaci/ / 301
+/bitka-pri-mohaci/* / 301
