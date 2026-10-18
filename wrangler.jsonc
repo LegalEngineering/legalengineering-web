@@ -2,6 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "legalengineering-web",
   "compatibility_date": "2026-08-17",
+  // Web beží len na vlastnej doméne; *.workers.dev a Preview URLs sú vypnuté (duplicitný obsah).
+  "workers_dev": false,
+  "preview_urls": false,
   "observability": {
     "enabled": true
   },
