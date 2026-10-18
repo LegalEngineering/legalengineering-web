@@ -159,6 +159,16 @@
     .hw, .w{ transition:none; }
   }
 </style>
+  <!-- Google Analytics 4 + Consent Mode v2 (prísny režim): všetko „denied“; gtag.js sa načíta až po kliknutí na „Prijať“ (/consent.js) -->
+  <script>
+  window.CONSENT_CFG={key:'le_consent_v1',ga:'G-J74DTLWPTE'};
+  window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'denied',personalization_storage:'denied',security_storage:'granted',wait_for_update:500});
+  gtag('set','ads_data_redaction',true);
+  try{if(localStorage.getItem(CONSENT_CFG.key)==='granted')gtag('consent','update',{analytics_storage:'granted'});}catch(e){}
+  gtag('js',new Date());
+  gtag('config','G-J74DTLWPTE',{allow_google_signals:false,allow_ad_personalization_signals:false});
+  </script>
 </head>
 <body data-stage="0">
 
@@ -260,6 +270,7 @@
     <p>And <em>nowhere soon another Five</em> is literally true: after the five in <em>26535</em> — the tenth digit — the next five appears only at the 31st decimal place. π would not offer a rhyme for <em>wife</em> for another 21 digits.</p>
   </div>
   <p class="op" lang="sk">Prevádzkovateľ: <a href="/">Legal Engineering, s.&nbsp;r.&nbsp;o.</a></p>
+<p class="op" lang="sk"><a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov</a> · <a href="/ochrana-osobnych-udajov/#cookies" data-consent-open>Nastavenia cookies</a></p>
 </section>
 
 <script>
@@ -1064,5 +1075,10 @@
   }
 })();
 </script>
+<div id="consentBar" class="cb" role="region" aria-label="Súhlas s analytickými cookies" lang="sk" hidden>
+  <p>So súhlasom budeme na meranie návštevnosti používať Google Analytics, ktorý ukladá cookies. Bez súhlasu sa návštevnosť nemeria a cookies sa neukladajú. <a href="/ochrana-osobnych-udajov/#cookies">Viac o spracúvaní údajov</a></p>
+  <div class="cb-btns"><button type="button" data-c="denied">Odmietnuť</button><button type="button" data-c="granted">Prijať</button></div>
+</div>
+<script src="/consent.js"></script>
 </body>
 </html>

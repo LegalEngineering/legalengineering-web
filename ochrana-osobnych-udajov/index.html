@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2F6B43" />
+  <title>Ochrana osobných údajov | Legal Engineering</title>
+  <meta name="description" content="Ako Legal Engineering, s. r. o. spracúva údaje návštevníkov webu legalengineering.sk: kalkulačky bežia v prehliadači, meranie návštevnosti Google Analytics len so súhlasom, práva dotknutej osoby." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://legalengineering.sk/ochrana-osobnych-udajov/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="sk_SK" />
+  <meta property="og:site_name" content="Legal Engineering" />
+  <meta property="og:title" content="Ochrana osobných údajov | Legal Engineering" />
+  <meta property="og:description" content="Čo web legalengineering.sk zbiera a čo nie, cookies a meranie návštevnosti so súhlasom, vaše práva." />
+  <meta property="og:url" content="https://legalengineering.sk/ochrana-osobnych-udajov/" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='3' y='3' width='42' height='42' rx='11' fill='%232F6B43'/%3E%3Ctext x='24' y='32' font-family='Georgia,serif' font-size='22' font-weight='600' fill='%23F6F1E7' text-anchor='middle'%3ELE%3C/text%3E%3C/svg%3E" />
+
+  <!-- Písma hosťované lokálne (OFL, licencie v /assets/fonts/) – žiadne požiadavky na Google Fonts -->
+  <link rel="stylesheet" href="/assets/fonts/fraunces.css">
+  <link rel="stylesheet" href="/assets/fonts/source-sans-3.css">
+
+  <style>
+    :root{
+      --paper:#F6F1E7; --paper-2:#ECE3D2; --surface:#FBF8F1;
+      --ink:#1E2A22; --ink-soft:#5F6B63;
+      --green:#2F6B43; --green-deep:#1F3328; --green-light:#4E8A5C;
+      --brass:#9C6B34; --brass-deep:#7C5326; --gold:#C28A2B;
+      --line:#D8CBB0; --line-soft:#E6DCC8;
+      --display:'Fraunces','Hoefler Text',Georgia,serif;
+      --body:'Source Sans 3',system-ui,-apple-system,sans-serif;
+      --maxw:820px;
+    }
+    *,*::before,*::after{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0; background-color:var(--paper);
+      background-image:
+        radial-gradient(circle at 12% 4%, rgba(194,138,43,.09), transparent 40%),
+        radial-gradient(circle at 90% -2%, rgba(47,107,67,.10), transparent 44%);
+      background-attachment:fixed;
+      color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.7;
+      -webkit-font-smoothing:antialiased;
+    }
+    a{ color:var(--green); text-decoration:underline; text-decoration-color:rgba(47,107,67,.35); text-underline-offset:3px; }
+    a:hover{ text-decoration-color:var(--green); }
+    ::selection{ background:var(--green); color:var(--paper); }
+    h1,h2,h3{ font-family:var(--display); font-weight:600; line-height:1.15; letter-spacing:-.012em; margin:0; color:var(--ink); }
+    h1{ font-size:clamp(2.2rem, 5.4vw, 3.6rem); }
+    h2{ font-size:clamp(1.5rem, 3.2vw, 2.1rem); margin-bottom:16px; }
+    h3{ font-size:1.18rem; margin:24px 0 8px; color:var(--green-deep); }
+    p{ margin:0 0 1rem; }
+    ul,ol{ margin:0 0 1rem; padding-left:1.3rem; }
+    li{ margin-bottom:.4rem; }
+    code{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.92em; background:var(--paper-2); padding:1px 5px; border-radius:5px; }
+    .wrap{ width:min(var(--maxw), calc(100% - 44px)); margin:0 auto; }
+
+    .nav{ border-bottom:1px solid var(--line); background:rgba(246,241,231,.9); }
+    .nav-inner{ display:flex; align-items:center; justify-content:space-between; gap:16px; height:64px; width:min(1140px, calc(100% - 44px)); margin:0 auto; }
+    .brand{ display:flex; align-items:center; gap:11px; font-family:var(--display); font-weight:600; font-size:1.22rem; color:var(--green-deep); text-decoration:none; }
+    .brand .mark{ width:30px; height:30px; border-radius:9px; background:var(--green); color:var(--paper); display:grid; place-items:center; font-size:.9rem; }
+    .nav a.back{ font-size:.92rem; font-weight:600; color:var(--green-deep); text-decoration:none; }
+
+    .hero{ padding:clamp(44px, 7vw, 80px) 0 clamp(24px, 4vw, 40px); }
+    .eyebrow{ display:inline-block; font-weight:700; letter-spacing:.14em; text-transform:uppercase; font-size:.72rem; color:var(--brass-deep);
+      border:1.5px solid var(--brass); border-radius:100px; padding:6px 15px; background:rgba(194,138,43,.07); margin-bottom:22px; }
+    .lead{ font-size:1.2rem; color:var(--ink-soft); margin-top:20px; max-width:62ch; }
+    .stamp{ margin-top:18px; font-size:.9rem; color:var(--ink-soft); }
+
+    .toc{ border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:18px 22px; margin:8px 0 10px; }
+    .toc strong{ display:block; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase; color:var(--brass); margin-bottom:8px; }
+    .toc ol{ margin:0; columns:2; column-gap:28px; }
+    @media (max-width:640px){ .toc ol{ columns:1; } }
+    .toc a{ text-decoration:none; color:var(--green-deep); font-weight:600; }
+
+    section.block{ padding:clamp(34px, 5vw, 54px) 0; border-bottom:1px solid var(--line-soft); scroll-margin-top:16px; }
+    .kicker{ display:block; font-size:.74rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--brass); margin-bottom:10px; }
+    .ref{ font-size:.86rem; color:var(--ink-soft); white-space:nowrap; }
+
+    .callout{ border-left:4px solid var(--brass); background:rgba(194,138,43,.08); padding:14px 18px; border-radius:0 10px 10px 0; margin:18px 0; }
+    .callout.green{ border-left-color:var(--green); background:rgba(47,107,67,.07); }
+    .callout p:last-child{ margin-bottom:0; }
+
+    dl{ margin:0 0 1rem; display:grid; grid-template-columns:max-content 1fr; gap:6px 22px; }
+    dt{ font-weight:700; color:var(--green-deep); }
+    dd{ margin:0; }
+    @media (max-width:560px){ dl{ grid-template-columns:1fr; gap:2px; } dd{ margin-bottom:10px; } }
+
+    table{ width:100%; border-collapse:collapse; margin:12px 0 18px; font-size:.97rem; background:var(--surface); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+    th,td{ padding:10px 14px; border-bottom:1px solid var(--line-soft); text-align:left; vertical-align:top; }
+    th{ background:var(--paper-2); font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; color:var(--green-deep); }
+    tr:last-child td{ border-bottom:none; }
+
+    .btn{ display:inline-flex; align-items:center; gap:9px; justify-content:center; font-family:var(--body); font-weight:600; font-size:1rem; line-height:1;
+      padding:14px 24px; border-radius:11px; cursor:pointer; border:1.5px solid var(--green); background:var(--green); color:var(--paper); text-decoration:none; }
+    .btn:hover{ background:var(--green-deep); border-color:var(--green-deep); }
+
+    footer{ background:var(--green-deep); color:var(--paper); padding:30px 0 34px; margin-top:56px; }
+    footer .wrap{ width:min(1140px, calc(100% - 44px)); }
+    .foot-top{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; font-size:.9rem; color:rgba(246,241,231,.8); }
+    .foot-top a{ color:rgba(246,241,231,.9); }
+    .foot-legal{ margin-top:16px; padding-top:14px; border-top:1px solid rgba(246,241,231,.14); font-size:.78rem; line-height:1.6; color:rgba(246,241,231,.6); }
+    .foot-legal a{ color:rgba(246,241,231,.78); }
+
+    :focus-visible{ outline:2px solid var(--gold); outline-offset:3px; border-radius:4px; }
+    .skip{ position:absolute; left:-999px; top:8px; background:var(--green-deep); color:var(--paper); padding:10px 14px; border-radius:8px; z-index:200; }
+    .skip:focus{ left:12px; }
+    @media print{ .nav, .toc, footer, .btn{ display:none; } body{ background:#fff; } }
+  </style>
+
+  <!-- Google Analytics 4 + Consent Mode v2 (prísny režim): všetko „denied“; gtag.js sa načíta až po kliknutí na „Prijať“ (/consent.js) -->
+  <script>
+  window.CONSENT_CFG={key:'le_consent_v1',ga:'G-J74DTLWPTE'};
+  window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'denied',personalization_storage:'denied',security_storage:'granted',wait_for_update:500});
+  gtag('set','ads_data_redaction',true);
+  try{if(localStorage.getItem(CONSENT_CFG.key)==='granted')gtag('consent','update',{analytics_storage:'granted'});}catch(e){}
+  gtag('js',new Date());
+  gtag('config','G-J74DTLWPTE',{allow_google_signals:false,allow_ad_personalization_signals:false});
+  </script>
+</head>
+
+<body>
+  <a class="skip" href="#obsah">Preskočiť na obsah</a>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/" aria-label="Legal Engineering – hlavná stránka"><span class="mark">LE</span>Legal Engineering</a>
+      <a class="back" href="/">← Hlavná stránka</a>
+    </div>
+  </header>
+
+  <main id="obsah">
+    <div class="wrap">
+      <section class="hero">
+        <span class="eyebrow">Ochrana súkromia</span>
+        <h1>Zásady ochrany osobných údajov</h1>
+        <p class="lead">
+          Ako Legal Engineering, s.&nbsp;r.&nbsp;o. nakladá s údajmi návštevníkov webu legalengineering.sk
+          a jeho podstránok (kalkulačky, sprievodcovia, interaktívne básne).
+        </p>
+        <p class="stamp">Účinné od 18. 10. 2026.</p>
+      </section>
+
+      <div class="callout green">
+        <p><strong>V skratke.</strong> Web nemá registráciu, účty ani formuláre. Kalkulačky počítajú výlučne vo vašom prehliadači
+        a nič z toho, čo do nich zadáte, sa nikam neodosiela. Jediné spracúvanie nad rámec technickej prevádzky je meranie
+        návštevnosti nástrojom Google Analytics – a to iba vtedy, ak ho v lište na spodku stránky výslovne prijmete.
+        Bez súhlasu sa návštevnosť nemeria a žiadne cookies sa neukladajú.</p>
+      </div>
+
+      <nav class="toc" aria-label="Obsah stránky">
+        <strong>Obsah</strong>
+        <ol>
+          <li><a href="#prevadzkovatel">Prevádzkovateľ</a></li>
+          <li><a href="#nezbierame">Čo web nezbiera</a></li>
+          <li><a href="#email">E-mailová komunikácia</a></li>
+          <li><a href="#prevadzka">Technická prevádzka webu</a></li>
+          <li><a href="#cookies">Cookies a meranie návštevnosti</a></li>
+          <li><a href="#prijemcovia">Príjemcovia a prenos do tretích krajín</a></li>
+          <li><a href="#prava">Vaše práva</a></li>
+          <li><a href="#urad">Dozorný orgán</a></li>
+          <li><a href="#zmeny">Zmeny zásad</a></li>
+        </ol>
+      </nav>
+
+      <!-- 1 -->
+      <section class="block" id="prevadzkovatel">
+        <span class="kicker">01</span>
+        <h2>Prevádzkovateľ</h2>
+        <p>Prevádzkovateľom, ktorý určuje účel a prostriedky spracúvania vašich osobných údajov, je:</p>
+        <dl>
+          <dt>Obchodné meno</dt><dd>Legal Engineering, s.&nbsp;r.&nbsp;o.</dd>
+          <dt>Sídlo</dt><dd>Nevädzová 6, 821 01 Bratislava – mestská časť Ružinov</dd>
+          <dt>IČO</dt><dd>48 336 076</dd>
+          <dt>DIČ / IČ DPH</dt><dd>2120146127 / SK2120146127</dd>
+          <dt>Zápis</dt><dd>Obchodný register Mestského súdu Bratislava III, oddiel: Sro, vložka č. 106968/B</dd>
+          <dt>E-mail</dt><dd><a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a></dd>
+          <dt>Telefón</dt><dd><a href="tel:+421908849910">+421 908 849 910</a></dd>
+        </dl>
+        <p>Postupujeme podľa nariadenia Európskeho parlamentu a Rady (EÚ) 2016/679 (ďalej „<strong>GDPR</strong>“)
+        a zákona č. 18/2018 Z.&nbsp;z. o ochrane osobných údajov.</p>
+        <p><strong>Zodpovedná osoba (DPO).</strong> Zodpovednú osobu sme neurčili – vzhľadom na povahu a rozsah spracúvania nám povinnosť
+        ustanoviť ju nevyplýva. Vo všetkých otázkach ochrany osobných údajov sa obráťte priamo na nás na uvedený e-mail.</p>
+      </section>
+
+      <!-- 2 -->
+      <section class="block" id="nezbierame">
+        <span class="kicker">02</span>
+        <h2>Čo web nezbiera</h2>
+        <ul>
+          <li><strong>Žiadne účty, registrácie ani formuláre.</strong> Na webe nie je kontaktný formulár, newsletter ani prihlasovanie.</li>
+          <li><strong>Kalkulačky bežia len vo vašom prehliadači.</strong> Hypotekárna kalkulačka (<a href="/hypo/">/hypo/</a>) aj kalkulačka trov
+            právneho zastúpenia (<a href="/trovy/">/trovy/</a>) počítajú výlučne v zariadení, na ktorom ich otvoríte. Zadané hodnoty – príjmy,
+            splátky, vek, tarifné hodnoty, úkony – sa neodosielajú na žiadny server, neukladáme ich a nevidíme ich. Výstup (tlač, kopírovanie
+            do schránky) vzniká tiež len vo vašom zariadení.</li>
+          <li><strong>Interaktívne básne a sprievodcovia</strong> (<a href="/vygumovanie/">Vygumovanie</a>, <a href="/pi-poem/">Pi poem</a>,
+            <a href="/konverzia/">Zaručená konverzia</a>) sú statické stránky; nič nezaznamenávajú.</li>
+          <li><strong>Inštalovateľné kalkulačky (PWA).</strong> Ak si kalkulačku „nainštalujete“ alebo ju otvoríte opakovane, prehliadač si uloží kópiu
+            jej súborov (tzv. service worker), aby fungovala aj bez pripojenia. Ide o technické uloženie bez osobných údajov; odstránite ho vymazaním
+            údajov stránky v prehliadači.</li>
+          <li><strong>Písma a knižnice hostujeme sami.</strong> Pri načítaní stránky sa neposielajú požiadavky na Google Fonts ani iné služby
+            tretích strán. Jedinou výnimkou je Google Analytics, a to až po vašom súhlase (časť 05).</li>
+        </ul>
+      </section>
+
+      <!-- 3 -->
+      <section class="block" id="email">
+        <span class="kicker">03</span>
+        <h2>E-mailová komunikácia</h2>
+        <p>Ak nám napíšete na <a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a>, spracúvame údaje, ktoré nám v správe
+        sami poskytnete (najmä meno, e-mailovú adresu a obsah správy), na účel jej vybavenia a ďalšej komunikácie s vami.</p>
+        <p><strong>Právny základ:</strong> vykonanie opatrení pred uzatvorením zmluvy na vašu žiadosť
+        <span class="ref">čl. 6 ods. 1 písm. b) GDPR</span>, inak náš oprávnený záujem odpovedať na doručenú správu a viesť
+        o nej evidenciu <span class="ref">čl. 6 ods. 1 písm. f) GDPR</span>.</p>
+        <p><strong>Uchovávanie:</strong> počas vybavovania vašej požiadavky; ak z komunikácie nevznikne spolupráca, správu vymažeme najneskôr
+        do 12 mesiacov od poslednej výmeny. Ak spolupráca vznikne, údaje ďalej spracúvame podľa zmluvy a osobitných predpisov (najmä účtovných a daňových).</p>
+      </section>
+
+      <!-- 4 -->
+      <section class="block" id="prevadzka">
+        <span class="kicker">04</span>
+        <h2>Technická prevádzka webu</h2>
+        <p>Web beží na infraštruktúre spoločnosti Cloudflare. Pri každom načítaní stránky sa – ako pri každom webe – technicky spracúva
+        IP adresa vášho zariadenia, čas požiadavky, požadovaná adresa a základné údaje o prehliadači. Slúžia výlučne na doručenie obsahu,
+        ochranu pred útokmi a prevádzkové záznamy; nepoužívame ich na identifikáciu návštevníkov ani na sledovanie ich správania.</p>
+        <p><strong>Právny základ:</strong> náš oprávnený záujem na bezpečnej a funkčnej prevádzke webu <span class="ref">čl. 6 ods. 1 písm. f) GDPR</span>.</p>
+      </section>
+
+      <!-- 5 -->
+      <section class="block" id="cookies">
+        <span class="kicker">05</span>
+        <h2>Cookies a meranie návštevnosti</h2>
+
+        <h3>Bez súhlasu</h3>
+        <p>Web neukladá do vášho zariadenia žiadne analytické ani reklamné cookies a návštevnosť nemeria. V úložisku prehliadača
+        (localStorage, položka <code>le_consent_v1</code>) si zapamätá iba vašu voľbu v lište – prijatie alebo odmietnutie merania – aby sa lišta
+        nezobrazovala pri každej návšteve. Toto uloženie je nevyhnutné na to, aby sme vašu voľbu rešpektovali, a súhlas si nevyžaduje.</p>
+
+        <h3>So súhlasom: Google Analytics 4</h3>
+        <p>Ak v lište kliknete na <strong>„Prijať“</strong>, načíta sa služba Google Analytics 4 spoločnosti
+        <strong>Google Ireland Limited</strong> (Gordon House, Barrow Street, Dublin 4, Írsko). Do kliknutia sa skript služby vôbec nenačíta.</p>
+        <table>
+          <tbody>
+            <tr><th scope="row">Účel</th><td>Zistiť, koľko ľudí web navštevuje, ktoré stránky a nástroje používajú, odkiaľ prichádzajú a či kliknú na kontaktný e-mail alebo telefón
+              (zaznamenáva sa iba skutočnosť kliknutia, nie vaše kontaktné údaje). Údaje nepoužívame na reklamu ani profilovanie; funkcia Google Signals
+              a reklamné funkcie sú vypnuté.</td></tr>
+            <tr><th scope="row">Aké údaje</th><td>Zobrazené stránky, zdroj návštevy, približná poloha odvodená z IP adresy (samotná IP adresa sa v Google Analytics 4 neukladá),
+              typ zariadenia a prehliadača a pseudonymný identifikátor uložený v cookies <code>_ga</code> a <code>_ga_*</code>
+              (platnosť najviac 2 roky od poslednej návštevy, kým súhlas neodvoláte).</td></tr>
+            <tr><th scope="row">Právny základ</th><td>Váš súhlas – <span class="ref">§ 109 ods. 8 zákona č. 452/2021 Z. z.</span> o elektronických komunikáciách
+              a <span class="ref">čl. 6 ods. 1 písm. a) GDPR</span>. Udelenie súhlasu je dobrovoľné; web funguje rovnako aj bez neho.</td></tr>
+            <tr><th scope="row">Uchovávanie</th><td>Údaje o jednotlivých návštevách sa v Google Analytics uchovávajú 2 mesiace. Súhrnné štatistiky bez identifikátorov
+              (napríklad počet návštev za mesiac) môžu byť dostupné dlhšie.</td></tr>
+            <tr><th scope="row">Odvolanie súhlasu</th><td>Kedykoľvek cez odkaz <strong>„Nastavenia cookies“</strong> v pätičke ktorejkoľvek stránky a voľbou
+              <strong>„Odmietnuť“</strong>. Web potom cookies <code>_ga</code> vymaže a meranie zastaví. Odvolanie nemá vplyv na zákonnosť spracúvania
+              pred odvolaním.</td></tr>
+          </tbody>
+        </table>
+        <p><button type="button" class="btn" data-consent-open>Zmeniť nastavenie cookies</button></p>
+      </section>
+
+      <!-- 6 -->
+      <section class="block" id="prijemcovia">
+        <span class="kicker">06</span>
+        <h2>Príjemcovia a prenos do tretích krajín</h2>
+        <ul>
+          <li><strong>Cloudflare, Inc.</strong> (USA) – hosting webu a doručovanie obsahu (sprostredkovateľ).</li>
+          <li><strong>Google Ireland Limited</strong> (Írsko) – Google Analytics, len s vaším súhlasom; údaje môže v rámci skupiny spracúvať aj Google LLC (USA).</li>
+          <li>Poskytovateľ našej e-mailovej schránky – pri e-mailovej komunikácii podľa časti 03.</li>
+        </ul>
+        <p>Pri poskytovateľoch so sídlom alebo materskou spoločnosťou v USA môže dochádzať k prenosu údajov do USA. Prenos sa uskutočňuje na základe
+        rozhodnutia Európskej komisie o primeranosti pre rámec ochrany údajov EÚ – USA (<em>EU-US Data Privacy Framework</em>), ak je príjemca
+        v tomto rámci certifikovaný; inak na základe štandardných zmluvných doložiek schválených Európskou komisiou.</p>
+        <p>Údaje neposkytujeme iným tretím osobám okrem prípadov, keď to vyžaduje zákon.</p>
+      </section>
+
+      <!-- 7 -->
+      <section class="block" id="prava">
+        <span class="kicker">07</span>
+        <h2>Vaše práva</h2>
+        <p>Ako dotknutá osoba máte právo:</p>
+        <ul>
+          <li>na <strong>prístup</strong> k svojim osobným údajom a na ich kópiu <span class="ref">čl. 15 GDPR</span>,</li>
+          <li>na <strong>opravu</strong> nesprávnych a doplnenie neúplných údajov <span class="ref">čl. 16 GDPR</span>,</li>
+          <li>na <strong>vymazanie</strong> („právo na zabudnutie“) za podmienok podľa GDPR <span class="ref">čl. 17 GDPR</span>,</li>
+          <li>na <strong>obmedzenie spracúvania</strong> <span class="ref">čl. 18 GDPR</span>,</li>
+          <li>na <strong>prenosnosť</strong> údajov, ktoré ste nám poskytli <span class="ref">čl. 20 GDPR</span>,</li>
+          <li><strong>namietať</strong> proti spracúvaniu založenému na oprávnenom záujme <span class="ref">čl. 21 GDPR</span>,</li>
+          <li>kedykoľvek <strong>odvolať súhlas</strong>, ak je spracúvanie založené na súhlase; odvolanie nemá vplyv na zákonnosť spracúvania pred ním
+            <span class="ref">čl. 7 ods. 3 GDPR</span>.</li>
+        </ul>
+        <p>Práva si môžete uplatniť e-mailom na <a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a>. Odpovieme bez zbytočného odkladu,
+        spravidla do jedného mesiaca. Vybavenie je bezplatné, pokiaľ žiadosť nie je zjavne neopodstatnená alebo neprimeraná.</p>
+      </section>
+
+      <!-- 8 -->
+      <section class="block" id="urad">
+        <span class="kicker">08</span>
+        <h2>Dozorný orgán</h2>
+        <p>Ak sa domnievate, že spracúvanie vašich osobných údajov porušuje právne predpisy, máte právo podať návrh na začatie konania
+        o ochrane osobných údajov <span class="ref">čl. 77 GDPR</span> dozornému orgánu, ktorým je
+        <strong>Úrad na ochranu osobných údajov Slovenskej republiky</strong>. Aktuálne kontaktné údaje úradu nájdete na
+        <a href="https://dataprotection.gov.sk" target="_blank" rel="noopener">dataprotection.gov.sk</a>. Budeme však radi, ak sa najprv obrátite na nás.</p>
+      </section>
+
+      <!-- 9 -->
+      <section class="block" id="zmeny" style="border-bottom:none">
+        <span class="kicker">09</span>
+        <h2>Zmeny zásad</h2>
+        <p>Tieto zásady môžeme aktualizovať, ak sa zmení rozsah spracúvania alebo právne predpisy. Aktuálne znenie je vždy na tejto adrese;
+        dátum účinnosti je uvedený v jej úvode.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-top">
+        <span>© 2026 Legal Engineering · <a href="/">legalengineering.sk</a></span>
+        <span><a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a></span>
+      </div>
+      <p class="foot-legal">
+        Prevádzkovateľ: <strong>Legal Engineering, s.&nbsp;r.&nbsp;o.</strong>, Nevädzová 6, 821 01 Bratislava – mestská časť Ružinov ·
+        IČO: 48 336 076 · DIČ: 2120146127 · IČ DPH: SK2120146127 ·
+        zapísaná v Obchodnom registri Mestského súdu Bratislava III, oddiel: Sro, vložka č. 106968/B ·
+        e-mail: <a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a> ·
+        tel.: <a href="tel:+421908849910">+421 908 849 910</a><br>
+        Orgán dozoru: Slovenská obchodná inšpekcia, Inšpektorát SOI pre Bratislavský kraj, Bajkalská 21/A, P.&nbsp;O.&nbsp;BOX č.&nbsp;5, 820 07 Bratislava<br>
+        <a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov</a> · <a href="/ochrana-osobnych-udajov/#cookies" data-consent-open>Nastavenia cookies</a>
+      </p>
+    </div>
+  </footer>
+
+  <div id="consentBar" class="cb" role="region" aria-label="Súhlas s analytickými cookies" hidden>
+    <p>So súhlasom budeme na meranie návštevnosti používať Google Analytics, ktorý ukladá cookies. Bez súhlasu sa návštevnosť nemeria a cookies sa neukladajú. <a href="/ochrana-osobnych-udajov/#cookies">Viac o spracúvaní údajov</a></p>
+    <div class="cb-btns"><button type="button" data-c="denied">Odmietnuť</button><button type="button" data-c="granted">Prijať</button></div>
+  </div>
+  <script src="/consent.js"></script>
+</body>
+</html>
