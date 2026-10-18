@@ -183,6 +183,16 @@
     .skip:focus{ left:12px; }
     @media print{ .nav, .toc, footer{ display:none; } body{ background:#fff; } details{ border:none; } }
   </style>
+  <!-- Google Analytics 4 + Consent Mode v2 (prísny režim): všetko „denied“; gtag.js sa načíta až po kliknutí na „Prijať“ (/consent.js) -->
+  <script>
+  window.CONSENT_CFG={key:'le_consent_v1',ga:'G-J74DTLWPTE'};
+  window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+  gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',functionality_storage:'denied',personalization_storage:'denied',security_storage:'granted',wait_for_update:500});
+  gtag('set','ads_data_redaction',true);
+  try{if(localStorage.getItem(CONSENT_CFG.key)==='granted')gtag('consent','update',{analytics_storage:'granted'});}catch(e){}
+  gtag('js',new Date());
+  gtag('config','G-J74DTLWPTE',{allow_google_signals:false,allow_ad_personalization_signals:false});
+  </script>
 </head>
 
 <body>
@@ -495,9 +505,15 @@
         zapísaná v Obchodnom registri Mestského súdu Bratislava III, oddiel: Sro, vložka č. 106968/B ·
         e-mail: <a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a> ·
         tel.: <a href="tel:+421908849910">+421 908 849 910</a><br>
-        Orgán dozoru: Slovenská obchodná inšpekcia, Inšpektorát SOI pre Bratislavský kraj, Bajkalská 21/A, P.&nbsp;O.&nbsp;BOX č.&nbsp;5, 820 07 Bratislava
+        Orgán dozoru: Slovenská obchodná inšpekcia, Inšpektorát SOI pre Bratislavský kraj, Bajkalská 21/A, P.&nbsp;O.&nbsp;BOX č.&nbsp;5, 820 07 Bratislava<br>
+        <a href="/ochrana-osobnych-udajov/">Ochrana osobných údajov</a> · <a href="/ochrana-osobnych-udajov/#cookies" data-consent-open>Nastavenia cookies</a>
       </p>
     </div>
   </footer>
+  <div id="consentBar" class="cb" role="region" aria-label="Súhlas s analytickými cookies" hidden>
+    <p>So súhlasom budeme na meranie návštevnosti používať Google Analytics, ktorý ukladá cookies. Bez súhlasu sa návštevnosť nemeria a cookies sa neukladajú. <a href="/ochrana-osobnych-udajov/#cookies">Viac o spracúvaní údajov</a></p>
+    <div class="cb-btns"><button type="button" data-c="denied">Odmietnuť</button><button type="button" data-c="granted">Prijať</button></div>
+  </div>
+  <script src="/consent.js"></script>
 </body>
 </html>
