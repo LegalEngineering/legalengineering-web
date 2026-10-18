@@ -14,6 +14,14 @@
   <meta property="og:url" content="https://legalengineering.sk/hypo/" />
   <meta property="og:locale" content="sk_SK" />
   <meta property="og:site_name" content="Legal Engineering" />
+  <meta property="og:image" content="https://legalengineering.sk/hypo/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Hypotekárna kalkulačka Legal Engineering — maximálny úver podľa NBS ukazovateľov DTI, DSTI a LTV" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hypotekárna kalkulačka — Legal Engineering" />
+  <meta name="twitter:description" content="Hypotekárna kalkulačka podľa pravidiel NBS — DTI, DSTI, LTV a stres test. Zistite, koľko si môžete požičať a aký príjem na hypotéku potrebujete." />
+  <meta name="twitter:image" content="https://legalengineering.sk/hypo/og-image.png" />
 
   <!-- PWA -->
   <meta name="theme-color" content="#f4f0e7" />
@@ -21,7 +29,21 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
 
+  <!-- Písma prvej obrazovky: preload paralelne s CSS/JS (inak sa sťahujú až po
+       vykreslení → výmena fallback písma a posun layoutu). @font-face je v styles.css.
+       Sora latin+latinext = body text so slovenskou diakritikou; Fraunces italic
+       latin+latinext = H1 „Hypotekárna kalkulačka“ (č je v latin-ext); JetBrains Mono
+       latin = čísla. Ostatné subsety sa doťahujú štandardne. -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/sora-latin.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/sora-latinext.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-italic-latin.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/fraunces-italic-latinext.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="fonts/jetbrainsmono-latin.woff2" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- Appka: defer = neblokuje parser (#root má v CSS rezervovanú min. výšku, aby FAQ
+       neodskočilo); fetchpriority=high, lebo defer by v Chrome zhodil app.js na Low
+       prioritu za preloadované písma — bez app.js sa nič nevykreslí. -->
+  <script src="app.js" defer fetchpriority="high"></script>
 
   <!-- Štruktúrované dáta: aplikácia -->
   <script type="application/ld+json">
@@ -161,6 +183,7 @@
   </script>
 </head>
 <body>
+<main>
   <div id="root"></div>
 
   <!-- =====================================================================
@@ -287,12 +310,12 @@
     </section>
 
   </div>
+</main>
 
-  <script src="app.js"></script>
   <div id="consentBar" class="cb" role="region" aria-label="Súhlas s analytickými cookies" hidden>
     <p>So súhlasom budeme na meranie návštevnosti používať Google Analytics, ktorý ukladá cookies. Bez súhlasu sa návštevnosť nemeria a cookies sa neukladajú. <a href="/ochrana-osobnych-udajov/#cookies">Viac o spracúvaní údajov</a></p>
     <div class="cb-btns"><button type="button" data-c="denied">Odmietnuť</button><button type="button" data-c="granted">Prijať</button></div>
   </div>
-  <script src="/consent.js"></script>
+  <script src="/consent.js" defer></script>
 </body>
 </html>
