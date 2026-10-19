@@ -7,12 +7,13 @@
 //   vyhlášky) bumpni CACHE verziu nižšie aj `version` v version.json a TARIFF.meta.version,
 //   inak používatelia s nainštalovanou PWA dostanú toast a po obnovení novú verziu.
 
-const CACHE = 'trovy-2026.06.01b-p3';
+const CACHE = 'trovy-2026.06.01b-p4';
 
 // Produkčné statické súbory. NEZAHŔŇAŤ _review.html, server.py, *.cmd, tests/ (dev nástroje).
+// POZOR: './index.html' sa NEPRECACHUJE — hosting (Cloudflare assets) ho 307-presmeruje
+// na './' a presmerovaná odpoveď v cache zlomí navigáciu (net::ERR_FAILED). Stránka = './'.
 const ASSETS = [
   './',
-  './index.html',
   './app.js',
   './engine.js',
   './tariff.js',
@@ -46,6 +47,21 @@ self.addEventListener('fetch', (e) => {
   // Dev súbory — nikdy neslúžiť z cache (necháme default sieť).
   if (url.pathname.includes('_review') || url.pathname.includes('/tests/')) return;
 
+  // Navigácia na stránku aplikácie ('./', './index.html', aj s query) → vždy čistá
+  // (nepresmerovaná) kópia './' z cache; bez cache sieť. Rieši aj staré inštalácie,
+  // ktoré ešte štartujú na './index.html'.
+  if (e.request.mode === 'navigate') {
+    const scopePath = new URL(self.registration.scope).pathname;
+    if (url.pathname === scopePath || url.pathname === scopePath + 'index.html') {
+      e.respondWith(
+        caches.match(scopePath, { ignoreSearch: true })
+          .then((cached) => (cached && !cached.redirected) ? cached : fetch(e.request))
+          .catch(() => caches.match(scopePath, { ignoreSearch: true }))
+      );
+      return;
+    }
+  }
+
   // version.json — network-first (na detekciu novej verzie), fallback na cache.
   if (url.pathname.endsWith('version.json')) {
     e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
@@ -55,7 +71,7 @@ self.addEventListener('fetch', (e) => {
   // Statika — cache-first, fallback sieť (a doplnenie cache).
   e.respondWith(
     caches.match(e.request).then((cached) => cached || fetch(e.request).then((resp) => {
-      if (resp && resp.ok && resp.type === 'basic') {
+      if (resp && resp.ok && resp.type === 'basic' && !resp.redirected) {
         const copy = resp.clone();
         caches.open(CACHE).then((c) => c.put(e.request, copy));
       }
