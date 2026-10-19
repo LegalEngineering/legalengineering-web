@@ -8,7 +8,7 @@
  */
 'use strict';
 
-const CACHE_VERSION = 'hypokalkulacka-v9';
+const CACHE_VERSION = 'hypokalkulacka-v10';
 
 // Všetky assety potrebné na offline beh. Relatívne cesty voči scope ('./').
 // POZOR: './index.html' sa NEPRECACHUJE — hosting (Cloudflare assets) ho 307-presmeruje
