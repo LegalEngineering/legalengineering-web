@@ -8,12 +8,13 @@
  */
 'use strict';
 
-const CACHE_VERSION = 'hypokalkulacka-v8';
+const CACHE_VERSION = 'hypokalkulacka-v9';
 
 // Všetky assety potrebné na offline beh. Relatívne cesty voči scope ('./').
+// POZOR: './index.html' sa NEPRECACHUJE — hosting (Cloudflare assets) ho 307-presmeruje
+// na './' a presmerovaná odpoveď v cache zlomí navigáciu (net::ERR_FAILED). Stránka = './'.
 const ASSETS = [
   './',
-  './index.html',
   './styles.css',
   './app.js',
   './manifest.json',
@@ -55,13 +56,29 @@ self.addEventListener('fetch', (event) => {
   // Spracúvaj len GET požiadavky.
   if (event.request.method !== 'GET') return;
 
+  // Navigácia na stránku aplikácie ('./', './index.html', aj s query) → vždy čistá
+  // (nepresmerovaná) kópia './' z cache; bez cache sieť. Rieši aj staré inštalácie,
+  // ktoré ešte štartujú na './index.html'.
+  if (event.request.mode === 'navigate') {
+    const path = new URL(event.request.url).pathname;
+    const scopePath = new URL(self.registration.scope).pathname;
+    if (path === scopePath || path === scopePath + 'index.html') {
+      event.respondWith(
+        caches.match(scopePath, { ignoreSearch: true })
+          .then((cached) => (cached && !cached.redirected) ? cached : fetch(event.request))
+          .catch(() => caches.match(scopePath, { ignoreSearch: true }))
+      );
+      return;
+    }
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request)
         .then((response) => {
           // Cachuj iba úspešné odpovede z vlastného originu.
-          if (response && response.status === 200 && response.type === 'basic') {
+          if (response && response.status === 200 && response.type === 'basic' && !response.redirected) {
             const copy = response.clone();
             caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, copy));
           }
