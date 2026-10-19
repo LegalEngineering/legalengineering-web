@@ -219,6 +219,9 @@ function icon(name, cls) {
   svg.setAttribute('stroke-linecap', 'round');
   svg.setAttribute('stroke-linejoin', 'round');
   if (cls) svg.setAttribute('class', cls);
+  // Dekoratívne ikony — text tlačidiel/popisov nesie význam, ikonu čítačka preskočí.
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
   const paths = {
     AlertTriangle: [
       ['path', { d: 'm21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z' }],
@@ -364,7 +367,7 @@ function Card({ title, children, right, accent = false }) {
   const kids = [];
   if (title || right) {
     kids.push(el('div', 'flex items-baseline justify-between mb-3 pb-2 border-b border-[#2a2620]',
-      title ? el('h3', 'text-xs uppercase tracking-[0.15em] text-[#a39b87] font-medium', title) : null,
+      title ? el('h2', 'text-xs uppercase tracking-[0.15em] text-[#a39b87] font-medium', title) : null,
       right || null,
     ));
   }

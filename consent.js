@@ -2,7 +2,7 @@
  * Konfigurácia: window.CONSENT_CFG = {key: 'le_consent_v1', ga: 'G-XXXX'} sa nastaví v <head>
  * spolu s gtag('consent','default', ... všetko denied ...). Lišta: <div id="consentBar" class="cb" hidden> v HTML.
  * Vzhľad: CSS premenné --cb-bg, --cb-fg, --cb-accent, --cb-font na :root; predvolené hodnoty = paleta LE
- * (tmavá lesná zelená, papier, zlato/mosadz, písmo Fraunces).
+ * (tmavá lesná zelená, papier, zlato/mosadz, písmo Fraunces). Zlatá #C68E2D = 4,7:1 na zelenej (WCAG AA; pôvodná #C28A2B mala 4,45).
  * gtag.js sa načíta až po kliknutí na „Prijať“ (alebo pri návrate, ak bol súhlas uložený).
  * Ľubovoľný prvok s atribútom data-consent-open lištu znovu otvorí (zmena alebo odvolanie súhlasu). */
 (function () {
@@ -12,11 +12,11 @@
     'background:var(--cb-bg,#1F3328);color:var(--cb-fg,#F6F1E7);border:1px solid rgba(246,241,231,.18);border-radius:16px;' +
     'padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;box-shadow:0 18px 40px -16px rgba(31,51,40,.7);' +
     'font:14.5px/1.45 var(--cb-font,"Fraunces","Hoefler Text",Georgia,serif);text-align:left;letter-spacing:0}' +
-    '.cb[hidden]{display:none}.cb p{margin:0;flex:1 1 320px;opacity:1}.cb a{color:var(--cb-accent,#C28A2B);text-decoration:underline;text-underline-offset:2px}' +
+    '.cb[hidden]{display:none}.cb p{margin:0;flex:1 1 320px;opacity:1}.cb a{color:var(--cb-accent,#C68E2D);text-decoration:underline;text-underline-offset:2px}' +
     '.cb .cb-btns{display:flex;gap:8px;margin-left:auto}' +
-    '.cb button{min-width:110px;border:2px solid var(--cb-accent,#C28A2B);border-radius:999px;padding:8px 16px;' +
+    '.cb button{min-width:110px;border:2px solid var(--cb-accent,#C68E2D);border-radius:999px;padding:8px 16px;' +
     'font:600 15px var(--cb-font,"Fraunces","Hoefler Text",Georgia,serif);cursor:pointer;background:transparent;color:var(--cb-fg,#F6F1E7);transition:background .15s,color .15s}' +
-    '.cb button:hover,.cb button:focus-visible{background:var(--cb-accent,#C28A2B);color:var(--cb-bg,#1F3328)}' +
+    '.cb button:hover,.cb button:focus-visible{background:var(--cb-accent,#C68E2D);color:var(--cb-bg,#1F3328)}' +
     '@media print{.cb{display:none!important}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   function g() { if (typeof window.gtag === 'function') window.gtag.apply(null, arguments); }
