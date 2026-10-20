@@ -102,6 +102,20 @@ export function sadzbaCestovneEurPerKm(datumIso) {
   return null;
 }
 
+// ---------- DPH sadzba podľa dátumu ----------
+// § 27 ods. 5 zákona 222/2004 Z.z.: sadzba platná v deň vzniku daňovej povinnosti; § 19 ods. 2:
+// daňová povinnosť vzniká dňom dodania služby. Kalkulačka berie ako deň dodania dátum úkonu
+// (resp. výdavku). Bez dátumu alebo mimo tabuľky → aktuálna sadzba (posledný záznam).
+export function sadzbaDph(datumIso) {
+  const tab = P.dph_sadzby || [];
+  if (datumIso && typeof datumIso === 'string') {
+    for (const s of tab) {
+      if (datumIso >= s.od && (s.do == null || datumIso <= s.do)) return s.sadzba;
+    }
+  }
+  return tab.length ? tab[tab.length - 1].sadzba : P.vat_rate;
+}
+
 // ---------- Hlavný výpočet ----------
 
 export function vypocitajTrovy(caseState) {
@@ -127,9 +141,11 @@ export function vypocitajTrovy(caseState) {
   const multOsob = jeOpatrovnik ? 1 : (1 + P.spolu_osoba_znizenie * (pocetOsob - 1));
 
   // §13 ods. 1/5 — diskrečné zníženie/zvýšenie základnej sadzby (najviac ±50 %).
+  // Zvýšenie najviac o 50 % (§ 13 ods. 5); zníženie (§ 13 ods. 1) zákon neobmedzuje → najviac na 0.
   let upravaPct = caseState.upravaSadzbyPct || 0;
+  const maxZnizenie = (P.znizenie_sadzby_max_pct != null) ? P.znizenie_sadzby_max_pct : 100;
   if (upravaPct > P.uprava_sadzby_max_pct) upravaPct = P.uprava_sadzby_max_pct;
-  if (upravaPct < -P.uprava_sadzby_max_pct) upravaPct = -P.uprava_sadzby_max_pct;
+  if (upravaPct < -maxZnizenie) upravaPct = -maxZnizenie;
   const multUprava = jeOpatrovnik ? 1 : (1 + upravaPct / 100);
 
   // §13 ods. 3 — spojenie vecí: k základnej sadzbe sa pripočíta 1/3 základnej sadzby každej
@@ -144,6 +160,13 @@ export function vypocitajTrovy(caseState) {
   prirastokSpojenie = round(prirastokSpojenie);
 
   let poslednyRok = null;
+  let poslednyDatum = null;           // najneskorší dátum úkonu (DPH pre položky bez vlastného dátumu)
+  const dphZaklady = new Map();       // sadzba DPH → základ dane
+  const pridajZakladDph = (datum, suma) => {
+    if (!suma) return;
+    const s = sadzbaDph(datum);
+    dphZaklady.set(s, (dphZaklady.get(s) || 0) + suma);
+  };
 
   for (const u of caseState.ukony) {
     const ukonDef = najdiUkon(u.id);
@@ -153,6 +176,7 @@ export function vypocitajTrovy(caseState) {
     }
     const rok = rokZDatumu(u.datum);
     poslednyRok = rok;
+    if (poslednyDatum == null || u.datum > poslednyDatum) poslednyDatum = u.datum;
 
     // Dva výpočtové základy:
     //   vzTarifna — pre tarifnú odmenu (trestné §1 ods. 4 → rok N-4; civilné §1 ods. 3 → rok N-1)
@@ -223,6 +247,9 @@ export function vypocitajTrovy(caseState) {
     const ukonPhm = round(u.phmEur || 0);
     phm += ukonPhm;
 
+    // Základ DPH úkonu — sadzba podľa dátumu úkonu.
+    pridajZakladDph(u.datum, sadzbaUkonu + ukonPausal + ukonStrata + ukonCestovne + ukonPhm);
+
     polozky.push({
       ukon: ukonDef.label,
       ukon_id: ukonDef.id,
@@ -251,6 +278,7 @@ export function vypocitajTrovy(caseState) {
   if (jeOpatrovnik) {
     opatrovnik = round(trestnaSadzba.pausal_eur * (caseState.opatrovnikNedotiahol ? 0.5 : 1));
     tarifna += opatrovnik;
+    pridajZakladDph(poslednyDatum, opatrovnik);
   }
 
   // §14 ods. 7 — schválená dohoda o vine a treste pred podaním obžaloby: obhajcovi navyše
@@ -263,23 +291,58 @@ export function vypocitajTrovy(caseState) {
     if (vzD != null) {
       dohodaVT = round(sadzbaTrestna(vzD, trestnaSadzba.zlomok) * P.dohoda_vt_nasobok);
       tarifna += dohodaVT;
+      pridajZakladDph(caseState.dohodaVTDatum || poslednyDatum, dohodaVT);
     } else {
       warnings.push('Dohoda o vine a treste (§ 14 ods. 7): chýba rok na určenie výpočtového '
         + 'základu (pridajte aspoň jeden úkon alebo dátum dohody) — príplatok nezahrnutý.');
     }
   }
 
-  // §15 písm. a) — iné preukázané hotové výdavky. Vstupujú do základu DPH: DPH advokáta
-  // (ak je platiteľom) sa pripočítava k celej fakturovanej sume vrátane týchto výdavkov,
-  // aj keď samy už DPH obsahovali (napr. cena PHM, súdny poplatok).
-  const hotove = round(caseState.hotoveVydavky || 0);
+  // §15 písm. a) — iné preukázané hotové výdavky.
+  //   - bežné výdavky vstupujú do základu DPH advokáta (sadzba podľa dátumu výdavku, inak
+  //     podľa najneskoršieho úkonu);
+  //   - prechodné položky podľa § 22 ods. 3 zákona 222/2004 Z.z. (výdavky platené v mene
+  //     a na účet klienta, napr. súdny poplatok, ktorého poplatníkom je klient) sa do základu
+  //     dane NEZAHŔŇAJÚ — pripočítajú sa k trovám bez DPH.
+  // Vstup: caseState.vydavky = [{ datum, suma, prechodna }] a/alebo staršie číselné polia
+  //        hotoveVydavky (v základe DPH) a prechodnePolozky (mimo základu DPH).
+  let hotove = round(caseState.hotoveVydavky || 0);
+  let prechodne = round(caseState.prechodnePolozky || 0);
+  pridajZakladDph(poslednyDatum, hotove);
+  for (const v of (Array.isArray(caseState.vydavky) ? caseState.vydavky : [])) {
+    const suma = round((v && v.suma) || 0);
+    if (suma <= 0) continue;
+    if (v.prechodna) {
+      prechodne += suma;
+    } else {
+      hotove += suma;
+      pridajZakladDph(v.datum || poslednyDatum, suma);
+    }
+  }
+  hotove = round(hotove);
+  prechodne = round(prechodne);
 
-  // „Položky spolu bez DPH" — základ pre výpočet DPH (vrátane hotových výdavkov).
-  const polozkySpolu = round(tarifna + pausal + strata + cestovne + phm + hotove);
+  // „Položky spolu bez DPH" — všetky položky vrátane prechodných.
+  const polozkySpolu = round(tarifna + pausal + strata + cestovne + phm + hotove + prechodne);
+  // Základ dane = položky spolu bez prechodných položiek.
+  const zakladDph = round(polozkySpolu - prechodne);
 
   // §18 ods. 3 — DPH sa pripočíta len ak je advokát platiteľom DPH (default: áno).
+  // Rozpis podľa sadzieb (úkony z rôznych období môžu mať rôznu sadzbu).
   const platcaDph = caseState.platcaDph !== false;
-  const dph = platcaDph ? round(polozkySpolu * P.vat_rate) : 0;
+  const dphRozpis = [];
+  let dph = 0;
+  if (platcaDph) {
+    const sadzby = [...dphZaklady.keys()].sort((a, b) => a - b);
+    for (const s of sadzby) {
+      const zaklad = round(dphZaklady.get(s));
+      if (zaklad <= 0) continue;
+      const d = round(zaklad * s);
+      dphRozpis.push({ sadzba: s, zaklad, dph: d });
+      dph += d;
+    }
+    dph = round(dph);
+  }
   const total = round(polozkySpolu + dph);
 
   return {
@@ -292,8 +355,11 @@ export function vypocitajTrovy(caseState) {
       cestovne: round(cestovne),
       phm: round(phm),
       hotove,
+      prechodne,
       polozkySpolu,
+      zakladDph,
       dph,
+      dphRozpis,
       platcaDph,
       // §13 + osobitné odmeny — metadáta pre UI / odôvodnenie:
       pocetOsob,

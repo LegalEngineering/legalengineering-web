@@ -3,6 +3,9 @@
 // Verzia: 2026.06.01b (M1.5 + M2 dokončené — § 13 multipliery, § 12 ods. 7 opatrovník,
 //          § 14 ods. 7 dohoda o vine a treste, § 11 ods. 3/4 Ústavný/správne/sociálne,
 //          § 10 ods. 8/9 osobitné tarifné hodnoty)
+// 2026.10.20: DPH podľa dátumu úkonu (19 % / 20 % / 23 %), prechodné položky bez DPH,
+//          zníženie podľa § 13 ods. 1 bez stropu 50 %, úkony vo výkone rozhodnutia/exekúcii
+//          (§ 13a ods. 2 písm. c)) — overené slov-lex 2026-10-20.
 //
 // Audit trail: ../00_AI-LOG/2026-05-13_tarifa-verification.md
 //              + ../00_AI-LOG/2026-06-01_trestna-cast-verification.md
@@ -17,10 +20,10 @@
 
 export const TARIFF = {
   meta: {
-    version: "2026.06.01b",
+    version: "2026.10.20",
     legal_basis: "Vyhláška MS SR č. 655/2004 Z.z. v znení neskorších predpisov, účinné znenie po novele 391/2023 Z.z. od 2024-01-01",
     effective_from: "2024-01-01",
-    last_verified: "2026-06-01",
+    last_verified: "2026-10-20",
     verification_source: "zakonypreludi.sk konsolidované znenie (§10-§17, doslovný prepis) + najpravo.sk VZ scrape. POZOR: slov-lex MCP vracia pri novelizovaných paragrafoch vyhlásené (2005) znenie — nepoužívať (viď 2026-06-01_m15-m2-rozsirenie-verification.md)."
   },
 
@@ -49,14 +52,25 @@ export const TARIFF = {
   },
 
   parameters: {
-    vat_rate: 0.23,                  // §18 ods. 3, od 2025-01-01
+    vat_rate: 0.23,                  // §18 ods. 3 — AKTUÁLNA sadzba (od 2025-01-01); pre výpočet viď dph_sadzby
+    // DPH podľa dňa vzniku daňovej povinnosti (§ 27 ods. 5, § 19 ods. 2 zákona 222/2004 Z.z.);
+    // kalkulačka ako deň dodania služby berie dátum úkonu (resp. dátum výdavku).
+    // Overené slov-lex (časové verzie 222/2004 od 2009-01-01 po 2026-01-01), 2026-10-20:
+    //   do 2010-12-31: 19 % (§ 27 ods. 1); 2011-01-01 – 2024-12-31: 20 % (§ 85j ods. 1, od 2015 § 27 ods. 1);
+    //   od 2025-01-01: 23 % (§ 27 ods. 1 v znení účinnom od 1. 1. 2025).
+    dph_sadzby: [
+      { od: "2009-01-01", do: "2010-12-31", sadzba: 0.19 },
+      { od: "2011-01-01", do: "2024-12-31", sadzba: 0.20 },
+      { od: "2025-01-01", do: null,         sadzba: 0.23 }
+    ],
     rezijny_pausal_zlomok: 1/100,    // §16 ods. 3
     strata_casu_zlomok: 1/60,        // §17 ods. 1, za začatú polhodinu
     nehodnotova_zlomok: 1/13,        // §11 ods. 1 (default; per-konanie viď konania[].tarifna_zlomok)
     // §13 multipliery (po novele 391/2023 — overené zakonypreludi.sk 2026-06-01):
     spolu_osoba_znizenie: 0.5,       // §13 ods. 2 — zníženie o 50 % za druhú a každú ďalšiu spoločne zastupovanú osobu
     spojenie_veci_zlomok: 1/3,       // §13 ods. 3 — +1/3 základnej sadzby každej ďalšej spojenej veci
-    uprava_sadzby_max_pct: 50,       // §13 ods. 5 — zvýšenie najviac o 50 % (symetricky §13 ods. 1 zníženie)
+    uprava_sadzby_max_pct: 50,       // §13 ods. 5 — zvýšenie najviac o 50 %
+    znizenie_sadzby_max_pct: 100,    // §13 ods. 1 — zníženie bez zákonného stropu (najviac na 0 €)
     // §12 ods. 7 / §14 ods. 7 — osobitné trestné odmeny:
     opatrovnik_pausal_eur: 200,      // §12 ods. 7 — opatrovník na ochranu práv poškodeného, paušál za celé konanie
     dohoda_vt_nasobok: 4             // §14 ods. 7 — dohoda o vine a treste pred obžalobou: +4× základná sadzba
@@ -134,7 +148,12 @@ export const TARIFF = {
     { id: "navrh-procesny",             label: "Návrh procesnej povahy (oprava, zmeškanie, splátky)",            fraction: 0.5 },
     { id: "pojednavanie-vyhlasenie",    label: "Pojednávanie len pre vyhlásenie rozhodnutia",                    fraction: 0.5, allows_loss_of_time: true, allows_travel: true },
     // Štvrtinová sadzba (1/4×)
-    { id: "pojednavanie-odrocene",      label: "Pojednávanie odročené bez prejednania veci",                     fraction: 0.25, allows_loss_of_time: true, allows_travel: true }
+    { id: "pojednavanie-odrocene",      label: "Pojednávanie odročené bez prejednania veci",                     fraction: 0.25, allows_loss_of_time: true, allows_travel: true },
+    // §13a ods. 2 písm. c) — výkon rozhodnutia alebo exekúcia: polovičná sadzba (1/2×)
+    { id: "ex-prevzatie",               label: "Výkon rozhodnutia / exekúcia — prevzatie a príprava zastúpenia",  fraction: 0.5, ref: "§ 13a ods. 2 písm. c)" },
+    { id: "ex-navrh",                   label: "Výkon rozhodnutia / exekúcia — návrh na začatie konania alebo vyjadrenie k nemu", fraction: 0.5, ref: "§ 13a ods. 2 písm. c)" },
+    { id: "ex-pojednavanie",            label: "Výkon rozhodnutia / exekúcia — zastupovanie na pojednávaní",      fraction: 0.5, ref: "§ 13a ods. 2 písm. c)", allows_loss_of_time: true, allows_travel: true },
+    { id: "ex-odvolanie",               label: "Výkon rozhodnutia / exekúcia — odvolanie proti rozhodnutiu alebo vyjadrenie k nemu", fraction: 0.5, ref: "§ 13a ods. 2 písm. c)" }
   ],
 
   // §14 — úkony právnej služby v trestnom konaní a v konaní o priestupkoch.
