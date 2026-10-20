@@ -4,6 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kalkulačka trov právneho zastúpenia</title>
+  <meta name="description" content="Kalkulačka trov právneho zastúpenia – vyhláška MS SR č. 655/2004 Z. z. v znení neskorších predpisov.">
+  <link rel="canonical" href="https://legalengineering.sk/trovy/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="sk_SK">
+  <meta property="og:site_name" content="Legal Engineering">
+  <meta property="og:title" content="Kalkulačka trov právneho zastúpenia">
+  <meta property="og:description" content="Kalkulačka trov právneho zastúpenia – vyhláška MS SR č. 655/2004 Z. z. v znení neskorších predpisov.">
+  <meta property="og:url" content="https://legalengineering.sk/trovy/">
+  <meta property="og:image" content="https://legalengineering.sk/assets/og/trovy.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Kalkulačka trov právneho zastúpenia">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://legalengineering.sk/assets/og/trovy.jpg">
   <!-- Písma hosťované lokálne (OFL, licencie v /assets/fonts/) – žiadne požiadavky na Google Fonts. -->
   <link rel="stylesheet" href="/assets/fonts/archivo.css">
   <link rel="stylesheet" href="/assets/fonts/fraunces.css">
@@ -27,20 +41,6 @@
   <main id="app">
     <p class="loading">Načítavam kalkulačku…</p>
   </main>
-  <script>
-    // Kalkulačka beží cez ES moduly — file:// (dvojklik na súbor) ich blokuje.
-    // Tento klasický skript sa spustí aj cez file:// a zobrazí návod.
-    if (location.protocol === 'file:') {
-      document.getElementById('app').innerHTML =
-        '<div style="max-width:540px;margin:9vh auto;padding:2rem 2.2rem;background:#fff;' +
-        'border:1px solid #ddd5c4;border-radius:8px;line-height:1.6;font-family:system-ui,-apple-system,sans-serif;">' +
-        '<h1 style="font-size:1.35rem;color:#9c6b34;margin:0 0 1rem;">Otvor ma cez server</h1>' +
-        '<p style="margin:.6rem 0;">Kalkulačka nefunguje z dvojkliku na súbor — musí bežať cez lokálny server.</p>' +
-        '<p style="margin:.6rem 0;">V priečinku <code>trovy</code> dvojklikni <code>Spusti-kalkulacku.cmd</code> a kalkulačka sa otvorí sama. ' +
-        'Ak server už beží, otvor <a href="http://localhost:8765/index.html" style="color:#9c6b34;font-weight:600;">http://localhost:8765/index.html</a>.</p>' +
-        '</div>';
-    }
-  </script>
   <script type="module" src="./app.js"></script>
   <div id="consentBar" class="cb" role="region" aria-label="Súhlas s analytickými cookies" hidden>
     <p>So súhlasom budeme na meranie návštevnosti používať Google Analytics, ktorý ukladá cookies. Bez súhlasu sa Google Analytics nenačíta a cookies sa neukladajú. <a href="/ochrana-osobnych-udajov/#cookies">Viac o spracúvaní údajov</a></p>
