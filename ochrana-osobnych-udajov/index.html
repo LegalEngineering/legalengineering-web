@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#2F6B43" />
   <title>Ochrana osobných údajov | Legal Engineering</title>
-  <meta name="description" content="Ako Legal Engineering, s. r. o. spracúva údaje návštevníkov webu legalengineering.sk: kalkulačky bežia v prehliadači, meranie návštevnosti Google Analytics len so súhlasom, práva dotknutej osoby." />
+  <meta name="description" content="Ako Legal Engineering, s. r. o. spracúva údaje návštevníkov webu legalengineering.sk: kalkulačky bežia v prehliadači, súhrnná štatistika návštevnosti bez cookies (Cloudflare Web Analytics), meranie návštevnosti Google Analytics len so súhlasom, práva dotknutej osoby." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://legalengineering.sk/ochrana-osobnych-udajov/" />
 
@@ -13,7 +13,7 @@
   <meta property="og:locale" content="sk_SK" />
   <meta property="og:site_name" content="Legal Engineering" />
   <meta property="og:title" content="Ochrana osobných údajov | Legal Engineering" />
-  <meta property="og:description" content="Čo web legalengineering.sk zbiera a čo nie, cookies a meranie návštevnosti so súhlasom, vaše práva." />
+  <meta property="og:description" content="Čo web legalengineering.sk zbiera a čo nie, štatistika návštevnosti bez cookies, cookies a meranie návštevnosti so súhlasom, vaše práva." />
   <meta property="og:url" content="https://legalengineering.sk/ochrana-osobnych-udajov/" />
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='3' y='3' width='42' height='42' rx='11' fill='%232F6B43'/%3E%3Ctext x='24' y='32' font-family='Georgia,serif' font-size='22' font-weight='600' fill='%23F6F1E7' text-anchor='middle'%3ELE%3C/text%3E%3C/svg%3E" />
@@ -141,14 +141,14 @@
           Ako Legal Engineering, s.&nbsp;r.&nbsp;o. nakladá s údajmi návštevníkov webu legalengineering.sk
           a jeho podstránok (kalkulačky, sprievodcovia, interaktívne básne).
         </p>
-        <p class="stamp">Účinné od 18. 10. 2026.</p>
+        <p class="stamp">Účinné od 18. 10. 2026, aktualizované 19. 10. 2026.</p>
       </section>
 
       <div class="callout green">
         <p><strong>V skratke.</strong> Web nemá registráciu, účty ani formuláre. Kalkulačky počítajú výlučne vo vašom prehliadači
-        a nič z toho, čo do nich zadáte, sa nikam neodosiela. Jediné spracúvanie nad rámec technickej prevádzky je meranie
-        návštevnosti nástrojom Google Analytics – a to iba vtedy, ak ho v lište na spodku stránky výslovne prijmete.
-        Bez súhlasu sa návštevnosť nemeria a žiadne cookies sa neukladajú.</p>
+        a nič z toho, čo do nich zadáte, sa nikam neodosiela. Nad rámec technickej prevádzky vedieme len súhrnnú štatistiku
+        návštevnosti bez cookies (Cloudflare Web Analytics) a meranie nástrojom Google Analytics – to iba vtedy, ak ho v lište na spodku stránky výslovne prijmete.
+        Bez súhlasu sa žiadne cookies neukladajú.</p>
       </div>
 
       <nav class="toc" aria-label="Obsah stránky">
@@ -202,7 +202,7 @@
             jej súborov (tzv. service worker), aby fungovala aj bez pripojenia. Ide o technické uloženie bez osobných údajov; odstránite ho vymazaním
             údajov stránky v prehliadači.</li>
           <li><strong>Písma a knižnice hostujeme sami.</strong> Pri načítaní stránky sa neposielajú požiadavky na Google Fonts ani iné služby
-            tretích strán. Jedinou výnimkou je Google Analytics, a to až po vašom súhlase (časť 05).</li>
+            tretích strán. Výnimkou je merací skript Cloudflare Web Analytics bez cookies a Google Analytics, ten až po vašom súhlase (časť 05).</li>
         </ul>
       </section>
 
@@ -235,9 +235,29 @@
         <h2>Cookies a meranie návštevnosti</h2>
 
         <h3>Bez súhlasu</h3>
-        <p>Web neukladá do vášho zariadenia žiadne analytické ani reklamné cookies a návštevnosť nemeria. V úložisku prehliadača
+        <p>Web neukladá do vášho zariadenia žiadne analytické ani reklamné cookies; návštevnosť sleduje len súhrnne a bez cookies (Cloudflare Web Analytics, nižšie). V úložisku prehliadača
         (localStorage, položka <code>le_consent_v1</code>) si zapamätá iba vašu voľbu v lište – prijatie alebo odmietnutie merania – aby sa lišta
         nezobrazovala pri každej návšteve. Toto uloženie je nevyhnutné na to, aby sme vašu voľbu rešpektovali, a súhlas si nevyžaduje.</p>
+
+        <h3>Bez súhlasu a bez cookies: Cloudflare Web Analytics</h3>
+        <p>Na súhrnnú štatistiku návštevnosti a meranie rýchlosti načítania stránok používame službu Cloudflare Web Analytics spoločnosti
+        <strong>Cloudflare, Inc.</strong> (101 Townsend St., San Francisco, CA 94107, USA). Cloudflare pri načítaní stránky vloží krátky merací skript
+        (načítava sa z domény <code>static.cloudflareinsights.com</code>).</p>
+        <table>
+          <tbody>
+            <tr><th scope="row">Účel</th><td>Zistiť, koľko zobrazení majú jednotlivé stránky, odkiaľ návštevníci prichádzajú a či sa stránky načítavajú rýchlo.
+              Vidíme iba súhrnné štatistiky (napríklad počet zobrazení, krajiny, typy prehliadačov), nie jednotlivé návštevy.</td></tr>
+            <tr><th scope="row">Aké údaje</th><td>Adresa zobrazenej stránky (bez parametrov za otáznikom), adresa stránky, z ktorej ste prišli, typ prehliadača a zariadenia (user agent)
+              a časy načítania stránky. IP adresa sa použije len na prenos údajov a na určenie krajiny; na rozlíšenie jednotlivých návštevníkov sa nepoužíva.
+              Služba nepoužíva cookies ani iné úložisko prehliadača (napríklad localStorage), nevytvára odtlačok prehliadača a nesleduje vás naprieč webmi.</td></tr>
+            <tr><th scope="row">Právny základ</th><td>Náš oprávnený záujem poznať návštevnosť webu a udržiavať ho rýchly a funkčný <span class="ref">čl. 6 ods. 1 písm. f) GDPR</span>.
+              Proti tomuto spracúvaniu môžete kedykoľvek namietať <span class="ref">čl. 21 GDPR</span>; meranie zablokuje aj bežný blokovač obsahu v prehliadači.</td></tr>
+            <tr><th scope="row">Uchovávanie</th><td>Nevzorkované údaje Cloudflare uchováva 7 dní; staršie údaje zostávajú len ako súhrnné štatistiky zo vzorky približne 10 % zobrazení.</td></tr>
+            <tr><th scope="row">Sprostredkovateľ a prenos</th><td>Cloudflare koná ako náš sprostredkovateľ na základe zmluvy o spracúvaní osobných údajov (Data Processing Addendum), ktorá je súčasťou
+              jeho zmluvných podmienok. Údaje môže spracúvať aj v USA; Cloudflare je certifikovaný v rámci <em>EU-US Data Privacy Framework</em>, pre ktorý
+              Európska komisia prijala rozhodnutie o primeranosti, a popri tom používa štandardné zmluvné doložky (časť 06).</td></tr>
+          </tbody>
+        </table>
 
         <h3>So súhlasom: Google Analytics 4</h3>
         <p>Ak v lište kliknete na <strong>„Prijať“</strong>, načíta sa služba Google Analytics 4 spoločnosti
@@ -267,7 +287,7 @@
         <span class="kicker">06</span>
         <h2>Príjemcovia a prenos do tretích krajín</h2>
         <ul>
-          <li><strong>Cloudflare, Inc.</strong> (USA) – hosting webu a doručovanie obsahu (sprostredkovateľ).</li>
+          <li><strong>Cloudflare, Inc.</strong> (USA) – hosting webu, doručovanie obsahu a súhrnná štatistika návštevnosti Cloudflare Web Analytics (sprostredkovateľ).</li>
           <li><strong>Google Ireland Limited</strong> (Írsko) – Google Analytics, len s vaším súhlasom; údaje môže v rámci skupiny spracúvať aj Google LLC (USA).</li>
           <li>Poskytovateľ našej e-mailovej schránky – pri e-mailovej komunikácii podľa časti 03.</li>
         </ul>
@@ -335,7 +355,7 @@
   </footer>
 
   <div id="consentBar" class="cb" role="region" aria-label="Súhlas s analytickými cookies" hidden>
-    <p>So súhlasom budeme na meranie návštevnosti používať Google Analytics, ktorý ukladá cookies. Bez súhlasu sa návštevnosť nemeria a cookies sa neukladajú. <a href="/ochrana-osobnych-udajov/#cookies">Viac o spracúvaní údajov</a></p>
+    <p>So súhlasom budeme na meranie návštevnosti používať Google Analytics, ktorý ukladá cookies. Bez súhlasu sa Google Analytics nenačíta a cookies sa neukladajú. <a href="/ochrana-osobnych-udajov/#cookies">Viac o spracúvaní údajov</a></p>
     <div class="cb-btns"><button type="button" data-c="denied">Odmietnuť</button><button type="button" data-c="granted">Prijať</button></div>
   </div>
   <script src="/consent.js"></script>
