@@ -450,6 +450,18 @@ select {
   transition: color 0.15s, background 0.15s;
 }
 .vydavok-del:hover { color: var(--err-fg); background: var(--err-bg); }
+.vydavok-row { flex-wrap: wrap; }
+.vydavok-prechodna {
+  flex: 1 1 100%;
+  order: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.vydavok-prechodna input { width: auto; margin: 0; accent-color: var(--brass-light); }
 
 /* ---------- buttons ---------- */
 

@@ -18,12 +18,12 @@ const state = {
   trestnaSadzbaId: '12-3-a',  // §12 — základná sadzba v trestnom konaní (default: TČ do 5 rokov)
   ukony: [],
   vozidlo: { spotreba: null, druh: 'benzin' },
-  vydavky: [],          // [{ _uid, datum, popis, suma }]
+  vydavky: [],          // [{ _uid, datum, popis, suma, prechodna }] — prechodna = § 22 ods. 3 z. o DPH (bez DPH)
   platcaDph: true,      // §18 ods. 3 — je advokát platiteľom DPH?
   exportOdovodnenie: false,  // opt-in: priložiť odôvodnenie do kópie/PDF
   // §13 multipliery (po novele 391/2023):
   pocetOsob: 1,           // §13 ods. 2 — počet spoločne zastupovaných osôb
-  upravaSadzbyPct: 0,     // §13 ods. 1/5 — diskrečná úprava sadzby (-50 … +50 %)
+  upravaSadzbyPct: 0,     // §13 ods. 1/5 — diskrečná úprava sadzby (−100 … +50 %)
   spojeneVeci: [],        // §13 ods. 3 — ďalšie spojené veci [{ _uid, hodnota }] (len civil-value)
   // §12 ods. 7 / §14 ods. 7 — osobitné trestné odmeny:
   opatrovnikNedotiahol: false,  // §12 ods. 7 — opatrovník nezastupoval do právoplatného skončenia (→ 50 %)
@@ -55,8 +55,9 @@ function multOsob() {
 }
 function multUprava() {
   if (jeOpatrovnik()) return 1;
-  const m = TARIFF.parameters.uprava_sadzby_max_pct;
-  const p = Math.max(-m, Math.min(m, state.upravaSadzbyPct || 0));
+  const m = TARIFF.parameters.uprava_sadzby_max_pct;          // §13 ods. 5 — zvýšenie najviac +50 %
+  const z = TARIFF.parameters.znizenie_sadzby_max_pct ?? 100;  // §13 ods. 1 — zníženie bez stropu
+  const p = Math.max(-z, Math.min(m, state.upravaSadzbyPct || 0));
   return 1 + p / 100;  // §13 ods. 1/5
 }
 function prirastokSpojenie() {
@@ -262,7 +263,7 @@ function toEngineState(s) {
     konanieType: s.konanieType,
     hodnotaSporu: s.hodnotaSporu,
     trestnaSadzbaId: s.trestnaSadzbaId,
-    hotoveVydavky: s.vydavky.reduce((acc, v) => acc + (v.suma || 0), 0),
+    vydavky: s.vydavky.map(v => ({ datum: v.datum || null, suma: v.suma || 0, prechodna: !!v.prechodna })),
     platcaDph: s.platcaDph,
     caseLabel: s.caseLabel,
     // §13 multipliery
@@ -485,7 +486,7 @@ function renderHeader() {
     el('p', { class: 'kicker' }, 'Legal Engineering · Advokátska tarifa'),
     el('h1', {}, 'Kalkulačka trov právneho zastúpenia'),
     el('p', { class: 'subtitle' },
-      `Vyhláška MS SR č. 655/2004 Z. z. v znení neskorších predpisov · DPH ${(TARIFF.parameters.vat_rate * 100).toFixed(0)} % · v${TARIFF.meta.version}`)
+      `Vyhláška MS SR č. 655/2004 Z. z. v znení neskorších predpisov · DPH podľa dátumu úkonu · v${TARIFF.meta.version}`)
   ]);
 }
 
@@ -597,7 +598,9 @@ function renderUprava13() {
       makeNumInput({
         value: state.upravaSadzbyPct, decimal: false, cls: 'inp inp-sm',
         commit: (p) => {
-          let v = (p == null) ? 0 : Math.max(-50, Math.min(50, p));
+          const maxZv = TARIFF.parameters.uprava_sadzby_max_pct;
+          const maxZn = TARIFF.parameters.znizenie_sadzby_max_pct ?? 100;
+          let v = (p == null) ? 0 : Math.max(-maxZn, Math.min(maxZv, p));
           state.upravaSadzbyPct = v; render(); return v;
         }
       }),
@@ -606,7 +609,8 @@ function renderUprava13() {
   ]));
   sec.appendChild(el('p', { class: 'hint' },
     'Zvýšenie najviac o +50 % pri úkonoch mimoriadne obťažných, časovo náročných alebo vyžadujúcich ' +
-    'znalosť cudzieho práva či jazyka (§ 13 ods. 5); zníženie podľa § 13 ods. 1. Rozsah −50 až +50 %.'));
+    'znalosť cudzieho práva či jazyka (§ 13 ods. 5); zníženie podľa § 13 ods. 1 vyhláška percentom ' +
+    'neobmedzuje. Rozsah −100 až +50 %.'));
 
   // §13 ods. 3 — spojenie vecí (len pri hodnotovom spore)
   if (state.konanieType === 'civil-value') sec.appendChild(renderSpojenieVeci());
@@ -997,6 +1001,11 @@ function renderVydavky() {
       state.vydavky.map(v => renderVydavok(v))));
   }
 
+  sec.appendChild(el('p', { class: 'hint' },
+    'Výdavky platené v mene a na účet klienta (napr. súdny poplatok, ktorého poplatníkom je klient) ' +
+    'sú prechodnou položkou a do základu DPH sa nezahŕňajú (§ 22 ods. 3 zákona č. 222/2004 Z. z.). ' +
+    'Ostatné výdavky kalkulačka zahrnie do základu DPH podľa sadzby ku dňu výdavku.'));
+
   sec.appendChild(el('button', {
     class: 'btn-add', type: 'button', onclick: addVydavok
   }, '+ Pridať výdavok'));
@@ -1030,6 +1039,13 @@ function renderVydavok(v) {
           return v.suma || null;
         }
       })
+    ]),
+    el('label', { class: 'field vydavok-prechodna' }, [
+      el('input', {
+        type: 'checkbox', checked: !!v.prechodna,
+        onchange: (e) => { v.prechodna = e.target.checked; updateResultOnly(); }
+      }),
+      el('span', {}, 'bez DPH — prechodná položka (napr. súdny poplatok)')
     ]),
     el('button', {
       class: 'vydavok-del', type: 'button', title: 'Odstrániť výdavok', 'aria-label': 'Odstrániť výdavok',
@@ -1119,9 +1135,10 @@ function renderResult() {
   if (b.cestovne > 0) rows.push(breakdownRow('Náhrada za použitie vozidla (§ 16 ods. 4)', b.cestovne));
   if (b.phm > 0) rows.push(breakdownRow('Náhrada za pohonné hmoty (§ 16 ods. 4)', b.phm));
   if (b.hotove > 0) rows.push(breakdownRow('Iné hotové výdavky (§ 15 písm. a)', b.hotove));
+  if (b.prechodne > 0) rows.push(breakdownRow('Prechodné položky bez DPH (§ 22 ods. 3 z. o DPH)', b.prechodne));
   rows.push(breakdownRow('Položky spolu bez DPH', b.polozkySpolu, 'subtotal'));
   if (b.platcaDph) {
-    rows.push(breakdownRow(`DPH ${(TARIFF.parameters.vat_rate * 100).toFixed(0)} % (§ 18 ods. 3)`, b.dph));
+    for (const r of dphRiadky(b)) rows.push(breakdownRow(r.label, r.suma));
   }
   rows.push(breakdownRow('Spolu trovy', result.total, 'total'));
 
@@ -1159,6 +1176,19 @@ function renderResult() {
   wrap.appendChild(renderOdovodnenie(result));
 
   return wrap;
+}
+
+// DPH riadky výsledku — jeden riadok na sadzbu (úkony z rôznych období, § 27 ods. 5 z. o DPH).
+function dphRiadky(b) {
+  const rozpis = (b.dphRozpis || []);
+  if (rozpis.length <= 1) {
+    const s = rozpis.length ? rozpis[0].sadzba : TARIFF.parameters.vat_rate;
+    return [{ label: `DPH ${(s * 100).toFixed(0)} % (§ 18 ods. 3)`, suma: b.dph }];
+  }
+  return rozpis.map(r => ({
+    label: `DPH ${(r.sadzba * 100).toFixed(0)} % zo ${fmtEur(r.zaklad)} (§ 18 ods. 3)`,
+    suma: r.dph
+  }));
 }
 
 function breakdownRow(label, value, cls = '') {
@@ -1290,7 +1320,8 @@ function addVydavok() {
     _uid: 'v' + vydavokSeq,
     datum: todayIso(),
     popis: '',
-    suma: 0
+    suma: 0,
+    prechodna: false
   });
   render();
 }
@@ -1571,7 +1602,7 @@ function buildOdovodnenie(result) {
   }
 
   // Iné hotové výdavky
-  if (b.hotove > 0) {
+  if (b.hotove > 0 || b.prechodne > 0) {
     sections.push({ h: 'Iné hotové výdavky', p: [
       'Advokát má podľa § 15 písm. a) Vyhlášky popri nároku na odmenu aj nárok na náhradu ' +
       'hotových výdavkov účelne a preukázateľne vynaložených v súvislosti s poskytovaním ' +
@@ -1585,11 +1616,27 @@ function buildOdovodnenie(result) {
     sections.push({ h: 'Daň z pridanej hodnoty', p: [
       'Advokát je platiteľom dane z pridanej hodnoty. Podľa § 18 ods. 3 Vyhlášky sa odmena ' +
       'a náhrady advokáta, ktorý je platiteľom dane z pridanej hodnoty, zvyšujú o túto daň. ' +
-      `Sadzba dane z pridanej hodnoty je ${(TARIFF.parameters.vat_rate * 100).toFixed(0)} %.`
+      'Sadzba dane sa určuje ku dňu vzniku daňovej povinnosti (§ 27 ods. 5 a § 19 ods. 2 zákona ' +
+      'č. 222/2004 Z. z.); ' + dphSadzbyText(b) +
+      (b.prechodne > 0
+        ? ' Prechodné položky (výdavky platené v mene a na účet klienta) sa do základu dane ' +
+          'nezahŕňajú (§ 22 ods. 3 zákona č. 222/2004 Z. z.).'
+        : '')
     ]});
   }
 
   return sections;
+}
+
+// Text o sadzbách DPH do odôvodnenia.
+function dphSadzbyText(b) {
+  const rozpis = b.dphRozpis || [];
+  if (rozpis.length > 1) {
+    return 'pre jednotlivé úkony sa preto uplatňujú sadzby ' +
+      rozpis.map(r => `${(r.sadzba * 100).toFixed(0)} % (zo základu ${fmtEur(r.zaklad)})`).join(' a ') + '.';
+  }
+  const s = rozpis.length ? rozpis[0].sadzba : TARIFF.parameters.vat_rate;
+  return `sadzba dane je ${(s * 100).toFixed(0)} %.`;
 }
 
 // ---------- Export (tabuľka do schránky + PDF) ----------
@@ -1618,7 +1665,11 @@ function buildExportData(result) {
 
   const vydavky = state.vydavky
     .filter(v => (v.suma || 0) > 0)
-    .map(v => ({ datum: fmtDate(v.datum), popis: v.popis || '—', suma: v.suma }));
+    .map(v => ({
+      datum: fmtDate(v.datum),
+      popis: (v.popis || '—') + (v.prechodna ? ' (prechodná položka, bez DPH)' : ''),
+      suma: v.suma
+    }));
 
   const b = result.breakdown;
   const summary = [];
@@ -1627,10 +1678,7 @@ function buildExportData(result) {
   if (b.dohodaVT > 0) summary.push({ label: 'Dohoda o vine a treste (§ 14 ods. 7 — 4×)', suma: b.dohodaVT });
   summary.push({ label: 'Položky spolu bez DPH', suma: b.polozkySpolu, kind: 'subtotal' });
   if (b.platcaDph) {
-    summary.push({
-      label: `DPH ${(TARIFF.parameters.vat_rate * 100).toFixed(0)} % (§ 18 ods. 3)`,
-      suma: b.dph, kind: ''
-    });
+    for (const r of dphRiadky(b)) summary.push({ label: r.label, suma: r.suma, kind: '' });
   }
   summary.push({ label: 'Spolu trovy', suma: result.total, kind: 'total' });
 
