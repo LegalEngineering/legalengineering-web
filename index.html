@@ -1,20 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="sk">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#2F6B43" />
-  <title>Legal Engineering — Hard work worth your soft costs</title>
-  <meta name="description" content="Legal Engineering builds legal-technical products at the seam of law, code, and business. Hard work worth your soft costs." />
+  <title>Legal Engineering — Poctivá práca, ktorá stojí za vaše soft costs</title>
+  <meta name="description" content="Legal Engineering stavia právno-technické produkty na rozhraní práva, kódu a biznisu. Poctivá práca, ktorá stojí za vaše soft costs." />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Legal Engineering" />
-  <meta property="og:description" content="Hard work worth your soft costs. Legal-technical products at the seam of law, code, and business." />
+  <meta property="og:description" content="Poctivá práca, ktorá stojí za vaše soft costs. Právno-technické produkty na rozhraní práva, kódu a biznisu." />
+  <meta property="og:locale" content="sk_SK" />
   <meta property="og:url" content="https://legalengineering.sk/" />
   <meta property="og:image" content="https://legalengineering.sk/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <link rel="canonical" href="https://legalengineering.sk/" />
+  <link rel="alternate" hreflang="sk" href="https://legalengineering.sk/" />
+  <link rel="alternate" hreflang="en" href="https://legalengineering.sk/en/" />
+  <link rel="alternate" hreflang="x-default" href="https://legalengineering.sk/" />
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect x='3' y='3' width='42' height='42' rx='11' fill='%232F6B43'/%3E%3Ctext x='24' y='32' font-family='Georgia,serif' font-size='22' font-weight='600' fill='%23F6F1E7' text-anchor='middle'%3ELE%3C/text%3E%3C/svg%3E" />
 
@@ -135,6 +139,9 @@
     .nav-links a:hover{ opacity:1; }
     .nav-cta{ display:flex; align-items:center; gap:12px; }
     .nav-cta .btn{ padding:11px 18px; font-size:.92rem; }
+    .lang{ font-size:.82rem; font-weight:700; letter-spacing:.08em; color:var(--green-deep); border:1.5px solid var(--line);
+      border-radius:100px; padding:6px 12px; line-height:1; transition:border-color .2s, background .2s; }
+    .lang:hover{ border-color:var(--green); background:rgba(47,107,67,.05); }
     .hamburger{ display:none; width:44px; height:44px; border:1px solid var(--line); border-radius:11px;
       background:var(--surface); align-items:center; justify-content:center; cursor:pointer; }
     .hamburger span,.hamburger span::before,.hamburger span::after{ content:""; display:block; width:18px; height:2px;
@@ -273,20 +280,21 @@
 </head>
 
 <body id="top">
-  <a class="skip" href="#work">Skip to showcase</a>
+  <a class="skip" href="#work">Preskočiť na ukážky</a>
 
   <!-- NAV -->
   <header class="nav" id="nav">
     <div class="nav-inner">
-      <a class="brand" href="#top" aria-label="Legal Engineering — home"><span class="mark">LE</span>Legal Engineering</a>
-      <nav class="nav-links" aria-label="Sections">
-        <a href="#work">Showcase</a>
-        <a href="#ethos">What we do</a>
-        <a href="#contact">Contact</a>
+      <a class="brand" href="#top" aria-label="Legal Engineering — úvod"><span class="mark">LE</span>Legal Engineering</a>
+      <nav class="nav-links" aria-label="Sekcie">
+        <a href="#work">Ukážky</a>
+        <a href="#ethos">Čo robíme</a>
+        <a href="#contact">Kontakt</a>
       </nav>
       <div class="nav-cta">
-        <a class="btn btn-primary" href="#contact">Get in touch <span class="a">→</span></a>
-        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-controls="drawer" aria-expanded="false"><span></span></button>
+        <a class="lang" href="/en/" hreflang="en" lang="en" aria-label="English version">EN</a>
+        <a class="btn btn-primary" href="#contact">Ozvite sa <span class="a">→</span></a>
+        <button class="hamburger" id="hamburger" aria-label="Otvoriť menu" aria-controls="drawer" aria-expanded="false"><span></span></button>
       </div>
     </div>
   </header>
@@ -295,12 +303,13 @@
   <aside class="drawer" id="drawer" aria-label="Menu" role="dialog" aria-modal="true">
     <div class="drawer-head">
       <span class="brand"><span class="mark">LE</span>Legal Engineering</span>
-      <button class="btn btn-ghost" id="closeDrawer" type="button" style="padding:9px 14px">Close</button>
+      <button class="btn btn-ghost" id="closeDrawer" type="button" style="padding:9px 14px">Zavrieť</button>
     </div>
-    <a href="#work">Showcase</a>
-    <a href="#ethos">What we do</a>
-    <a href="#contact">Contact</a>
-    <a class="btn btn-primary" href="#contact">Get in touch <span class="a">→</span></a>
+    <a href="#work">Ukážky</a>
+    <a href="#ethos">Čo robíme</a>
+    <a href="#contact">Kontakt</a>
+    <a href="/en/" hreflang="en" lang="en">English</a>
+    <a class="btn btn-primary" href="#contact">Ozvite sa <span class="a">→</span></a>
   </aside>
 
   <main>
@@ -308,17 +317,17 @@
     <section class="hero">
       <div class="wrap">
         <span class="eyebrow reveal">Legal Engineering</span>
-        <h1 class="reveal" style="transition-delay:.05s">Hard work worth your <span class="accent">soft&nbsp;costs</span>.</h1>
+        <h1 class="reveal" style="transition-delay:.05s">Poctivá práca, ktorá stojí za vaše <span class="accent">soft&nbsp;costs</span>.</h1>
         <p class="lead reveal" style="transition-delay:.12s">
-          Admiring Dirk Gently´s attitude, we established a holistic studio, building products at the seam of law, code, business and mathematics. Fullstack agency transforming ideas into businesses.
-          From legal framework, through business economics, to public presentation.
+          S obdivom k prístupu Dirka Gentlyho sme založili holistické štúdio, ktoré stavia produkty na rozhraní práva, kódu, biznisu a matematiky. Fullstack agentúra, ktorá premieňa nápady na biznis –
+          od právneho rámca cez ekonomiku podnikania až po prezentáciu na verejnosti.
         </p>
         <div class="hero-ctas reveal" style="transition-delay:.18s">
-          <a class="btn btn-primary" href="#work">See the work <span class="a">↓</span></a>
-          <a class="btn btn-ghost" href="#contact">Get in touch</a>
+          <a class="btn btn-primary" href="#work">Pozrite si našu prácu <span class="a">↓</span></a>
+          <a class="btn btn-ghost" href="#contact">Ozvite sa</a>
         </div>
         <ul class="hero-chips reveal" style="transition-delay:.24s">
-          <li>Law</li><li>Economy</li><li>Code</li><li>Est. 2015</li>
+          <li>Právo</li><li>Ekonomika</li><li>Kód</li><li>Od roku 2015</li>
         </ul>
       </div>
     </section>
@@ -327,115 +336,115 @@
     <section class="section" id="work">
       <div class="wrap">
         <div class="sec-head reveal">
-          <span class="sec-kicker">01 — Showcase</span>
-          <h2>Selected work</h2>
-          <p class="lead">A working catalogue — tools we shipped, products we built, and experiments we couldn’t resist. Click any preview to step inside.</p>
+          <span class="sec-kicker">01 — Ukážky</span>
+          <h2>Výber z našej práce</h2>
+          <p class="lead">Živý katalóg – nástroje, ktoré sme spustili, produkty, ktoré sme postavili, a experimenty, ktorým sme nevedeli odolať. Kliknite na ktorýkoľvek náhľad a vstúpte dnu.</p>
         </div>
 
         <div class="work-grid">
 
           <!-- Vygumovanie -->
-          <a class="work reveal" href="vygumovanie/" target="_blank" rel="noopener" aria-label="Open Vygumovanie">
+          <a class="work reveal" href="vygumovanie/" target="_blank" rel="noopener" aria-label="Otvoriť Vygumovanie">
             <div class="thumb-frame">
               <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/vygumovanie</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/vygumovanie.jpg" width="760" height="475" loading="lazy" alt="Preview of the Vygumovanie interactive poem"></div>
+              <div class="thumb-img"><img src="assets/thumbs/vygumovanie.jpg" width="760" height="475" loading="lazy" alt="Náhľad interaktívnej básne Vygumovanie"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">Vygumovanie</span><span class="work-tag">Interactive</span></div>
-              <p class="work-desc">An interactive poem that erases one vowel per stanza — and the page’s light along with it. Pure scroll-driven craft.</p>
-              <span class="work-open">Open <span class="a">→</span></span>
+              <div class="work-head"><span class="work-name">Vygumovanie</span><span class="work-tag">Interaktívne</span></div>
+              <p class="work-desc">Interaktívna báseň, ktorá v každej strofe vygumuje jednu samohlásku – a s ňou aj svetlo stránky. Čisté remeslo poháňané scrollovaním.</p>
+              <span class="work-open">Otvoriť <span class="a">→</span></span>
             </div>
           </a>
 
           <!-- Pi poem -->
-          <a class="work reveal" href="pi-poem/" target="_blank" rel="noopener" aria-label="Open Pi poem">
+          <a class="work reveal" href="pi-poem/" target="_blank" rel="noopener" aria-label="Otvoriť Pi poem">
             <div class="thumb-frame">
               <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/pi-poem</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/pi-poem.jpg" width="760" height="475" loading="lazy" alt="Preview of the Pi poem interactive poem"></div>
+              <div class="thumb-img"><img src="assets/thumbs/pi-poem.jpg" width="760" height="475" loading="lazy" alt="Náhľad interaktívnej básne Pi poem"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">Pi poem</span><span class="work-tag">Interactive</span></div>
-              <p class="work-desc">An interactive poem whose words speak the first eighteen digits of π, while a compass lays them onto a circle that paints every image in the verse. Scroll-driven, drawn live on canvas.</p>
-              <span class="work-open">Open <span class="a">→</span></span>
+              <div class="work-head"><span class="work-name">Pi poem</span><span class="work-tag">Interaktívne</span></div>
+              <p class="work-desc">Interaktívna báseň, ktorej slová vyslovujú prvých osemnásť číslic čísla π, zatiaľ čo kružidlo ich nanáša na kruh a ten kreslí každý obraz verša. Poháňaná scrollovaním, kreslená naživo.</p>
+              <span class="work-open">Otvoriť <span class="a">→</span></span>
             </div>
           </a>
 
 
           <!-- Mortgage Calculator -->
-          <a class="work reveal" href="hypo/" target="_blank" rel="noopener" aria-label="Open Mortgage Calculator">
+          <a class="work reveal" href="hypo/" target="_blank" rel="noopener" aria-label="Otvoriť Hypotekárnu kalkulačku">
             <div class="thumb-frame">
               <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/hypo</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/hypo.jpg" width="760" height="475" loading="lazy" alt="Preview of the Mortgage Calculator"></div>
+              <div class="thumb-img"><img src="assets/thumbs/hypo.jpg" width="760" height="475" loading="lazy" alt="Náhľad Hypotekárnej kalkulačky"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">Mortgage Calculator</span><span class="work-tag">Tool</span></div>
-              <p class="work-desc">Slovak mortgage limits, NBS stress tests and real repayments — clean, precise, installable as an app.</p>
-              <span class="work-open">Open <span class="a">→</span></span>
+              <div class="work-head"><span class="work-name">Hypotekárna kalkulačka</span><span class="work-tag">Nástroj</span></div>
+              <p class="work-desc">Limity hypoték, stresové testy NBS a skutočné splátky – prehľadne, presne a dá sa nainštalovať ako aplikácia.</p>
+              <span class="work-open">Otvoriť <span class="a">→</span></span>
             </div>
           </a>
 
           <!-- Legal Cost Calculator -->
-          <a class="work reveal" href="trovy/" target="_blank" rel="noopener" aria-label="Open Legal Cost Calculator">
+          <a class="work reveal" href="trovy/" target="_blank" rel="noopener" aria-label="Otvoriť Kalkulačku trov">
             <div class="thumb-frame">
               <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/trovy</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/trovy.jpg" width="760" height="475" loading="lazy" alt="Preview of the Legal Cost Calculator"></div>
+              <div class="thumb-img"><img src="assets/thumbs/trovy.jpg" width="760" height="475" loading="lazy" alt="Náhľad Kalkulačky trov"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">Legal Cost Calculator</span><span class="work-tag">Tool</span></div>
-              <p class="work-desc">Statutory attorney’s fees and cash reimbursements under the Slovak tariff — to the cent, with the reasoning shown.</p>
-              <span class="work-open">Open <span class="a">→</span></span>
+              <div class="work-head"><span class="work-name">Kalkulačka trov</span><span class="work-tag">Nástroj</span></div>
+              <p class="work-desc">Tarifná odmena advokáta a náhrada hotových výdavkov podľa advokátskej tarify – na cent presne, aj s postupom výpočtu.</p>
+              <span class="work-open">Otvoriť <span class="a">→</span></span>
             </div>
           </a>
 
           <!-- Zaručená konverzia (sprievodca, SK) -->
-          <a class="work reveal" href="konverzia/" aria-label="Open Zaručená konverzia guide">
+          <a class="work reveal" href="konverzia/" aria-label="Otvoriť sprievodcu Zaručená konverzia">
             <div class="thumb-frame">
               <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">legalengineering.sk/konverzia</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/konverzia.jpg" width="760" height="475" loading="lazy" alt="Preview of the Zaručená konverzia guide"></div>
+              <div class="thumb-img"><img src="assets/thumbs/konverzia.jpg" width="760" height="475" loading="lazy" alt="Náhľad sprievodcu Zaručená konverzia"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">Zaručená konverzia</span><span class="work-tag">Guide</span></div>
-              <p class="work-desc">Turning paper into legally valid electronic documents under Slovak e-Government law — who may do it, when you need it and the statutory price cap. In Slovak.</p>
-              <span class="work-open">Open <span class="a">→</span></span>
+              <div class="work-head"><span class="work-name">Zaručená konverzia</span><span class="work-tag">Sprievodca</span></div>
+              <p class="work-desc">Ako z listiny urobiť právne platný elektronický dokument podľa zákona o e-Governmente – kto ju smie vykonať, kedy ju potrebujete a aká je zákonná maximálna cena.</p>
+              <span class="work-open">Otvoriť <span class="a">→</span></span>
             </div>
           </a>
 
           <!-- BiznisBox (coming soon — not live yet; swap back to <a href="biznisbox/"> + ship the /biznisbox/ folder when ready) -->
-          <div class="work work-soon reveal" aria-label="BiznisBox — coming soon">
+          <div class="work work-soon reveal" aria-label="BiznisBox — čoskoro">
             <div class="thumb-frame">
-              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">biznisbox — coming soon</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/biznisbox.jpg" width="760" height="475" loading="lazy" alt="Preview of BiznisBox"></div>
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">biznisbox — čoskoro</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/biznisbox.jpg" width="760" height="475" loading="lazy" alt="Náhľad BiznisBox"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">BiznisBox</span><span class="work-tag soon">Soon</span></div>
-              <p class="work-desc">Start a company without the chaos — legal, technical and operational set-up packed into five ready-made boxes.</p>
-              <span class="work-open work-open-soon">Coming soon</span>
+              <div class="work-head"><span class="work-name">BiznisBox</span><span class="work-tag soon">Čoskoro</span></div>
+              <p class="work-desc">Založte firmu bez chaosu – právne, technické a prevádzkové nastavenie zbalené do piatich hotových boxov.</p>
+              <span class="work-open work-open-soon">Už čoskoro</span>
             </div>
           </div>
 
           <!-- Box na pozemku -->
-          <a class="work reveal" href="https://www.boxnapozemku.sk" target="_blank" rel="noopener" aria-label="Open Box na pozemku">
+          <a class="work reveal" href="https://www.boxnapozemku.sk" target="_blank" rel="noopener" aria-label="Otvoriť Box na pozemku">
             <div class="thumb-frame">
               <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">boxnapozemku.sk</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/boxnapozemku.jpg" width="760" height="475" loading="lazy" alt="Preview of Box na pozemku"></div>
+              <div class="thumb-img"><img src="assets/thumbs/boxnapozemku.jpg" width="760" height="475" loading="lazy" alt="Náhľad Box na pozemku"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">Box na pozemku</span><span class="work-tag">Product</span></div>
-              <p class="work-desc">Spare land? We check it, match it to a parcel-locker operator and handle the paperwork — you collect steady rent.</p>
-              <span class="work-open">Visit <span class="a">→</span></span>
+              <div class="work-head"><span class="work-name">Box na pozemku</span><span class="work-tag">Produkt</span></div>
+              <p class="work-desc">Máte voľný pozemok? Preveríme ho, nájdeme preň prevádzkovateľa boxov na zásielky a vybavíme papierovačky – vy poberáte pravidelný nájom.</p>
+              <span class="work-open">Navštíviť <span class="a">→</span></span>
             </div>
           </a>
 
           <!-- ScreenWhile (own domain not live yet → coming soon; swap back to <a href> when ready) -->
-          <div class="work work-soon reveal" aria-label="ScreenWhile — coming soon">
+          <div class="work work-soon reveal" aria-label="ScreenWhile — čoskoro">
             <div class="thumb-frame">
-              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">screenwhile — coming soon</span></div>
-              <div class="thumb-img"><img src="assets/thumbs/screenwhile.jpg" width="760" height="475" loading="lazy" alt="Preview of ScreenWhile"></div>
+              <div class="thumb-bar"><i></i><i></i><i></i><span class="addr">screenwhile — čoskoro</span></div>
+              <div class="thumb-img"><img src="assets/thumbs/screenwhile.jpg" width="760" height="475" loading="lazy" alt="Náhľad ScreenWhile"></div>
             </div>
             <div class="work-meta">
-              <div class="work-head"><span class="work-name">ScreenWhile</span><span class="work-tag soon">Soon</span></div>
-              <p class="work-desc">Games that live in your phone’s notification shade — so the video, podcast or stream underneath never stops.</p>
-              <span class="work-open work-open-soon">Coming soon</span>
+              <div class="work-head"><span class="work-name">ScreenWhile</span><span class="work-tag soon">Čoskoro</span></div>
+              <p class="work-desc">Hry, ktoré žijú v notifikačnej lište telefónu – takže video, podcast či stream pod nimi sa nikdy nezastaví.</p>
+              <span class="work-open work-open-soon">Už čoskoro</span>
             </div>
           </div>
 
@@ -446,15 +455,15 @@
     <!-- ETHOS -->
     <section class="section ethos" id="ethos">
       <div class="wrap ethos-inner reveal">
-        <span class="sec-kicker">02 — What we do</span>
+        <span class="sec-kicker">02 — Čo robíme</span>
         <p class="quote">
-          Hard costs are your concrete, your land, your quity. The <em>soft costs</em> are the thinking —
-          the law, the structure, the engineering. And also some boring stuff.
+          Hard costs sú váš betón, váš pozemok, váš vlastný kapitál. <em>Soft costs</em> sú myslenie –
+          právo, štruktúra, inžinierstvo. A tiež pár nudných vecí.
         </p>
         <p class="body">
-          At Legal Engineering, we never skip a brain day. We live inside the build. We design the legal and technical
-          scaffolding for complex property, development and transactional work — then ship the tools and products
-          that make it run. We are your soft costs. We make them worth it.
+          V Legal Engineering nikdy nevynechávame tréning mozgu. Žijeme priamo na stavbe. Navrhujeme právne a technické
+          lešenie pre zložité majetkové, developerské a transakčné situácie – a potom dodávame nástroje a produkty,
+          vďaka ktorým to celé funguje. Sme vaše soft costs. A staráme sa o to, aby sa oplatili.
         </p>
       </div>
     </section>
@@ -462,12 +471,12 @@
     <!-- CONTACT -->
     <section class="section contact" id="contact">
       <div class="wrap inner reveal">
-        <span class="sec-kicker" style="color:var(--gold)">03 — Contact</span>
-        <h2>Don´t hesitate to contact us. We love new challenges.</h2>
-        <p class="lead">If we fit, we sit. If we don´t fit, we find out in less then fifteen minutes.</p>
+        <span class="sec-kicker" style="color:var(--gold)">03 — Kontakt</span>
+        <h2>Neváhajte nás kontaktovať. Nové výzvy máme radi.</h2>
+        <p class="lead">Ak si sadneme, sadneme si k tomu. Ak nie, zistíme to za menej než pätnásť minút.</p>
         <div class="contact-ctas">
-          <a class="btn btn-primary" href="mailto:kontakt@legalengineering.sk">Email kontakt@legalengineering.sk</a>
-          <a class="btn btn-ghost" href="#work">Browse the work</a>
+          <a class="btn btn-primary" href="mailto:kontakt@legalengineering.sk">Napíšte na kontakt@legalengineering.sk</a>
+          <a class="btn btn-ghost" href="#work">Prezrieť si prácu</a>
         </div>
       </div>
     </section>
@@ -480,27 +489,27 @@
         <div>
           <div class="foot-brand">Legal Engineering</div>
           <p class="foot-text">
-            Hard work worth your soft costs.<br>
+            Poctivá práca, ktorá stojí za vaše soft costs.<br>
             <a href="mailto:kontakt@legalengineering.sk">kontakt@legalengineering.sk</a> · legalengineering.sk
           </p>
         </div>
         <div class="foot-col">
-          <h4>Showcase</h4>
+          <h4>Ukážky</h4>
           <div class="foot-links">
             <a href="vygumovanie/" target="_blank" rel="noopener">Vygumovanie</a>
             <a href="pi-poem/" target="_blank" rel="noopener">Pi poem</a>
-            <a href="hypo/" target="_blank" rel="noopener">Mortgage Calculator</a>
-            <a href="trovy/" target="_blank" rel="noopener">Legal Cost Calculator</a>
+            <a href="hypo/" target="_blank" rel="noopener">Hypotekárna kalkulačka</a>
+            <a href="trovy/" target="_blank" rel="noopener">Kalkulačka trov</a>
             <a href="konverzia/">Zaručená konverzia</a>
-            <span style="color:rgba(246,240,232,.5)">BiznisBox · soon</span>
+            <span style="color:rgba(246,240,232,.5)">BiznisBox · čoskoro</span>
             <a href="https://www.boxnapozemku.sk" target="_blank" rel="noopener">Box na pozemku</a>
-            <span style="color:rgba(246,240,232,.5)">ScreenWhile · soon</span>
+            <span style="color:rgba(246,240,232,.5)">ScreenWhile · čoskoro</span>
           </div>
         </div>
       </div>
       <div class="foot-bottom">
         <span>© 2026 Legal Engineering</span>
-        <span>Law · Economics · Code</span>
+        <span>Právo · Ekonomika · Kód</span>
       </div>
       <p class="foot-legal" lang="sk">
         Prevádzkovateľ: <strong>Legal Engineering, s.&nbsp;r.&nbsp;o.</strong>, Nevädzová 6, 821 01 Bratislava – mestská časť Ružinov ·
