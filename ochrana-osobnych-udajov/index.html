@@ -141,13 +141,13 @@
           Ako Legal Engineering, s.&nbsp;r.&nbsp;o. nakladá s údajmi návštevníkov webu legalengineering.sk
           a jeho podstránok (kalkulačky, sprievodcovia, interaktívne básne).
         </p>
-        <p class="stamp">Účinné od 18. 10. 2026, aktualizované 19. 10. 2026.</p>
+        <p class="stamp">Účinné od 18. 10. 2026, aktualizované 30. 10. 2026.</p>
       </section>
 
       <div class="callout green">
         <p><strong>V skratke.</strong> Web nemá registráciu, účty ani formuláre. Kalkulačky počítajú výlučne vo vašom prehliadači
-        a nič z toho, čo do nich zadáte, sa nikam neodosiela. Nad rámec technickej prevádzky vedieme len súhrnnú štatistiku
-        návštevnosti bez cookies (Cloudflare Web Analytics) a meranie nástrojom Google Analytics – to iba vtedy, ak ho v lište na spodku stránky výslovne prijmete.
+        a nič z toho, čo do nich zadáte, sa nikam neodosiela. Nad rámec technickej prevádzky vedieme súhrnnú štatistiku
+        návštevnosti bez cookies (Cloudflare Web Analytics), denné počty načítaní podľa kategórie zdroja a meranie nástrojom Google Analytics – to iba vtedy, ak ho v lište na spodku stránky výslovne prijmete.
         Bez súhlasu sa žiadne cookies neukladajú.</p>
       </div>
 
@@ -197,7 +197,7 @@
             splátky, vek, tarifné hodnoty, úkony – sa neodosielajú na žiadny server, neukladáme ich a nevidíme ich. Výstup (tlač, kopírovanie
             do schránky) vzniká tiež len vo vašom zariadení.</li>
           <li><strong>Interaktívne básne a sprievodcovia</strong> (<a href="/vygumovanie/">Vygumovanie</a>, <a href="/pi-poem/">Pi poem</a>,
-            <a href="/konverzia/">Zaručená konverzia</a>) sú statické stránky; nič nezaznamenávajú.</li>
+            <a href="/konverzia/">Zaručená konverzia</a>) sú statické stránky bez formulárov a účtov. Na ich načítanie sa vzťahuje meranie návštevnosti podľa časti 05.</li>
           <li><strong>Inštalovateľné kalkulačky (PWA).</strong> Ak si kalkulačku „nainštalujete“ alebo ju otvoríte opakovane, prehliadač si uloží kópiu
             jej súborov (tzv. service worker), aby fungovala aj bez pripojenia. Ide o technické uloženie bez osobných údajov; odstránite ho vymazaním
             údajov stránky v prehliadači.</li>
@@ -224,8 +224,9 @@
         <span class="kicker">04</span>
         <h2>Technická prevádzka webu</h2>
         <p>Web beží na infraštruktúre spoločnosti Cloudflare. Pri každom načítaní stránky sa – ako pri každom webe – technicky spracúva
-        IP adresa vášho zariadenia, čas požiadavky, požadovaná adresa a základné údaje o prehliadači. Slúžia výlučne na doručenie obsahu,
-        ochranu pred útokmi a prevádzkové záznamy; nepoužívame ich na identifikáciu návštevníkov ani na sledovanie ich správania.</p>
+        IP adresa vášho zariadenia, čas požiadavky, požadovaná adresa, adresa stránky, z ktorej ste prišli, a základné údaje o prehliadači. Slúžia na doručenie obsahu,
+        ochranu pred útokmi a prevádzkové záznamy. Pri meraných stránkach z nich navyše odvodíme kategóriu do denných počtov (časť 05); IP adresu do počtov neukladáme.
+        Nepoužívame ich na identifikáciu návštevníkov ani na sledovanie ich správania.</p>
         <p><strong>Právny základ:</strong> náš oprávnený záujem na bezpečnej a funkčnej prevádzke webu <span class="ref">čl. 6 ods. 1 písm. f) GDPR</span>.</p>
       </section>
 
@@ -235,7 +236,7 @@
         <h2>Cookies a meranie návštevnosti</h2>
 
         <h3>Bez súhlasu</h3>
-        <p>Web neukladá do vášho zariadenia žiadne analytické ani reklamné cookies; návštevnosť sleduje len súhrnne a bez cookies (Cloudflare Web Analytics, nižšie). V úložisku prehliadača
+        <p>Web neukladá do vášho zariadenia žiadne analytické ani reklamné cookies; návštevnosť sleduje len súhrnne a bez cookies (denné počty a Cloudflare Web Analytics, nižšie). V úložisku prehliadača
         (localStorage, položka <code>le_consent_v1</code>) si zapamätá iba vašu voľbu v lište – prijatie alebo odmietnutie merania – aby sa lišta
         nezobrazovala pri každej návšteve. Toto uloženie je nevyhnutné na to, aby sme vašu voľbu rešpektovali, a súhlas si nevyžaduje.</p>
 
@@ -256,6 +257,23 @@
             <tr><th scope="row">Sprostredkovateľ a prenos</th><td>Cloudflare koná ako náš sprostredkovateľ na základe zmluvy o spracúvaní osobných údajov (Data Processing Addendum), ktorá je súčasťou
               jeho zmluvných podmienok. Údaje môže spracúvať aj v USA; Cloudflare je certifikovaný v rámci <em>EU-US Data Privacy Framework</em>, pre ktorý
               Európska komisia prijala rozhodnutie o primeranosti, a popri tom používa štandardné zmluvné doložky (časť 06).</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Bez súhlasu a bez cookies: denné počty</h3>
+        <p>Pri načítaní meraných stránok (úvodná stránka, anglická verzia, <a href="/hypo/">/hypo/</a>, <a href="/trovy/">/trovy/</a>, <a href="/konverzia/">/konverzia/</a>,
+        <a href="/vygumovanie/">/vygumovanie/</a>, <a href="/pi-poem/">/pi-poem/</a>) pripočítame jednotku k dennému počtu podľa kategórie zdroja; pri automatizovaných programoch podľa ich mena
+        (napríklad vyhľadávače a AI asistenti). Počty sú v štatistickej databáze spoločnej pre viaceré weby, aj iných prevádzkovateľov (Cloudflare, uložené v EÚ).
+        Neukladáme pritom IP adresu ani identifikáciu prehliadača a počty neobsahujú meno ani kontaktné údaje.</p>
+        <table>
+          <tbody>
+            <tr><th scope="row">Účel</th><td>Zistiť, odkiaľ sa ľudia o našich stránkach dozvedajú a ktoré programy ich čítajú, a podľa toho zlepšovať informácie na webe.</td></tr>
+            <tr><th scope="row">Aké údaje</th><td>Kategóriu zdroja (napríklad vyhľadávač, médiá alebo AI asistent) odvodíme z adresy stránky, z ktorej ste prišli, a z parametra <code>utm_source</code> v adrese.
+              Na rozlíšenie prehliadača od programu použijeme údaje o prehliadači a požiadavke a overenie automatizovaných programov, ktoré vykonáva Cloudflare. Tieto údaje po zaradení do kategórie neukladáme a do vášho zariadenia na to nič neukladáme.
+              Hodnoty zadané do kalkulačiek sa do merania nedostanú.</td></tr>
+            <tr><th scope="row">Právny základ</th><td>Náš oprávnený záujem poznať zdroje návštevnosti webu <span class="ref">čl. 6 ods. 1 písm. f) GDPR</span>.
+              Proti tomuto spracúvaniu môžete kedykoľvek namietať <span class="ref">čl. 21 GDPR</span>.</td></tr>
+            <tr><th scope="row">Uchovávanie</th><td>Denné počty nie sú spojené s menom ani kontaktom a môžeme ich uchovávať dlhodobo.</td></tr>
           </tbody>
         </table>
 
@@ -287,14 +305,14 @@
         <span class="kicker">06</span>
         <h2>Príjemcovia a prenos do tretích krajín</h2>
         <ul>
-          <li><strong>Cloudflare, Inc.</strong> (USA) – hosting webu, doručovanie obsahu a súhrnná štatistika návštevnosti Cloudflare Web Analytics (sprostredkovateľ).</li>
+          <li><strong>Cloudflare, Inc.</strong> (USA) – hosting webu, doručovanie obsahu, súhrnná štatistika návštevnosti Cloudflare Web Analytics a databáza denných počtov uložená v EÚ (sprostredkovateľ).</li>
           <li><strong>Google Ireland Limited</strong> (Írsko) – Google Analytics, len s vaším súhlasom; údaje môže v rámci skupiny spracúvať aj Google LLC (USA).</li>
           <li>Poskytovateľ našej e-mailovej schránky – pri e-mailovej komunikácii podľa časti 03.</li>
         </ul>
         <p>Pri poskytovateľoch so sídlom alebo materskou spoločnosťou v USA môže dochádzať k prenosu údajov do USA. Prenos sa uskutočňuje na základe
         rozhodnutia Európskej komisie o primeranosti pre rámec ochrany údajov EÚ – USA (<em>EU-US Data Privacy Framework</em>), ak je príjemca
         v tomto rámci certifikovaný; inak na základe štandardných zmluvných doložiek schválených Európskou komisiou.</p>
-        <p>Údaje neposkytujeme iným tretím osobám okrem prípadov, keď to vyžaduje zákon.</p>
+        <p>Údaje neposkytujeme iným tretím osobám okrem prípadov, keď to vyžaduje zákon. Denné počty sú v databáze spoločnej pre viaceré weby (časť 05).</p>
       </section>
 
       <!-- 7 -->

@@ -4,6 +4,7 @@
 .git/
 .github/
 .gitignore
+.gitattributes
 .assetsignore
 .wrangler/
 .dev.vars*
@@ -16,6 +17,8 @@ package.json
 package-lock.json
 README.md
 CLAUDE.md
+/worker.js
+*.sql
 *.py
 *.sh
 CNAME
